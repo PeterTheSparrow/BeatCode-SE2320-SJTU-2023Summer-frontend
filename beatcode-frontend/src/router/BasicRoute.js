@@ -7,7 +7,9 @@ import OJMainView from '../view/OJMainView';
 // import HomeView from './view/HomeView';
 // import LoginView from './view/LoginView';
 import { history } from '../utils/history'
+import LoginView from "../view/LoginView";
 // import BookView from './view/BookView';
+import {ProblemSet} from "../components/MainScene/ProblemSet";
 
 /**
  * @Description: 路由配置
@@ -30,7 +32,17 @@ const BasicRoute = () => {
         <Router>
             <Routes>
                 {/*这里暂时先不使用权限检查，因此先实现最基础的路由*/}
-                <Route path="/" element={<OJMainView />} />
+                <Route path="/" element={<OJMainView />}>
+                {/*让一些component成为OJMainView的子组件*/}
+                    <Route path={"/"} element={<ProblemSet />} />
+                    <Route path={"/ranking-board"} element={<div>排行榜</div>} />
+                    <Route path={"/my-submissions"} element={<div>我的提交</div>} />
+                    <Route path={"/personal-info"} element={<div>用户画像</div>} />
+                    {/*TODO 具体题目界面，url中用题号区分*/}
+                    <Route path="/problem/:id" element={<div>具体题目界面</div>} />
+                </Route>
+                <Route path= "/login" element={<LoginView />} />
+
                 <Route path="/*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>

@@ -3,3 +3,15 @@
 .Header {
     box-shadow: 0px 3px 6px #00000029;
 }
+
+.active {
+    background-color: #f0f0f0;
+    color: #1890ff;
+    font-weight: bold;
+}
+
+.ant-menu-item.ant-menu-item-selected {
+    background-color: #f0f0f0;
+    color: #1890ff;
+    font-weight: bold;
+}

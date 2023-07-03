@@ -1,12 +1,19 @@
-/*
-* oj平台主界面，使用函数式组件
-* */
 import React from 'react';
-// import "../css/Header.css"
 import {Col, Layout, Menu, Row, theme} from 'antd';
+import {Link, Outlet, useLocation} from "react-router-dom";
 const { Header, Content, Footer } = Layout;
 
-const MainViewElement = () => {
+
+
+/**
+ * @Description: oj平台主界面，使用函数式组件
+ * 组成：
+ * 1. Header：导航栏，由三部分组成：logo，菜单，用户信息
+ * 2. Content：内容区域，由一个组件组成（component）
+ * 3. Footer：版权信息
+ * */
+function OJMainView() {
+    const location = useLocation();
     const {
         token: { colorBgContainer },
     } = theme.useToken();
@@ -42,28 +49,25 @@ const MainViewElement = () => {
                             theme={'light'}
                             mode="horizontal"
                             defaultSelectedKeys={['1']}
-                            items={[
-                                {
-                                    key: '1',
-                                    label: '题库',
-                                },
-                                {
-                                    key: '2',
-                                    label: '排行榜',
-                                },
-                                {
-                                    key: '3',
-                                    label: '我的提交',
-                                },
-                                {
-                                    key: '4',
-                                    label: '个人信息',
-                                }
-                            ]}
-                        />
+                            selectedKeys={[location.pathname]}
+                        >
+                            <Menu.Item key="/" style={location.pathname === '/' ? { fontWeight: 'bold' } : null}>
+                                <Link to="/">题库</Link>
+                            </Menu.Item>
+                            <Menu.Item key="/ranking-board" style={location.pathname === '/ranking-board' ? { fontWeight: 'bold' } : null}>
+                                <Link to="/ranking-board">排行榜</Link>
+                            </Menu.Item>
+                            <Menu.Item key="/my-submissions" style={location.pathname === '/my-submissions' ? { fontWeight: 'bold' } : null}>
+                                <Link to="/my-submissions">我的提交</Link>
+                            </Menu.Item>
+                            <Menu.Item key="/personal-info" style={location.pathname === '/personal-info' ? { fontWeight: 'bold' } : null}>
+                                <Link to="/personal-info">个人信息</Link>
+                            </Menu.Item>
+                        </Menu>
+
                     </Col>
                     <Col span={8}>
-                        <h1 style={{color: 'black'}}>BeatCode</h1>
+                        <h1 style={{color: 'black'}}>TODO User-Profile</h1>
                     {/*    TODO 这里插一个用户头像的组件component     */}
                     </Col>
                 </Row>
@@ -75,14 +79,14 @@ const MainViewElement = () => {
                     marginTop: 64,
                 }}
             >
-                {/*TODO 这里插一个component */}
                 <div
                     className="site-layout-content"
                     style={{
                         background: colorBgContainer,
                     }}
                 >
-                    Content
+                    {/*定义二级路由的出口*/}
+                    < Outlet />
                 </div>
             </Content>
             <Footer
@@ -94,12 +98,7 @@ const MainViewElement = () => {
             </Footer>
         </Layout>
     );
-};
-
-function OJMainView() {
-    return (
-        <MainViewElement />
-    );
 }
+
 
 export default OJMainView;
