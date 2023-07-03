@@ -76,7 +76,7 @@ function OJMainView() {
             <Content
                 style={{
                     padding: '0 50px',
-                    marginTop: 64,
+                    marginTop: 32,
                 }}
             >
                 <div

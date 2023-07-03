@@ -10,6 +10,10 @@ import { history } from '../utils/history'
 import LoginView from "../view/LoginView";
 // import BookView from './view/BookView';
 import {ProblemSet} from "../components/MainScene/ProblemSet";
+import SingleProblem from "../components/MainScene/SingleProblem";
+import RankingBoard from "../components/MainScene/RankingBoard";
+import MySubmission from "../components/MainScene/MySubmission";
+import PersonalInfo from "../components/MainScene/PersonalInfo";
 
 /**
  * @Description: 路由配置
@@ -35,11 +39,10 @@ const BasicRoute = () => {
                 <Route path="/" element={<OJMainView />}>
                 {/*让一些component成为OJMainView的子组件*/}
                     <Route path={"/"} element={<ProblemSet />} />
-                    <Route path={"/ranking-board"} element={<div>排行榜</div>} />
-                    <Route path={"/my-submissions"} element={<div>我的提交</div>} />
-                    <Route path={"/personal-info"} element={<div>用户画像</div>} />
-                    {/*TODO 具体题目界面，url中用题号区分*/}
-                    <Route path="/problem/:id" element={<div>具体题目界面</div>} />
+                    <Route path={"/ranking-board"} element={<RankingBoard />} />
+                    <Route path={"/my-submissions"} element={<MySubmission />} />
+                    <Route path={"/personal-info"} element={<PersonalInfo />} />
+                    <Route path="/problem/:id" element={<SingleProblem />} />
                 </Route>
                 <Route path= "/login" element={<LoginView />} />
 
@@ -51,6 +54,7 @@ const BasicRoute = () => {
 
 export default BasicRoute;
 
+// 陈昊鹏的路由配置
 // const BasicRoute = () => {
 //     useEffect(() => {
 //         const unsubscribe = history.listen((location, action) => {
