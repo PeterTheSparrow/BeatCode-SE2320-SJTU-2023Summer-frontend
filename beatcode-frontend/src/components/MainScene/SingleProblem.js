@@ -4,6 +4,15 @@ import {Button, Col, Row, Select, Space} from 'antd';
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
+/*下面这些import用于支持语法高亮*/
+import 'monaco-editor/esm/vs/basic-languages/python/python.contribution';
+import 'monaco-editor/esm/vs/basic-languages/java/java.contribution';
+import 'monaco-editor/esm/vs/basic-languages/cpp/cpp.contribution';
+
+
+/**
+ * @Description: 前端硬编码的题目，格式为markdown
+ * */
 const markdownText = ` # 数字求和！
 
 ## 题目描述
@@ -63,12 +72,30 @@ def sumDigits(n: int) -> int:
 
 你需要确保你的实现在所有测试用例下都能高效地运行。预期的时间复杂度应为 O(log n)，其中 n 是输入整数的位数。`;
 
+/**
+ * @Description: 单个题目的组件，包含题目描述、代码编辑器、提交按钮等
+ * */
 const CodeEditor = () => {
     const [language, setLanguage] = useState('javascript');
     const [code, setCode] = useState('');
 
+
+    /**
+    * 用户选择深色主题或浅色主题
+    * */
+    const [theme, setTheme] = useState('vs-dark');
+
+    const handleThemeChange = (event) => {
+        // 处理主题选择变化的逻辑
+        console.log(event);
+        setTheme(event);
+    }
+
     const editorOptions = {
+        // selectOnLineNumbers: true，意思是点击行号就可以选中一整行
         selectOnLineNumbers: true,
+        // roundedSelection: false，意思是选中的时候是否为圆角
+        roundedSelection: true,
     };
 
     const handleEditorChange = (value, event) => {
@@ -90,7 +117,6 @@ const CodeEditor = () => {
 
     return (
         <div>
-
             <Row>
                 <Col span={12}>
                     <div
@@ -99,6 +125,8 @@ const CodeEditor = () => {
                             marginRight: 20,
                             marginBottom: 20,
                             marginTop: 20,
+                            maxHeight: '600px',
+                            overflow: 'auto',
                         }}
                     >
                         <h1>ProblemDescription</h1>
@@ -112,7 +140,7 @@ const CodeEditor = () => {
                     <div>
                         <Space wrap>
                             <Select
-                                defaultValue="c"
+                                defaultValue="cpp"
                                 style={{
                                     width: 120,
                                     marginBottom: 20,
@@ -120,10 +148,22 @@ const CodeEditor = () => {
                             }}
                                 onChange={handleLanguageChange}
                                 options={[
-                                    { value: 'c', label: 'C' },
                                     { value: 'cpp', label: 'C++' },
                                     { value: 'java', label: 'Java' },
                                     { value: 'python', label: 'Python' },
+                                ]}
+                            />
+                            <Select
+                                defaultValue="vs-dark"
+                                style={{
+                                    width: 120,
+                                    marginBottom: 20,
+                                    marginLeft: 20,
+                                }}
+                                onChange={handleThemeChange}
+                                options={[
+                                    { value: 'vs-dark', label: 'Dark' },
+                                    { value: 'vs-light', label: 'Light' },
                                 ]}
                             />
                         </Space>
@@ -137,12 +177,18 @@ const CodeEditor = () => {
                             提交评测
                         </Button>
                     </div>
+                    <div
 
-                    {/*需要实现语法高亮*/}
+                    >
+
+                    </div>
+                    {/*TODO 需要实现语法高亮*/}
                     <MonacoEditor
-                        // height="500"
+                        height="600"
                         language={language}
-                        theme="vs-dark"
+                        // theme="vs-dark"
+                        // theme={'vs-light'}
+                        theme={theme}
                         value={code}
                         options={editorOptions}
                         onChange={handleEditorChange}
@@ -165,7 +211,12 @@ function SingleProblem() {
         <div>
             {/*空的标签，纯粹占位为了好看*/}
             <div style={{height: 20}}/>
-            <CodeEditor />
+            <div
+                style={{ boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', padding: '16px' }}
+            >
+                <CodeEditor />
+            </div>
+            {/*<CodeEditor />*/}
         </div>
     );
 }

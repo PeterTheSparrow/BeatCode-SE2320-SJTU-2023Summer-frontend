@@ -33,16 +33,19 @@ function OJMainView() {
                     }}
                 >
                     <Col span={8}>
-                        <img
-                            src={require('../img/logo.jpg')}
-                            alt="logo"
-                            style={
-                                {
-                                    width: '60px',
-                                    height: '60px',
+                        {/*单击logo能够从任何地方跳转到根目录*/}
+                        <Link to="/">
+                            <img
+                                src={require('../img/logo.jpg')}
+                                alt="logo"
+                                style={
+                                    {
+                                        width: '60px',
+                                        height: '60px',
+                                    }
                                 }
-                            }
-                        />
+                            />
+                        </Link>
                     </Col>
                     <Col span={8}>
                         <Menu
