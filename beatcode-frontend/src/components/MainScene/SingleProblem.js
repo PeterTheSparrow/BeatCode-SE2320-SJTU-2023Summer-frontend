@@ -8,6 +8,7 @@ import remarkGfm from "remark-gfm";
 import 'monaco-editor/esm/vs/basic-languages/python/python.contribution';
 import 'monaco-editor/esm/vs/basic-languages/java/java.contribution';
 import 'monaco-editor/esm/vs/basic-languages/cpp/cpp.contribution';
+import {useNavigate} from "react-router-dom";
 
 
 /**
@@ -76,8 +77,12 @@ def sumDigits(n: int) -> int:
  * @Description: 单个题目的组件，包含题目描述、代码编辑器、提交按钮等
  * */
 const CodeEditor = () => {
-    const [language, setLanguage] = useState('javascript');
+    const [language, setLanguage] = useState('cpp');
     const [code, setCode] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const navigate = useNavigate();
+
 
 
     /**
@@ -111,8 +116,21 @@ const CodeEditor = () => {
     };
 
     const handleSubmit = () => {
-        // 提交代码的逻辑
-        console.log('提交代码');
+        // 设置按钮处于加载状态
+        setLoading(true);
+
+        // TODO 提交代码
+
+        setTimeout(() => {
+            // 进行页面跳转
+
+            //TODO 那这里跳转说明还需要获得submissionId？
+
+            // 用useNavigate()导航，history找不到
+            // navigate(`/submission/${submissionId}`);
+            navigate(`/submission/1`);
+
+        }, 2000);
     }
 
     return (
@@ -173,6 +191,7 @@ const CodeEditor = () => {
                                 marginLeft: 20,
                             }}
                             onClick={handleSubmit}
+                            loading={loading}
                         >
                             提交评测
                         </Button>

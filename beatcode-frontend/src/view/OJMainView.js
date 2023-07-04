@@ -1,6 +1,7 @@
 import React from 'react';
 import {Col, Layout, Menu, Row, theme} from 'antd';
 import {Link, Outlet, useLocation} from "react-router-dom";
+import {SmileTwoTone, UserOutlined} from "@ant-design/icons";
 const { Header, Content, Footer } = Layout;
 
 
@@ -70,8 +71,21 @@ function OJMainView() {
 
                     </Col>
                     <Col span={8}>
-                        <h1 style={{color: 'black'}}>TODO User-Profile</h1>
-                    {/*    TODO 这里插一个用户头像的组件component     */}
+                        {/*超链接，点击一下跳跃到用户信息界面*/}
+                        <Link to="/personal-info">
+                            {/*大小：很大*/}
+                            <UserOutlined
+                                style={{
+                                    fontSize: '32px',
+                                    color: '#1890ff',
+                                    // float: 'right',
+                                    marginTop: '20px',
+                                    marginBottom: '10px',
+                                    marginRight: '20px',
+                                    marginLeft: '180px',
+                                }}
+                            />
+                        </Link>
                     </Col>
                 </Row>
 

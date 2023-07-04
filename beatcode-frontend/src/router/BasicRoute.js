@@ -14,6 +14,7 @@ import SingleProblem from "../components/MainScene/SingleProblem";
 import RankingBoard from "../components/MainScene/RankingBoard";
 import MySubmission from "../components/MainScene/MySubmission";
 import PersonalInfo from "../components/MainScene/PersonalInfo";
+import SingleSubmission from "../components/MainScene/SingleSubmission";
 
 /**
  * @Description: 路由配置
@@ -43,6 +44,7 @@ const BasicRoute = () => {
                     <Route path={"/my-submissions"} element={<MySubmission />} />
                     <Route path={"/personal-info"} element={<PersonalInfo />} />
                     <Route path="/problem/:id" element={<SingleProblem />} />
+                    <Route path={"/submission/:id"} element={<SingleSubmission />} />
                 </Route>
                 <Route path= "/login" element={<LoginView />} />
 
