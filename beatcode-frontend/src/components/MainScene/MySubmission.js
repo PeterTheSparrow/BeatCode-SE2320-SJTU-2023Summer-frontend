@@ -1,5 +1,5 @@
 import React from "react";
-import {List} from "antd";
+import {List, Table} from "antd";
 
 /**
  * @Description: 某个用户所有的提交
@@ -11,11 +11,17 @@ import {List} from "antd";
  * */
 function MySubmission() {
   const submissionList = [
-    // 假设这是您的提交列表数据
+    // 假设这是提交列表数据
     { id: 1, problemId: 1, problemName: "Problem 1", timestamp: "2023-06-28", language: "JavaScript", result: "Accepted" },
     { id: 2, problemId: 2, problemName: "Problem 2", timestamp: "2023-06-29", language: "Python", result: "Wrong Answer" },
     // ...
   ];
+
+  const [submissionNum, setSubmissionNum] = React.useState(0);
+  const [passedProblemNum, setPassedProblemNum] = React.useState(0);
+  const [passedSubmissionNum, setPassedSubmissionNum] = React.useState(0);
+  const [passedRate, setPassedRate] = React.useState(0);
+
 
 
 
@@ -28,6 +34,23 @@ function MySubmission() {
                 marginRight: 20,
               }}
         >
+            {/*占位*/}
+            <div style={{height: 50,}}/>
+            <Table dataSource={[{submissionNum, passedProblemNum, passedSubmissionNum, passedRate}]}
+                     pagination={false}
+                        style={{
+                            marginLeft: 40,
+                            marginRight: 40,
+                            marginBottom: 40,
+                        }}
+                        columns={[
+                            { title: '提交数目', dataIndex: 'submissionNum' },
+                            { title: '通过题目数目', dataIndex: 'passedProblemNum' },
+                            { title: '通过提交数目', dataIndex: 'passedSubmissionNum' },
+                            { title: '通过率', dataIndex: 'passedRate' },
+                        ]}
+            />
+
 
         </div>
         <div
@@ -38,7 +61,26 @@ function MySubmission() {
             }}
         >
           <h1>提交列表</h1>
+            {/*占位*/}
+            <div style={{height: 20,}}/>
+            <Table dataSource={submissionList}
+                     pagination={false}
+                        style={{
+                            marginLeft: 40,
+                            marginRight: 40,
+                        }}
+                        columns={[
+                            { title: '提交id', dataIndex: 'id' },
+                            { title: '题目id', dataIndex: 'problemId' },
+                            { title: '题目名称', dataIndex: 'problemName' },
+                            { title: '提交时间', dataIndex: 'timestamp' },
+                            { title: '语言', dataIndex: 'language' },
+                            { title: '结果', dataIndex: 'result' },
+                        ]}
 
+            />
+            {/*占位*/}
+            <div style={{height: 50,}}/>
         </div>
       </div>
   );
