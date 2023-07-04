@@ -15,6 +15,7 @@ import RankingBoard from "../components/MainScene/RankingBoard";
 import MySubmission from "../components/MainScene/MySubmission";
 import PersonalInfo from "../components/MainScene/PersonalInfo";
 import SingleSubmission from "../components/MainScene/SingleSubmission";
+import RegisterView from "../view/RegisterView";
 
 /**
  * @Description: 路由配置
@@ -47,6 +48,7 @@ const BasicRoute = () => {
                     <Route path={"/submission/:id"} element={<SingleSubmission />} />
                 </Route>
                 <Route path= "/login" element={<LoginView />} />
+                <Route path={"/register"} element={<RegisterView />} />
 
                 <Route path="/*" element={<Navigate to="/" replace />} />
             </Routes>

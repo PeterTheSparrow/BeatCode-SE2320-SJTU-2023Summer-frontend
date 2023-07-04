@@ -1,5 +1,6 @@
 import React from "react";
 import {List, Table} from "antd";
+import {Navigate, NavLink} from "react-router-dom";
 
 /**
  * @Description: 某个用户所有的提交
@@ -36,6 +37,7 @@ function MySubmission() {
         >
             {/*占位*/}
             <div style={{height: 50,}}/>
+            <h1>提交历史</h1>
             <Table dataSource={[{submissionNum, passedProblemNum, passedSubmissionNum, passedRate}]}
                      pagination={false}
                         style={{
@@ -70,7 +72,13 @@ function MySubmission() {
                             marginRight: 40,
                         }}
                         columns={[
-                            { title: '提交id', dataIndex: 'id' },
+                            // 单击提交id，可以跳转到提交详情界面
+                            {
+                                title: '提交id',
+                                dataIndex: 'id' ,
+                                render: (text, record) => (
+                               <NavLink to={`/submission/${record.id}`}>{text}</NavLink>)
+                            },
                             { title: '题目id', dataIndex: 'problemId' },
                             { title: '题目名称', dataIndex: 'problemName' },
                             { title: '提交时间', dataIndex: 'timestamp' },
