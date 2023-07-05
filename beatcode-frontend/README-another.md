@@ -23,19 +23,27 @@
   - css 样式
   - img 图片
   - view 页面
+    - LoginView 登录界面
+    - RegisterView 注册界面
+    - OJMainView 主界面（用户）
+    - OJAdminView 主界面（管理员）
   - router 路由
   - service 服务
   - utils 工具
+    - ajax 封装的ajax请求
+    - history 封装的history
 
 ## 2. 代码规范
 
 1. 全部使用函数式组件编写！严禁使用类组件！
 
-## 3. 具体内容介绍
+## 3. 具体实现
+
+这里主要记录采用的一些第三方库。
 
 ### 3.1 具体题目界面
 
-#### 3.1.1 markdown
+#### 3.1.1 markdown渲染
 
 参考文章：https://blog.csdn.net/weixin_44589651/article/details/121044772
 
@@ -50,9 +58,18 @@
 关于语法高亮的实现：
 https://blog.csdn.net/sd19871122/article/details/121204194
 
+### 3.2 题目修改界面
+
+TODO 
+还需要找到一个比较合适的markdown编辑器，用于题目的信息修改；
+富文本编辑器不适合，功能太多了。
+如果找不到的话，就只能使用monaco-editor了。
+
 ## 4. url一览
 
 以下是所有出现的url和对应的页面。
+
+用户模式：
 
 | url                 | 页面名称 |
 |---------------------| -------- |
@@ -64,38 +81,21 @@ https://blog.csdn.net/sd19871122/article/details/121204194
 | /my-submissions     | 我的提交 |
 | /submission/:id     | 提交详情 |
 
+管理员模式：基本就是用户模式前加了一个/admin
+
+| url                       | 页面名称 |
+|---------------------------| -------- |
+| /admin                    | 主界面   |
+| /admin/problem/:problemId | 题目界面 |
+| /admin/ranking-board      | 排行榜   |
+| /admin/my-submissions     | 我的提交 |
+| /admin/submission/:id     | 提交详情 |
+| /admin/edit-problem/:id   | 编辑题目 |
+
 ## 5. TODO-List
 
-1. 单击提交以后，跳转到:我的提交，那里显示所有你的提交
-   - 评测结果界面！
-   - ![](./reference-imgs/微信截图_20230703161820.png)
-   - ![](./reference-imgs/微信截图_20230703161940.png)
-   - ![](./reference-imgs/微信截图_20230703161949.png)
-
-评测结果界面设计：
-1. 标题
-2. 表格，点击题目名称或者题目编号，跳转到题目界面
-   - 评测状态：AC、WA、TLE、MLE、RE、CE……
-   - 运行时间
-   - 分数（总共XX/XX，你测试点过了几个）
-   - 内存
-   - 语言
-   - 提交时间
-3. 每一个测试点的结果
-   - 测试点编号
-   - 状态
-   - 运行时间
-   - 占用内存
-
-
-
-1. 完成测评结束后的页面：
-   2. 单击提交后延迟，显示：提交成功，即将跳转到测评结果页面……
-2. 完成主界面：
-   3. 
-
-
-
-
-
-
+- 界面原型实现
+  - ranking界面（用户+管理员）
+  - edit-problem界面（管理员）
+- 前后端通信（Service）
+- 通过路由实现鉴权（参考陈昊鹏）
