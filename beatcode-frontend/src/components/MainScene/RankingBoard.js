@@ -8,6 +8,8 @@ import React from 'react';
 function RankingBoard() {
     return (
         <div>
+            <div style={{height: 20,}}>
+            </div>
             <h1>RankingBoard</h1>
         </div>
     );

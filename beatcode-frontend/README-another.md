@@ -1,19 +1,31 @@
 # BeatCode-frontend (React) 前端代码
 
+## 目录
+
+- [BeatCode-frontend (React) 前端代码](#beatcode-frontend-react-前端代码)
+  - [目录](#目录)
+  - [1. 文件结构](#1-文件结构)
+  - [2. 代码规范](#2-代码规范)
+  - [3. 具体内容介绍](#3-具体内容介绍)
+    - [3.1 具体题目界面](#31-具体题目界面)
+      - [3.1.1 markdown](#311-markdown)
+      - [3.1.2 代码编辑框](#312-代码编辑框)
+  - [4. url一览](#4-url一览)
+  - [5. TODO-List](#5-todo-list)
+
 ## 1. 文件结构
 
-```
-.
-├── src
-│   ├── components // 组件
-│   ├── view // 页面
-│   ├── services // 服务
-│   ├── utils // 工具
-│   ├── router // 路由
-│   ├── img // 图片
-│   ├── css // 样式
-
-```
+- src
+  - components 组件
+    - AdminScene 管理员界面
+    - MainScene 主界面
+    - LoginAndRegister 登录注册界面
+  - css 样式
+  - img 图片
+  - view 页面
+  - router 路由
+  - service 服务
+  - utils 工具
 
 ## 2. 代码规范
 
@@ -38,7 +50,21 @@
 关于语法高亮的实现：
 https://blog.csdn.net/sd19871122/article/details/121204194
 
-## 4. TODO-List
+## 4. url一览
+
+以下是所有出现的url和对应的页面。
+
+| url                 | 页面名称 |
+|---------------------| -------- |
+| /                   | 主界面   |
+| /login              | 登录界面 |
+| /register           | 注册界面 |
+| /problem/:problemId | 题目界面 |
+| /ranking-board      | 排行榜   |
+| /my-submissions     | 我的提交 |
+| /submission/:id     | 提交详情 |
+
+## 5. TODO-List
 
 1. 单击提交以后，跳转到:我的提交，那里显示所有你的提交
    - 评测结果界面！
@@ -61,10 +87,15 @@ https://blog.csdn.net/sd19871122/article/details/121204194
    - 运行时间
    - 占用内存
 
-## 5. schedule
+
 
 1. 完成测评结束后的页面：
    2. 单击提交后延迟，显示：提交成功，即将跳转到测评结果页面……
+2. 完成主界面：
+   3. 
+
+
+
 
 
 

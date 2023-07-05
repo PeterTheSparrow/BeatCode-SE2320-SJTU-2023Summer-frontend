@@ -1,5 +1,4 @@
 import React, {useEffect, useRef, useState} from 'react';
-import Search from "antd/es/input/Search";
 
 import {Button, Input, Space, Table, Tag} from 'antd';
 import {SearchOutlined} from "@ant-design/icons";
@@ -177,20 +176,30 @@ const ProblemTable = () => {
             title: 'Tags',
             dataIndex: 'tags',
             key: 'tags',
-            width: '40%',
+            width: '30%',
             ...getColumnSearchProps('tags'),
             render: (tags, record) => (
                 <>
                     {tags.map((tag, index) => {
-                        let color = record.tagColors[index];
-                        return (
-                            <Tag color={color} key={tag} style={{ fontSize: '13px', padding: '3px 6px' }}>
-                                {tag}
-                            </Tag>
-                        );
-                    }
+                            let color = record.tagColors[index];
+                            return (
+                                <Tag color={color} key={tag} style={{ fontSize: '13px', padding: '3px 6px' }}>
+                                    {tag}
+                                </Tag>
+                            );
+                        }
                     )}
                 </>
+            ),
+        },
+        {
+            title: 'Action',
+            key: 'action',
+            width: '10%',
+            render: (text, record) => (
+                <Space size="middle">
+                    <a href={`/admin/edit-problem/${record.id}`}>Edit</a>
+                </Space>
             ),
         },
     ];
@@ -210,7 +219,7 @@ const ProblemTable = () => {
  * 1. 顶部：所有标签的展示
  * 2. 题目列表
  * */
-export function ProblemSet() {
+function ProblemSetAdmin() {
 
     // 所有的标签信息
     const [tags, setTags] = useState([]);
@@ -316,10 +325,10 @@ export function ProblemSet() {
                 </div>
                 <div
                     style={{
-                            marginLeft: 20,
-                            marginRight: 20,
-                            marginBottom: 20,
-                        }}
+                        marginLeft: 20,
+                        marginRight: 20,
+                        marginBottom: 20,
+                    }}
                 >
                     {tags.map((tag, index) => (
                         // <Tag key={index} color={tag.color}>
@@ -356,3 +365,5 @@ export function ProblemSet() {
         </div>
     );
 }
+
+export default ProblemSetAdmin;

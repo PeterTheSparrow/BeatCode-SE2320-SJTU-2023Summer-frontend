@@ -1,6 +1,7 @@
 import React from "react";
-import {List, Table} from "antd";
-import {Navigate, NavLink} from "react-router-dom";
+import {Col, Row, Table} from "antd";
+import {NavLink} from "react-router-dom";
+import { PieChart, Pie, Cell, Legend } from "recharts";
 
 /**
  * @Description: 某个用户所有的提交
@@ -23,7 +24,15 @@ function MySubmission() {
   const [passedSubmissionNum, setPassedSubmissionNum] = React.useState(0);
   const [passedRate, setPassedRate] = React.useState(0);
 
+  // const passedRateData = [
+  //     { name: "通过提交数目", value: parseInt(passedSubmissionNum) },
+  //     { name: "未通过提交数目", value: submissionNum - parseInt(passedSubmissionNum) },
+  // ];
 
+    const passedRateData = [
+        { name: "通过提交数目", value: parseInt(65) },
+        { name: "未通过提交数目", value: parseInt(5) },
+    ];
 
 
   return (
@@ -37,24 +46,50 @@ function MySubmission() {
         >
             {/*占位*/}
             <div style={{height: 50,}}/>
-            <h1>提交历史</h1>
-            <Table dataSource={[{submissionNum, passedProblemNum, passedSubmissionNum, passedRate}]}
-                     pagination={false}
-                        style={{
-                            marginLeft: 40,
-                            marginRight: 40,
-                            marginBottom: 40,
-                        }}
-                        columns={[
-                            { title: '提交数目', dataIndex: 'submissionNum' },
-                            { title: '通过题目数目', dataIndex: 'passedProblemNum' },
-                            { title: '通过提交数目', dataIndex: 'passedSubmissionNum' },
-                            { title: '通过率', dataIndex: 'passedRate' },
-                        ]}
-            />
-
+            <Row>
+                <Col span={12}>
+                    <h1>提交历史</h1>
+                    <Table dataSource={[{submissionNum, passedProblemNum, passedSubmissionNum, passedRate}]}
+                           pagination={false}
+                           style={{
+                               marginLeft: 40,
+                               marginRight: 40,
+                               marginBottom: 40,
+                           }}
+                           columns={[
+                               { title: '提交数目', dataIndex: 'submissionNum' },
+                               { title: '通过题目数目', dataIndex: 'passedProblemNum' },
+                               { title: '通过提交数目', dataIndex: 'passedSubmissionNum' },
+                               { title: '通过率', dataIndex: 'passedRate' },
+                           ]}
+                    />
+                </Col>
+                <Col span={12}>
+                    <div style={{ marginTop: 20 }}>
+                        <PieChart width={400} height={300}>
+                            <Pie
+                                data={passedRateData}
+                                dataKey="value"
+                                nameKey="name"
+                                cx="50%"
+                                cy="50%"
+                                outerRadius={80}
+                                fill="#8884d8"
+                                label
+                            >
+                                {/*饼图*/}
+                                {passedRateData.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={index === 0 ? "#82ca9d" : "#8884d8"} />
+                                ))}
+                            </Pie>
+                            <Legend />
+                        </PieChart>
+                    </div>
+                </Col>
+            </Row>
 
         </div>
+
         <div
             style={{
                 marginTop: 20,
@@ -95,9 +130,3 @@ function MySubmission() {
 }
 
 export default MySubmission;
-
-// function MySubmission() {
-//   return <div>MySubmission</div>;
-// }
-//
-// export default MySubmission;

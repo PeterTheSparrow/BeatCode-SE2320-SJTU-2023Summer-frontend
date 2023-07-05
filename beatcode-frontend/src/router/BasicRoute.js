@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-// import { Router, Route, Switch, Redirect } from 'react-router-dom';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import OJMainView from '../view/OJMainView';
 // import PrivateRoute from './PrivateRoute';
@@ -16,6 +15,9 @@ import MySubmission from "../components/MainScene/MySubmission";
 import PersonalInfo from "../components/MainScene/PersonalInfo";
 import SingleSubmission from "../components/MainScene/SingleSubmission";
 import RegisterView from "../view/RegisterView";
+import OJAdminView from "../view/OJAdminView";
+import ProblemSetAdmin from "../components/AdminScene/ProblemSetAdmin";
+import EditSingleProblem from "../components/AdminScene/EditSingleProblem";
 
 /**
  * @Description: 路由配置
@@ -44,12 +46,31 @@ const BasicRoute = () => {
                     <Route path={"/ranking-board"} element={<RankingBoard />} />
                     <Route path={"/my-submissions"} element={<MySubmission />} />
                     <Route path={"/personal-info"} element={<PersonalInfo />} />
-                    <Route path="/problem/:id" element={<SingleProblem />} />
+                    <Route path={"/problem/:id"} element={<SingleProblem />} />
                     <Route path={"/submission/:id"} element={<SingleSubmission />} />
                 </Route>
-                <Route path= "/login" element={<LoginView />} />
+
+
+                <Route path="/admin" element={<OJAdminView />}>
+                    {/*管理员独有的：ProblemSetAdmin、EditSingleProblem（修改某道题目的信息）*/}
+                    <Route path={"/admin"} element={<ProblemSetAdmin />} />
+                    <Route path={"/admin/edit-problem/:id"} element={<EditSingleProblem />} />
+
+                    {/*下面这些组件全部是普通用户和管理员共用的*/}
+                    <Route path={"/admin/ranking-board"} element={<RankingBoard />} />
+                    <Route path={"/admin/my-submissions"} element={<MySubmission />} />
+                    <Route path={"/admin/personal-info"} element={<PersonalInfo />} />
+                    <Route path={"/admin/problem/:id"} element={<SingleProblem />} />
+                    <Route path={"/admin/submission/:id"} element={<SingleSubmission />} />
+                </Route>
+
+
+                <Route path= {"/login"} element={<LoginView />} />
                 <Route path={"/register"} element={<RegisterView />} />
 
+
+                {/*将所有未匹配到其他路由的路径都重定向到根路径，
+                以确保用户在访问不存在的路径时能够正确导航到主页或其他指定的路径。*/}
                 <Route path="/*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>

@@ -1,0 +1,1 @@
+// 服务的话，这里post_request只需要调用utils里面ajax文件中的方法就可以了

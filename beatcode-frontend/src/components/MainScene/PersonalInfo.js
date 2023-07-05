@@ -1,24 +1,3 @@
-// import React from "react";
-//
-// /**
-//  * @Description: 个人信息界面
-//  * 1. 用户名
-//  * 2. 邮箱
-//  * 3. 密码
-//  * 4. 个人信息
-//  * 5. 退出登录
-//  * 6. 电话
-//  * 7. 保存
-//  *
-//  * 修改密码的时候，需要输入旧密码，再输入新密码
-//  * */
-// function PersonalInfo() {
-//     // TODO
-//     return <div>PersonalInfo</div>;
-// }
-//
-// export default PersonalInfo;
-
 import React from "react";
 import { Form, Input, Button } from 'antd';
 

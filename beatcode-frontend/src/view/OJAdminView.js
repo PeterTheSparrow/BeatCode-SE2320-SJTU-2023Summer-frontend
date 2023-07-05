@@ -13,7 +13,7 @@ const { Header, Content, Footer } = Layout;
  * 2. Content：内容区域，由一个组件组成（component）
  * 3. Footer：版权信息
  * */
-function OJMainView() {
+function OJAdminView() {
     const location = useLocation();
     const {
         token: { colorBgContainer },
@@ -55,17 +55,17 @@ function OJMainView() {
                             defaultSelectedKeys={['1']}
                             selectedKeys={[location.pathname]}
                         >
-                            <Menu.Item key="/" style={location.pathname === '/' ? { fontWeight: 'bold' } : null}>
-                                <Link to="/">题库</Link>
+                            <Menu.Item key="/admin/" style={location.pathname === '/admin/' ? { fontWeight: 'bold' } : null}>
+                                <Link to="/admin/">题库</Link>
                             </Menu.Item>
-                            <Menu.Item key="/ranking-board" style={location.pathname === '/ranking-board' ? { fontWeight: 'bold' } : null}>
-                                <Link to="/ranking-board">排行榜</Link>
+                            <Menu.Item key="/admin/ranking-board" style={location.pathname === '/admin/ranking-board' ? { fontWeight: 'bold' } : null}>
+                                <Link to="/admin/ranking-board">排行榜</Link>
                             </Menu.Item>
-                            <Menu.Item key="/my-submissions" style={location.pathname === '/my-submissions' ? { fontWeight: 'bold' } : null}>
-                                <Link to="/my-submissions">我的提交</Link>
+                            <Menu.Item key="/admin/my-submissions" style={location.pathname === '/admin/my-submissions' ? { fontWeight: 'bold' } : null}>
+                                <Link to="/admin/my-submissions">我的提交</Link>
                             </Menu.Item>
-                            <Menu.Item key="/personal-info" style={location.pathname === '/personal-info' ? { fontWeight: 'bold' } : null}>
-                                <Link to="/personal-info">个人信息</Link>
+                            <Menu.Item key="/admin/personal-info" style={location.pathname === '/admin/personal-info' ? { fontWeight: 'bold' } : null}>
+                                <Link to="/admin/personal-info">个人信息</Link>
                             </Menu.Item>
                         </Menu>
 
@@ -120,4 +120,4 @@ function OJMainView() {
 }
 
 
-export default OJMainView;
+export default OJAdminView;
