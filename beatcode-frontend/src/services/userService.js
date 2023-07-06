@@ -4,6 +4,23 @@ import {history} from "../utils/history";
 import {apiUrl} from "../utils/config-overrides";
 
 /**
+ * @Description: 检查是否登录（用户）
+ * */
+export const checkUserLogin = (callback) => {
+    const url = `${apiUrl}/CheckUser`;
+
+    // call-back function
+
+}
+
+/**
+ * @Description: 检查是否登录（管理员）
+ * */
+export const checkAdminLogin = (callback) => {
+    const url = `${apiUrl}/CheckAdmin`;
+}
+
+/**
  * @Description: 用户注册
  * 用户注册完成后，默认为直接登录完成。跳转到用户主界面
  * */

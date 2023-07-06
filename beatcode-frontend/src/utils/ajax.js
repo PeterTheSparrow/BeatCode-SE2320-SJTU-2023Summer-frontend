@@ -1,3 +1,48 @@
+/**
+ * @Description: 封装ajax请求
+ * @param {url} 请求地址
+ * @param {json} 请求参数
+ * @param {callback} 回调函数
+ * @return {*} 返回值
+ *
+ * 说明：
+ * 本函数中，返回为string类型，不要解析为json
+ * */
+let postRequest_receive_string = (url, json, callback) => {
+    let opts = {
+        method: "POST",
+        body: JSON.stringify(json),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        // credentials: "include"
+    };
+
+    // 返回值类型为string，不要解析为json
+    fetch(url,opts)
+        .then((response) => {
+            return response
+        })
+        .then((data) => {
+            callback(data);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+};
+
+export default postRequest_receive_string;
+
+/**
+ * @Description: 封装ajax请求
+ * @param {url} 请求地址
+ * @param {json} 请求参数
+ * @param {callback} 回调函数
+ * @return {*} 返回值
+ *
+ * 说明：
+ * 本函数中，将data封装为FormData类型
+ * */
 let postRequest_v2 = (url, data, callback) => {
     let formData = new FormData();
 
@@ -24,6 +69,16 @@ let postRequest_v2 = (url, data, callback) => {
         });
 };
 
+/**
+ * @Description: 封装ajax请求
+ * @param {url} 请求地址
+ * @param {json} 请求参数
+ * @param {callback} 回调函数
+ * @return {*} 返回值
+ *
+ * 说明：
+ * 本函数中，将data封装为json类型
+ * */
 let postRequest = (url, json, callback) => {
 
     let opts = {
