@@ -8,6 +8,7 @@ import {
     UserOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { RegisterService } from "../../services/userService"
 
 const { Option } = Select;
 
@@ -37,7 +38,22 @@ const RegisterForm = () => {
 
         // 前端antd已经封装好了检验两次密码不一致的功能，只需要向后端发送请求即可
         // TODO: 向后端发送请求
-        // registerFunc(data);
+        /*
+        * 参数格式：
+        * {
+        *       "name": "alice",
+        *       "pass": "123456",
+        * }
+        * */
+        RegisterService({
+            "name": data.username,
+            "pass": data.password,
+            // TODO 用户其他信息
+        });
+
+
+
+
     };
 
     return (
@@ -125,21 +141,21 @@ const RegisterForm = () => {
                 />
             </Form.Item>
 
-            <Form.Item
-                name="role"
-                label="Role"
-                rules={[
-                    {
-                        required: true,
-                        message: "Please select Role!",
-                    },
-                ]}
-            >
-                <Select placeholder="select your role">
-                    <Option value="admin">Admin</Option>
-                    <Option value="student">Student</Option>
-                </Select>
-            </Form.Item>
+            {/*<Form.Item*/}
+            {/*    name="role"*/}
+            {/*    label="Role"*/}
+            {/*    rules={[*/}
+            {/*        {*/}
+            {/*            required: true,*/}
+            {/*            message: "Please select Role!",*/}
+            {/*        },*/}
+            {/*    ]}*/}
+            {/*>*/}
+            {/*    <Select placeholder="select your role">*/}
+            {/*        <Option value="admin">Admin</Option>*/}
+            {/*        <Option value="student">Student</Option>*/}
+            {/*    </Select>*/}
+            {/*</Form.Item>*/}
 
             <Form.Item>
                 <Button

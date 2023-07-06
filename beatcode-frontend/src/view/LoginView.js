@@ -13,19 +13,23 @@ const LoginView = () => {
                 style={
                     {
                         marginTop: 180,
+                        width: 350,
                     }
                 }
             >
-                <div className="login-box">
+                {/*form居中*/}
+                <div className="login-box"
+                >
                     <h1
                         className="page-title"
                         style={{
                             // textAlign: 'center',
                             color: 'black',
                             fontFamily: 'Microsoft YaHei UI',
+                            fontSize: 28,
                             }}
                     >
-                        Login To BeatCode...
+                        Welcome To BeatCode!
                     </h1>
                     <div className="login-content">
                         <LoginForm/>

@@ -3,6 +3,10 @@ import {message} from "antd";
 import {history} from "../utils/history";
 import {apiUrl} from "../utils/config-overrides";
 
+export const RegisterService = (data) => {
+    const url = `${apiUrl}/Register`;
+}
+
 export const logout = () => {
     const url = `${apiUrl}/Logout`;
 
