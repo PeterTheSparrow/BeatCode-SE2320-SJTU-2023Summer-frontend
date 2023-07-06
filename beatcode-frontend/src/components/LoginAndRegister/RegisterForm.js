@@ -39,19 +39,21 @@ const RegisterForm = () => {
         // 前端antd已经封装好了检验两次密码不一致的功能，只需要向后端发送请求即可
         // TODO: 向后端发送请求
         /*
-        * 参数格式：
-        * {
-        *       "name": "alice",
-        *       "pass": "123456",
-        * }
+        *      * @param map 参数：<br/>
+     *            {<br/>
+     *            &emsp;&emsp;"name": string, // 用户名<br/>
+     *            &emsp;&emsp;"pass": string,  // 密码<br/>
+     *            &emsp;&emsp;"email": string,  //邮箱<br/>
+     *            &emsp;&emsp;"phone": string,  //电话<br/>
+     *            }<br/>
+     * @return bookstore经典Message格式，不含数据
         * */
         RegisterService({
             "name": data.username,
             "pass": data.password,
-            // TODO 用户其他信息
+            "email": data.email,
+            "phone": data.phone,
         });
-
-
 
 
     };

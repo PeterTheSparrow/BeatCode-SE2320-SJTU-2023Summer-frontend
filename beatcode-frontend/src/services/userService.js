@@ -3,8 +3,26 @@ import {message} from "antd";
 import {history} from "../utils/history";
 import {apiUrl} from "../utils/config-overrides";
 
+/**
+ * @Description: 用户注册
+ * 用户注册完成后，默认为直接登录完成。跳转到用户主界面
+ * */
 export const RegisterService = (data) => {
     const url = `${apiUrl}/Register`;
+
+    // call-back function
+    const callback = (data) => {
+        if (data.status === 0) {
+            message.success(data.msg);
+            history.push('/');
+            history.go();
+        }
+        else {
+            message.error(data.msg);
+        }
+    }
+
+    postRequest(url, data, callback);
 }
 
 export const logout = () => {
