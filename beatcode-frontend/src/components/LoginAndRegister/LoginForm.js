@@ -1,12 +1,33 @@
 import {Link} from "react-router-dom";
-import {Button, Checkbox, Form, Input} from "antd";
+import {Button, Checkbox, Form, Input, message} from "antd";
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import {login} from "../../services/userService";
 
 const LoginForm = () => {
     const handleSubmit = (data) => {
         console.log(data);
         // TODO 对表单字段进行校验，保证不为空
+        if (data.username === undefined || data.username === "" ) {
+            message.error("用户名不能为空");
+            return;
+        }
+        if (data.password === undefined || data.password === "" ) {
+            message.error("密码不能为空");
+            return;
+        }
 
+        // TODO 发送ajax请求
+        /*
+        * 请求格式：
+        * {
+                "name":"alice",
+                "pass":"123456"
+            }
+        * */
+        login({
+            "name": data.username,
+            "pass": data.password
+        });
     }
 
     return (

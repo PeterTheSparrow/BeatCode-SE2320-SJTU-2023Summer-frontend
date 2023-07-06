@@ -1,5 +1,6 @@
 import React from "react";
 import { Form, Input, Button } from 'antd';
+import {logout} from "../../services/userService";
 
 /**
  * @Description: 个人信息界面
@@ -18,6 +19,11 @@ function PersonalInfo() {
         // TODO: implement save logic
     };
 
+    const logout_service = () => {
+        console.log("logout");
+        logout();
+    }
+
     return (
         // 组件位于页面居中偏左
         <div
@@ -26,6 +32,7 @@ function PersonalInfo() {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
+                flexDirection: 'column',
             }}
         >
             {/*需要两个占位组件*/}
@@ -67,14 +74,16 @@ function PersonalInfo() {
                     <Button type="primary" htmlType="submit">
                         保存
                     </Button>
-                    <Button type="primary" htmlType="submit"
-                            style={{
-                                marginLeft: 20,
-                    }}>
-                        退出登录
-                    </Button>
                 </Form.Item>
             </Form>
+            <Button type="primary" htmlType="submit"
+                    danger={true}
+                    onClick={logout_service}
+                    style={{
+                        marginLeft: 0,
+                    }}>
+                退出登录
+            </Button>
         </div>
     );
 }
