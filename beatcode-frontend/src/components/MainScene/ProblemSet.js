@@ -314,28 +314,24 @@ export function ProblemSet() {
                     }}
                 >
                 </div>
-                <div
-                    style={{
-                            marginLeft: 20,
-                            marginRight: 20,
-                            marginBottom: 20,
-                        }}
-                >
-                    {tags.map((tag, index) => (
-                        // <Tag key={index} color={tag.color}>
-                        //     {tag.name}
-                        // </Tag>
-                        /*
-                        * 我使用了<React.Fragment>包裹每个标签和空的<span>元素，
-                        * 以便将它们作为一个整体进行渲染。在标签之间的空<span>元素上设置了高度为8像素，
-                        * 并将其显示设置为inline-block，以创建行间距效果。
-                        * */
-                        <React.Fragment key={index}>
-                            <Tag color={tag.color} style={{ fontSize: '16px', padding: '8px 12px' }}>{tag.name}</Tag>
-                            {index < tags.length - 1 && <span style={{ height:40, display: 'inline-block' }} />}
-                        </React.Fragment>
-                    ))}
-                </div>
+                {/*<div*/}
+                {/*    style={{*/}
+                {/*            marginLeft: 20,*/}
+                {/*            marginRight: 20,*/}
+                {/*            marginBottom: 20,*/}
+                {/*        }}*/}
+                {/*>*/}
+                {/*    {tags.map((tag, index) => (*/}
+                {/*        // <Tag key={index} color={tag.color}>*/}
+                {/*        //     {tag.name}*/}
+                {/*        // </Tag>*/}
+                {/*        */}
+                {/*        <React.Fragment key={index}>*/}
+                {/*            <Tag color={tag.color} style={{ fontSize: '16px', padding: '8px 12px' }}>{tag.name}</Tag>*/}
+                {/*            {index < tags.length - 1 && <span style={{ height:40, display: 'inline-block' }} />}*/}
+                {/*        </React.Fragment>*/}
+                {/*    ))}*/}
+                {/*</div>*/}
             </div>
             <div
                 style={{
