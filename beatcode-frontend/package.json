@@ -22,7 +22,8 @@
     "recharts": "^2.7.2",
     "remark-gfm": "^3.0.1",
     "web-vitals": "^2.1.4",
-    "yt-simplemde-editor": "^3.2.2"
+    "yt-simplemde-editor": "^3.2.2",
+    "axios": "^1.4.0"
   },
   "scripts": {
     "start": "react-scripts start",

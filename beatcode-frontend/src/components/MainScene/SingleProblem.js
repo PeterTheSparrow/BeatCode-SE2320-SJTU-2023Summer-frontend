@@ -4,11 +4,14 @@ import {Button, Col, Row, Select, Space} from 'antd';
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
+
 /*下面这些import用于支持语法高亮*/
 import 'monaco-editor/esm/vs/basic-languages/python/python.contribution';
 import 'monaco-editor/esm/vs/basic-languages/java/java.contribution';
 import 'monaco-editor/esm/vs/basic-languages/cpp/cpp.contribution';
 import {useNavigate} from "react-router-dom";
+import axios from "axios";
+import {submit} from "../../services/submissionService";
 
 
 /**
@@ -77,7 +80,7 @@ def sumDigits(n: int) -> int:
  * @Description: 单个题目的组件，包含题目描述、代码编辑器、提交按钮等
  * */
 const CodeEditor = () => {
-    const [language, setLanguage] = useState('cpp');
+    const [language, setLanguage] = useState('C++');
     const [code, setCode] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -120,15 +123,16 @@ const CodeEditor = () => {
         setLoading(true);
 
         // TODO 提交代码
-
+        const callback=(res)=>{
+            navigate(`/submission/${res}`);
+        }
+        submit({
+            "language":language,
+            "code":code,
+        },callback)
         setTimeout(() => {
-            // 进行页面跳转
-
-            //TODO 那这里跳转说明还需要获得submissionId？
-
-            // 用useNavigate()导航，history找不到
-            // navigate(`/submission/${submissionId}`);
-            navigate(`/submission/1`);
+            // TODO 2秒以内未能得到返回值并跳转，因此跳转回题目列表页面
+           // navigate(`/submissions`);
 
         }, 2000);
     }
@@ -166,7 +170,8 @@ const CodeEditor = () => {
                             }}
                                 onChange={handleLanguageChange}
                                 options={[
-                                    { value: 'cpp', label: 'C++' },
+                                    { value: 'C++', label: 'C++' },
+                                    { value: 'C', label: 'C' },
                                     { value: 'java', label: 'Java' },
                                     { value: 'python', label: 'Python' },
                                 ]}
