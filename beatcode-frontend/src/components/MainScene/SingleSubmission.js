@@ -16,29 +16,35 @@ import MonacoEditor from "react-monaco-editor";
 const { Title } = Typography;
 
 function SingleSubmission() {
+
+    const submissionData = [
+        { id: 1, problemId: 1, problemName: "Problem 1", username: "user1", result: "Accepted", score: 100, runtime: 100, memory: 100, timestamp: "2023-06-28" },
+    ]
+
     // 存储的信息：submissionId
     const [submissionId, setSubmissionId] = React.useState(0);
 
     const [language, setLanguage] = React.useState('cpp');
     // 模拟评测结果数据
+    /*
+    * 每个测试点的数据包括：
+    * index 测试点编号
+    * score 得分
+    * info 详细信息
+    * time 运行时间
+    * memory 运行内存
+    *
+    * */
     const evaluationData = [
-        { testPoint: 'Test Point 1', result: 'Passed' , time: '0.1s', memory: '1.0MB'},
-        { testPoint: 'Test Point 2', result: 'Failed' , time: '0.2s', memory: '2.0MB'},
-        // 其他测试点...
+        { index: 1, score: 100, info: "Accepted", time: 100, memory: 100 },
+        { index: 2, score: 100, info: "Accepted", time: 100, memory: 100 },
+        { index: 3, score: 100, info: "Accepted", time: 100, memory: 100 },
+        { index: 4, score: 100, info: "Accepted", time: 100, memory: 100 },
+        { index: 5, score: 100, info: "Accepted", time: 100, memory: 100 },
     ];
 
     const [code, setCode] = React.useState(''); // 代码内容
 
-    // 硬编码的评测结果
-    const evaluationResult = {
-        problemId: 1,
-        submissionTime: '2020-12-12 12:12:12',
-        language: 'cpp',
-        testPointNum: 2,
-        passedTestPointNum: 1,
-        totalRuntime: '0.3s',
-        totalMemory: '3.0MB',
-    };
 
 
     // 硬编码code
@@ -94,20 +100,111 @@ int main() {
 
             {/* 评测结果表格 */}
             {/*包含题号，题目名称*/}
-            <Table dataSource={[evaluationResult]}
+            <Table dataSource={submissionData}
                      pagination={false}
                         style={{
                             marginLeft: 40,
                             marginRight: 40,
                         }}
                         columns={[
-                            { title: '题目id', dataIndex: 'problemId' },
-                            { title: '提交时间', dataIndex: 'submissionTime' },
-                            { title: '语言', dataIndex: 'language' },
-                            { title: '测试点数目', dataIndex: 'testPointNum' },
-                            { title: '通过的测试点数目', dataIndex: 'passedTestPointNum' },
-                            { title: '总运行时间', dataIndex: 'totalRuntime' },
-                            { title: '总运行内存', dataIndex: 'totalMemory' },
+                            {
+                                title: '题号',
+                                dataIndex: 'problemId',
+                                key: 'problemId',
+                            },
+                            {
+                                title: '题目名称',
+                                dataIndex: 'problemName',
+                                key: 'problemName',
+                            },
+                            {
+                                title: '提交者',
+                                dataIndex: 'username',
+                                key: 'username',
+                            },
+                            {
+                                title: '评测结果',
+                                dataIndex: 'result',
+                                key: 'result',
+                                // Accepted： bold, lightgreen
+                                render: (text, record) => {
+                                    if (text === "Accepted") {
+                                        return <span style={{fontWeight: "bold", color: "lightgreen"}}>{text}</span>
+                                    }
+                                    else {
+                                        return <span style={{fontWeight: "bold", color: "red"}}>{text}</span>
+                                    }
+                                }
+                            },
+                            {
+                                title: '得分',
+                                dataIndex: 'score',
+                                key: 'score',
+                            },
+                            {
+                                title: '运行时间',
+                                dataIndex: 'runtime',
+                                key: 'runtime',
+                                render: (text, record) => {
+                                    return <span>{text}ms</span>
+                                }
+                            },
+                            {
+                                title: '内存消耗',
+                                dataIndex: 'memory',
+                                key: 'memory',
+                                render: (text, record) => {
+                                    return <span>{text}MB</span>
+                                }
+                            },
+                            {
+                                title: '提交时间',
+                                dataIndex: 'timestamp',
+                                key: 'timestamp',
+                            },
+                        ]}
+            />
+
+            <Title
+                level={3}
+                style={{
+                    marginLeft: 20,
+                }}
+            >
+                评测详情
+            </Title>
+            {/*table一页展示5个*/}
+            <Table dataSource={evaluationData}
+                   pagination={{
+                       pageSize: 5,
+                   }}
+                   style={{
+                       marginLeft: 40,
+                       marginRight: 40,
+                   }}
+                   columns={[
+                            {title: '测试点', dataIndex: 'index', key: 'index',},
+                            {title: '得分', dataIndex: 'score', key: 'score',},
+                            {title: '状态', dataIndex: 'info', key: 'info',
+                                // Accept绿色加粗，其他红色加粗
+                                render: (text, record) => {
+                                    if (text === 'Accepted') {
+                                        return <div style={{color: 'lightgreen', fontWeight: 'bold'}}>{text}</div>
+                                    } else {
+                                        return <div style={{color: 'red', fontWeight: 'bold'}}>{text}</div>
+                                    }
+                                }
+                            },
+                            {title: '运行时间', dataIndex: 'time', key: 'time',
+                                render: (text, record) => {
+                                    return <span>{text}ms</span>
+                                },
+                            },
+                            {title: '运行内存', dataIndex: 'memory', key: 'memory',
+                                render: (text, record) => {
+                                    return <span>{text}MB</span>
+                                },
+                            },
                         ]}
             />
 
@@ -135,29 +232,7 @@ int main() {
                 />
             </div>
 
-            <Title
-                level={3}
-                style={{
-                    marginLeft: 20,
-                }}
-            >
-                评测详情
-            </Title>
-            {/*table一页展示5个*/}
-            <Table dataSource={evaluationData}
-                   pagination={{
-                       pageSize: 5,
-                   }}
-                   style={{
-                       marginLeft: 40,
-                       marginRight: 40,
-                   }}
-                   columns={[
-                       { title: '测试点', dataIndex: 'testPoint' },
-                       { title: '结果', dataIndex: 'result' },
-                       { title: '时间', dataIndex: 'time' },
-                       { title: '内存', dataIndex: 'memory' }]}
-            />
+
         </div>
     );
 }

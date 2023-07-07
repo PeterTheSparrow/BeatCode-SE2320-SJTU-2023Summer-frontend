@@ -1,23 +1,19 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import OJMainView from '../view/OJMainView';
-// import PrivateRoute from './PrivateRoute';
-// import LoginRoute from './LoginRoute';
-// import HomeView from './view/HomeView';
-// import LoginView from './view/LoginView';
 import { history } from '../utils/history'
 import LoginView from "../view/LoginView";
-// import BookView from './view/BookView';
 import {ProblemSet} from "../components/MainScene/ProblemSet";
 import SingleProblem from "../components/MainScene/SingleProblem";
 import RankingBoard from "../components/MainScene/RankingBoard";
-import MySubmission from "../components/MainScene/MySubmission";
+import AllSubmissions from "../components/MainScene/AllSubmissions";
 import PersonalInfo from "../components/MainScene/PersonalInfo";
 import SingleSubmission from "../components/MainScene/SingleSubmission";
 import RegisterView from "../view/RegisterView";
 import OJAdminView from "../view/OJAdminView";
 import ProblemSetAdmin from "../components/AdminScene/ProblemSetAdmin";
 import EditSingleProblem from "../components/AdminScene/EditSingleProblem";
+import PrivateRoute from "./PrivateRoute";
 
 /**
  * @Description: 路由配置
@@ -37,14 +33,14 @@ const BasicRoute = () => {
     }, []);
 
     return (
-        <Router>
+        <Router history = {history}>
             <Routes>
                 {/*这里暂时先不使用权限检查，因此先实现最基础的路由*/}
                 <Route path="/" element={<OJMainView />}>
                 {/*让一些component成为OJMainView的子组件*/}
                     <Route path={"/"} element={<ProblemSet />} />
                     <Route path={"/ranking-board"} element={<RankingBoard />} />
-                    <Route path={"/my-submissions"} element={<MySubmission />} />
+                    <Route path={"/my-submissions"} element={<AllSubmissions />} />
                     <Route path={"/personal-info"} element={<PersonalInfo />} />
                     <Route path={"/problem/:id"} element={<SingleProblem />} />
                     <Route path={"/submission/:id"} element={<SingleSubmission />} />
@@ -52,13 +48,13 @@ const BasicRoute = () => {
 
 
                 <Route path="/admin" element={<OJAdminView />}>
-                    {/*管理员独有的：ProblemSetAdmin、EditSingleProblem（修改某道题目的信息）*/}
+                    {/*/!*管理员独有的：ProblemSetAdmin、EditSingleProblem（修改某道题目的信息）*!/*/}
                     <Route path={"/admin"} element={<ProblemSetAdmin />} />
                     <Route path={"/admin/edit-problem/:id"} element={<EditSingleProblem />} />
 
-                    {/*下面这些组件全部是普通用户和管理员共用的*/}
+                    {/*/!*下面这些组件全部是普通用户和管理员共用的*!/*/}
                     <Route path={"/admin/ranking-board"} element={<RankingBoard />} />
-                    <Route path={"/admin/my-submissions"} element={<MySubmission />} />
+                    <Route path={"/admin/my-submissions"} element={<AllSubmissions />} />
                     <Route path={"/admin/personal-info"} element={<PersonalInfo />} />
                     <Route path={"/admin/problem/:id"} element={<SingleProblem />} />
                     <Route path={"/admin/submission/:id"} element={<SingleSubmission />} />
@@ -71,6 +67,7 @@ const BasicRoute = () => {
 
                 {/*将所有未匹配到其他路由的路径都重定向到根路径，
                 以确保用户在访问不存在的路径时能够正确导航到主页或其他指定的路径。*/}
+                {/*BUG 这里怎么区分用户和管理员*/}
                 <Route path="/*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>

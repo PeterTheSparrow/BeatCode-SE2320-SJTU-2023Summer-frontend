@@ -1,7 +1,9 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Col, Layout, Menu, Row, theme} from 'antd';
 import {Link, Outlet, useLocation} from "react-router-dom";
 import {SmileTwoTone, UserOutlined} from "@ant-design/icons";
+import {checkUserLogin} from "../services/userService";
+import {checkAdminLogin} from "../services/userService";
 const { Header, Content, Footer } = Layout;
 
 
@@ -62,7 +64,7 @@ function OJMainView() {
                                 <Link to="/ranking-board">排行榜</Link>
                             </Menu.Item>
                             <Menu.Item key="/my-submissions" style={location.pathname === '/my-submissions' ? { fontWeight: 'bold' } : null}>
-                                <Link to="/my-submissions">我的提交</Link>
+                                <Link to="/my-submissions">评测状态</Link>
                             </Menu.Item>
                             <Menu.Item key="/personal-info" style={location.pathname === '/personal-info' ? { fontWeight: 'bold' } : null}>
                                 <Link to="/personal-info">个人信息</Link>

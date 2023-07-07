@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { postRequest_receive_string } from '../utils/ajax';
+import postRequest_receive_string  from '../utils/ajax';
 import { apiUrl } from "../utils/config-overrides";
-import {Route} from "react-router-dom";
+import {Navigate, Route} from "react-router-dom";
 
 
 /**
@@ -16,39 +16,63 @@ import {Route} from "react-router-dom";
  * 1. 跳转逻辑。前端向后端发送请求checkAuth，后端返回是否登录的信息，前端根据信息判断是否跳转。
  * 2. 如果没有登录，跳转到登录页面，登录成功后跳转到原来的页面。
  * */
-const PrivateRoute = ({ component: Component, path = '/', exact = false, strict = false }) => {
-    const [isLogin, setIsLogin] = useState(false);
-    const [isAdmin, setIsAdmin] = useState(false);
+export default class PrivateRoute extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            hasAuthed: false, // 是否已经向后端发送请求
+            isLogin: false, // 是否已经登录
+            isAdmin: false, // 是否是管理员
+        };
+    }
 
-    const uri_user = apiUrl + '/checkUser';
-    const uri_admin = apiUrl + '/checkAdmin';
-
-    useEffect(() => {
+    componentDidMount() {
         // TODO 向后端进行一个检查
         // 检查是否是用户？
-        postRequest_receive_string(uri_user, {}, (data) => {
+        postRequest_receive_string(apiUrl + '/checkUser', {}, (data) => {
             if (data === 'yes') {
-                setIsLogin(true);
-                setIsAdmin(false);
+                this.setState({isLogin: true, isAdmin: false});
             }
         });
         // 检查是否是管理员？
-        postRequest_receive_string(uri_admin, {}, (data) => {
+        postRequest_receive_string(apiUrl + '/checkAdmin', {}, (data) => {
             if (data === 'yes') {
-                setIsLogin(true);
-                setIsAdmin(true);
+                this.setState({isLogin: true, isAdmin: true});
             }
         });
 
-    }, []);
+        this.setState({hasAuthed: true});
+    }
 
-    return (
-        // 没有登录就传送回登录界面
-        // 用户和管理员不能互相登录彼此的界面
-        // 可以通过解析url判断是谁的界面
-        // TODO
-        <div></div>
-    );
+    render() {
+        const {component: Component, path = '/', exact = false, strict = false} = this.props;
+
+        console.log(this.state.hasAuthed);
+
+        if (!this.state.hasAuthed) {
+            return null;
+        }
+
+        return (
+            <Route path={path} exact={exact} strict={strict} render={(props) => (
+                this.state.isLogin ? (
+                    this.state.isAdmin ? (
+                        // 检查path前缀是否是/admin
+                        path.startsWith('/admin') ? (
+                            <Component {...props} />
+                        ) : (
+                            <div>您没有权限访问该页面</div>
+                        )
+                    ) : (
+                        <Component {...props} />
+                    )
+                ) : (
+                    <Navigate to='/login'
+                        state = {{from: props.location}}
+                        replace={true}
+                    />
+                )
+            )}/>
+        );
+    }
 }
-
-export default PrivateRoute;
