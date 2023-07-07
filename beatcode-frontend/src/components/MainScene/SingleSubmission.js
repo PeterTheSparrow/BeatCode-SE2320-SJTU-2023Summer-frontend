@@ -1,5 +1,5 @@
 import React from "react";
-import {Table, Typography} from "antd";
+import {Collapse, Table, Typography} from "antd";
 import MonacoEditor from "react-monaco-editor";
 
 /**
@@ -44,6 +44,8 @@ function SingleSubmission() {
     ];
 
     const [code, setCode] = React.useState(''); // 代码内容
+
+    const text = "这是一段测试代码1111111111111111111111111111111111\n";
 
 
 
@@ -208,7 +210,27 @@ int main() {
                         ]}
             />
 
+            <Title level={3} style={{marginLeft: 20,}}>
+                更多
+            </Title>
 
+            <div
+                style={{
+                    marginLeft: 30,
+                    marginRight: 30,
+                    marginTop: 20,
+                    marginBottom: 20,
+                }}
+            >
+
+                <Collapse
+                    items={[{ key: '1', label: '单击查看关于本次评测的更多信息', children: <p>{text}</p> }]}
+                />
+                {/*占位*/}
+                <div>
+                    <div style={{height: 30,}}/>
+                </div>
+            </div>
 
             <Title level={3} style={{marginLeft: 20,}}>
                 代码
@@ -220,7 +242,7 @@ int main() {
                 marginRight: 30,
             }}>
                 <MonacoEditor
-                    height={700}
+                    height={500}
                     language={language}
                     theme="vs-light"
                     value={codeString}
@@ -231,6 +253,7 @@ int main() {
                     }}
                 />
             </div>
+
 
 
         </div>

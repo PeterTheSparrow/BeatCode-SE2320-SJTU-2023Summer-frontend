@@ -162,7 +162,7 @@ const CodeEditor = () => {
                     <div>
                         <Space wrap>
                             <Select
-                                defaultValue="cpp"
+                                defaultValue="C++"
                                 style={{
                                     width: 120,
                                     marginBottom: 20,
