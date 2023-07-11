@@ -51,6 +51,8 @@ export const logout = () => {
             message.success(data.msg);
             history.push('/login');
             history.go();
+            // 清除token
+            localStorage.removeItem('seDeToken');
         }
         else {
             message.error(data.msg);

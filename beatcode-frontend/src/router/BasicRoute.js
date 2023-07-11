@@ -36,12 +36,17 @@ const BasicRoute = () => {
         <Router history = {history}>
             <Routes>
                 {/*这里暂时先不使用权限检查，因此先实现最基础的路由*/}
-                <Route path="/" element={<OJMainView />}>
+                {/*<Route path="/" element={<OJMainView />}>*/}
                 {/*<Route*/}
                 {/*    path={"/"}*/}
                 {/*    element={<RouteGuard element={<OJMainView />} isAuthed={false}*/}
                 {/*    />} >*/}
                 {/*让一些component成为OJMainView的子组件*/}
+                <Route
+                    path={"/"}
+                    element={<RouteGuard element={OJMainView } currURL={"/"}  />
+                    } >
+
                     <Route path={"/"} element={<ProblemSet />} />
                     <Route path={"/ranking-board"} element={<RankingBoard />} />
                     <Route path={"/submissions"} element={<AllSubmissions />} />
@@ -51,7 +56,11 @@ const BasicRoute = () => {
                 </Route>
 
 
-                <Route path="/admin" element={<OJAdminView />}>
+                {/*<Route path="/admin" element={<OJAdminView />}>*/}
+                <Route
+                    path={"/admin"}
+                    element={<RouteGuard element={OJAdminView } currURL={"/admin"}  />
+                    } >
                     {/*/!*管理员独有的：ProblemSetAdmin、EditSingleProblem（修改某道题目的信息）*!/*/}
                     <Route path={"/admin"} element={<ProblemSetAdmin />} />
                     <Route path={"/admin/edit-problem/:id"} element={<EditSingleProblem />} />
