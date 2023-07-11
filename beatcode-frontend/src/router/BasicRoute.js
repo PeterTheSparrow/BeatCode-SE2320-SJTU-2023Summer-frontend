@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { Router, Route, Switch, Redirect } from 'react-router-dom';
 import OJMainView from '../view/OJMainView';
 import { history } from '../utils/history'
 import LoginView from "../view/LoginView";
-import {ProblemSet} from "../components/MainScene/ProblemSet";
+import { ProblemSet } from "../components/MainScene/ProblemSet";
 import SingleProblem from "../components/MainScene/SingleProblem";
 import RankingBoard from "../components/MainScene/RankingBoard";
 import AllSubmissions from "../components/MainScene/AllSubmissions";
@@ -15,15 +15,9 @@ import ProblemSetAdmin from "../components/AdminScene/ProblemSetAdmin";
 import EditSingleProblem from "../components/AdminScene/EditSingleProblem";
 import PrivateRoute from "./PrivateRoute";
 
-/**
- * @Description: 路由配置
- * @Author: peterTheSparrow
- * @Date: 2023/06/30
- * */
 const BasicRoute = () => {
     useEffect(() => {
         const unsubscribe = history.listen((location, action) => {
-            // clear alert on location change
             console.log(location, action);
         });
 
@@ -33,75 +27,39 @@ const BasicRoute = () => {
     }, []);
 
     return (
-        <Router history = {history}>
-            <Routes>
-                {/*这里暂时先不使用权限检查，因此先实现最基础的路由*/}
-                <Route path="/" element={<OJMainView />}>
-                {/*让一些component成为OJMainView的子组件*/}
-                    <Route path={"/"} element={<ProblemSet />} />
-                    <Route path={"/ranking-board"} element={<RankingBoard />} />
-                    <Route path={"/my-submissions"} element={<AllSubmissions />} />
-                    <Route path={"/personal-info"} element={<PersonalInfo />} />
-                    <Route path={"/problem/:id"} element={<SingleProblem />} />
-                    <Route path={"/submission/:id"} element={<SingleSubmission />} />
+        <Router history={history}>
+            <Switch>
+                <PrivateRoute exact path="/">
+                    <OJMainView>
+                        <Route exact path="/" component={ProblemSet} />
+                        <Route exact path="/ranking-board" component={RankingBoard} />
+                        <Route exact path="/my-submissions" component={AllSubmissions} />
+                        {/*<PrivateRoute exact path="/personal-info" component={PersonalInfo} />*/}
+                        <Route exact path="/personal-info" component={PersonalInfo} />
+                        <Route exact path="/problem/:id" component={SingleProblem} />
+                        <Route exact path="/submission/:id" component={SingleSubmission} />
+                    </OJMainView>
+                </PrivateRoute>
+
+                <Route path="/admin">
+                    <OJAdminView>
+                        <Route exact path="/admin" component={ProblemSetAdmin} />
+                        <Route exact path="/admin/edit-problem/:id" component={EditSingleProblem} />
+                        <Route exact path="/admin/ranking-board" component={RankingBoard} />
+                        <Route exact path="/admin/my-submissions" component={AllSubmissions} />
+                        <Route exact path="/admin/personal-info" component={PersonalInfo} />
+                        <Route exact path="/admin/problem/:id" component={SingleProblem} />
+                        <Route exact path="/admin/submission/:id" component={SingleSubmission} />
+                    </OJAdminView>
                 </Route>
 
+                <Route exact path="/login" component={LoginView} />
+                <Route exact path="/register" component={RegisterView} />
 
-                <Route path="/admin" element={<OJAdminView />}>
-                    {/*/!*管理员独有的：ProblemSetAdmin、EditSingleProblem（修改某道题目的信息）*!/*/}
-                    <Route path={"/admin"} element={<ProblemSetAdmin />} />
-                    <Route path={"/admin/edit-problem/:id"} element={<EditSingleProblem />} />
-
-                    {/*/!*下面这些组件全部是普通用户和管理员共用的*!/*/}
-                    <Route path={"/admin/ranking-board"} element={<RankingBoard />} />
-                    <Route path={"/admin/my-submissions"} element={<AllSubmissions />} />
-                    <Route path={"/admin/personal-info"} element={<PersonalInfo />} />
-                    <Route path={"/admin/problem/:id"} element={<SingleProblem />} />
-                    <Route path={"/admin/submission/:id"} element={<SingleSubmission />} />
-                </Route>
-
-
-                <Route path= {"/login"} element={<LoginView />} />
-                <Route path={"/register"} element={<RegisterView />} />
-
-
-                {/*将所有未匹配到其他路由的路径都重定向到根路径，
-                以确保用户在访问不存在的路径时能够正确导航到主页或其他指定的路径。*/}
-                {/*BUG 这里怎么区分用户和管理员*/}
-                <Route path="/*" element={<Navigate to="/" replace />} />
-            </Routes>
+                <Route path="/*" render={() => <Redirect to="/" />} />
+            </Switch>
         </Router>
     );
 };
 
 export default BasicRoute;
-
-// 陈昊鹏的路由配置
-// const BasicRoute = () => {
-//     useEffect(() => {
-//         const unsubscribe = history.listen((location, action) => {
-//             // clear alert on location change
-//             console.log(location, action);
-//         });
-//
-//         return () => {
-//             unsubscribe();
-//         };
-//     }, []);
-//
-//     return (
-//         <Router history={history}>
-//             <Switch>
-//                 {/*<PrivateRoute exact path="/" component={OJMainView} />*/}
-//                 <Route exact path="/" component={OJMainView} />
-//                 {/*这里暂时先不涉及到权限检查，先用最基础的路由*/}
-//                 {/*<PrivateRoute exact path="/" component={HomeView} />*/}
-//                 {/*<LoginRoute exact path="/login" component={LoginView} />*/}
-//                 {/*<PrivateRoute exact path="/bookDetails" component={BookView} />*/}
-//                 <Redirect from="/*" to="/" />
-//             </Switch>
-//         </Router>
-//     );
-// };
-//
-// export default BasicRoute;
