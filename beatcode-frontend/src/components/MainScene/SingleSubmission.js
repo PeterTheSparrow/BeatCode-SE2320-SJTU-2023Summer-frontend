@@ -1,6 +1,9 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {Collapse, Table, Typography} from "antd";
 import MonacoEditor from "react-monaco-editor";
+import {useParams} from "react-router-dom";
+import {getFullSubmission} from "../../services/submissionService";
+
 
 /**
  * @Description: 某一道题的一次提交结果
@@ -12,79 +15,42 @@ import MonacoEditor from "react-monaco-editor";
  * 4. 评测详情：每一个测试点的情况的list列表
  *
  * TODO 其实这里最好展示一下题目的信息，否则不太人性化
+ * TODO new 可以不显示题目信息，通过题号设置跳转即可
  * */
 const { Title } = Typography;
 
 function SingleSubmission() {
 
-    const submissionData = [
-        { id: 1, problemId: 1, problemName: "Problem 1", username: "user1", result: "Accepted", score: 100, runtime: 100, memory: 100, timestamp: "2023-06-28" },
-    ]
-
-    // 存储的信息：submissionId
-    const [submissionId, setSubmissionId] = React.useState(0);
-
-    const [language, setLanguage] = React.useState('cpp');
-    // 模拟评测结果数据
-    /*
-    * 每个测试点的数据包括：
-    * index 测试点编号
-    * score 得分
-    * info 详细信息
-    * time 运行时间
-    * memory 运行内存
-    *
-    * */
-    const evaluationData = [
-        { index: 1, score: 100, info: "Accepted", time: 100, memory: 100 },
-        { index: 2, score: 100, info: "Accepted", time: 100, memory: 100 },
-        { index: 3, score: 100, info: "Accepted", time: 100, memory: 100 },
-        { index: 4, score: 100, info: "Accepted", time: 100, memory: 100 },
-        { index: 5, score: 100, info: "Accepted", time: 100, memory: 100 },
-    ];
-
-    const [code, setCode] = React.useState(''); // 代码内容
-
-    const text = "这是一段测试代码1111111111111111111111111111111111\n";
-
-
-
-    // 硬编码code
-    const codeString = `#include <iostream>
-#include <vector>
-
-using namespace std;
-
-void dfs(int node, vector<bool>& visited, vector<vector<int>>& graph) {
-    // 访问当前节点
-    visited[node] = true;
-    cout << "访问节点: " << node << endl;
-
-    // 遍历当前节点的邻居节点
-    for (int neighbor : graph[node]) {
-        // 如果邻居节点还未被访问，则继续递归调用 DFS
-        if (!visited[neighbor]) {
-            dfs(neighbor, visited, graph);
-        }
+    const { id } = useParams();
+    const [submission,setSubmission]=useState({});
+    const [details,setDetails]=useState([]);
+    const [monacoLanguage,setMonacoLanguage]=useState('') ;
+    const getCallback=(data)=>{
+        console.log(data);
+        setSubmission({
+            case_n:data.case_n,
+            full_result:data.full_result,
+            problemId:data.problemId,
+            problemName:data.problemName,
+            result_score:data.result_score,
+            result_time:data.result_time,
+            result_memory:data.result_memory,
+            string_id:data.string_id,
+            submission_code:data.submission_code,
+            submission_language:data.submission_language,
+            submission_time:data.submission_time,
+            userId:data.userId,
+            userName:data.userName,
+        });
+        setDetails(data.details);
+        if(data.submission_language.toString()==="C++") {setMonacoLanguage("cpp");}
+        if(data.submission_language.toString()==="Java") {setMonacoLanguage("java");}
     }
-}
-
-int main() {
-    int numNodes = 6; // 节点数量
-
-    vector<vector<int>> graph(numNodes); // 图的邻接表表示
-    graph[0] = {1, 2}; // 节点0的邻居节点为1和2
-    graph[1] = {3, 4}; // 节点1的邻居节点为3和4
-    graph[2] = {4, 5}; // 节点2的邻居节点为4和5
-
-    vector<bool> visited(numNodes, false); // 记录节点是否已经访问过
-
-    // 从节点0开始进行深度优先搜索
-    dfs(0, visited, graph);
-
-    return 0;
-}
-`
+    useEffect(()=>{
+        getFullSubmission({
+            id:id,
+        },getCallback)
+    },[id]);
 
     return (
         // 组件长度固定，超过长度滚动
@@ -93,7 +59,7 @@ int main() {
             <div style={{height: 10,}}/>
 
             <Title level={2} style={{textAlign: 'center',}}>
-                评测详情：评测{submissionId}
+                评测时间{submission.submission_time}
             </Title>
 
             <Title level={3} style={{marginLeft: 20,}}>
@@ -102,7 +68,7 @@ int main() {
 
             {/* 评测结果表格 */}
             {/*包含题号，题目名称*/}
-            <Table dataSource={submissionData}
+            <Table dataSource={[submission]}
                      pagination={false}
                         style={{
                             marginLeft: 40,
@@ -121,16 +87,16 @@ int main() {
                             },
                             {
                                 title: '提交者',
-                                dataIndex: 'username',
-                                key: 'username',
+                                dataIndex: 'userName',
+                                key: 'userName',
                             },
                             {
                                 title: '评测结果',
-                                dataIndex: 'result',
-                                key: 'result',
+                                dataIndex: 'result_score',
+                                key: 'result_score',
                                 // Accepted： bold, lightgreen
                                 render: (text, record) => {
-                                    if (text === "Accepted") {
+                                    if (text === "100") {
                                         return <span style={{fontWeight: "bold", color: "lightgreen"}}>{text}</span>
                                     }
                                     else {
@@ -140,29 +106,24 @@ int main() {
                             },
                             {
                                 title: '得分',
-                                dataIndex: 'score',
-                                key: 'score',
+                                dataIndex: 'result_score',
+                                key: 'result_score',
                             },
                             {
                                 title: '运行时间',
-                                dataIndex: 'runtime',
-                                key: 'runtime',
+                                dataIndex: 'result_time',
+                                key: 'result_time',
                                 render: (text, record) => {
                                     return <span>{text}ms</span>
                                 }
                             },
                             {
                                 title: '内存消耗',
-                                dataIndex: 'memory',
-                                key: 'memory',
+                                dataIndex: 'result_memory',
+                                key: 'result_memory',
                                 render: (text, record) => {
                                     return <span>{text}MB</span>
                                 }
-                            },
-                            {
-                                title: '提交时间',
-                                dataIndex: 'timestamp',
-                                key: 'timestamp',
                             },
                         ]}
             />
@@ -176,16 +137,13 @@ int main() {
                 评测详情
             </Title>
             {/*table一页展示5个*/}
-            <Table dataSource={evaluationData}
-                   pagination={{
-                       pageSize: 5,
-                   }}
+            <Table dataSource={details}
                    style={{
                        marginLeft: 40,
                        marginRight: 40,
                    }}
                    columns={[
-                            {title: '测试点', dataIndex: 'index', key: 'index',},
+                            {title: '测试点', dataIndex: 'num', key: 'num',},
                             {title: '得分', dataIndex: 'score', key: 'score',},
                             {title: '状态', dataIndex: 'info', key: 'info',
                                 // Accept绿色加粗，其他红色加粗
@@ -210,27 +168,6 @@ int main() {
                         ]}
             />
 
-            <Title level={3} style={{marginLeft: 20,}}>
-                更多
-            </Title>
-
-            <div
-                style={{
-                    marginLeft: 30,
-                    marginRight: 30,
-                    marginTop: 20,
-                    marginBottom: 20,
-                }}
-            >
-
-                <Collapse
-                    items={[{ key: '1', label: '单击查看关于本次评测的更多信息', children: <p>{text}</p> }]}
-                />
-                {/*占位*/}
-                <div>
-                    <div style={{height: 30,}}/>
-                </div>
-            </div>
 
             <Title level={3} style={{marginLeft: 20,}}>
                 代码
@@ -243,9 +180,9 @@ int main() {
             }}>
                 <MonacoEditor
                     height={500}
-                    language={language}
+                    language={monacoLanguage}
                     theme="vs-light"
-                    value={codeString}
+                    value={submission.submission_code}
                     options={{
                         readOnly: true,
                         wordWrap: 'on', // 自动换行
@@ -254,6 +191,28 @@ int main() {
                 />
             </div>
 
+
+            <Title level={3} style={{marginLeft: 20,}}>
+                更多
+            </Title>
+            <div
+                style={{
+                    marginLeft: 30,
+                    marginRight: 30,
+                    marginTop: 20,
+                    marginBottom: 20,
+                }}
+            >
+
+                <Collapse
+                    items={[{ key: '1', label: '单击查看关于本次评测的更多信息',
+                        children: <p style={{ whiteSpace: 'pre-line' }}>{submission.full_result}</p> }]}
+                />
+                {/*占位*/}
+                <div>
+                    <div style={{height: 30,}}/>
+                </div>
+            </div>
 
 
         </div>

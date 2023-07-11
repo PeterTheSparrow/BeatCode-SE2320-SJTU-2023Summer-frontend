@@ -123,8 +123,8 @@ const CodeEditor = () => {
         setLoading(true);
 
         // TODO 提交代码
-        const callback=(res)=>{
-            navigate(`/submission/${res}`);
+        const callback=()=>{
+            navigate(`/submissions`);
         }
         submit({
             "language":language,
@@ -132,7 +132,7 @@ const CodeEditor = () => {
         },callback)
         setTimeout(() => {
             // TODO 2秒以内未能得到返回值并跳转，因此跳转回题目列表页面
-           // navigate(`/submissions`);
+           navigate(`/submissions`);
 
         }, 2000);
     }
