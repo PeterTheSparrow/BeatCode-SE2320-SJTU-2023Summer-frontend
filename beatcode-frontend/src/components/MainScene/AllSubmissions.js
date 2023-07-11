@@ -1,8 +1,12 @@
 import React, {useEffect, useState} from "react";
-import {Col, Row, Table} from "antd";
+import {Button, Col, Row, Table} from "antd";
 import {NavLink} from "react-router-dom";
 import { PieChart, Pie, Cell, Legend } from "recharts";
 import {getSubmissions} from "../../services/submissionService";
+import Search from "antd/es/input/Search";
+
+import { Input, Select, Space } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 
 /**
  * @Description: 某个用户所有的提交
@@ -37,26 +41,48 @@ function AllSubmissions() {
             pageSize:"50",
         },getCallback);
     },[])
-  /*
-  * 列表中的数据格式：
-  *  id: 提交id
-  * problemId: 题目id
-  * problemName: 题目名称
-  * username: 用户名
-  * result: 通过状态
-  * score: 得分
-  * runtime: 运行时间
-  * memory: 运行内存
-  * timestamp: 提交时间戳
-  * language: 语言
-  * */
-  // const submissionData = [
-  //       { id: 1, problemId: 1, problemName: "Problem 1", username: "user1", result: "Accepted", score: 100, runtime: 100, memory: 100, timestamp: "2023-06-28", language: "JavaScript" },
-  //       { id: 2, problemId: 2, problemName: "Problem 2", username: "user2", result: "Wrong Answer", score: 0, runtime: 100, memory: 100, timestamp: "2023-06-29", language: "Python" },
-  //       { id: 3, problemId: 3, problemName: "Problem 3", username: "user3", result: "Accepted", score: 100, runtime: 100, memory: 100, timestamp: "2023-06-30", language: "C++" },
-  //       { id: 4, problemId: 4, problemName: "Problem 4", username: "user4", result: "Accepted", score: 100, runtime: 100, memory: 100, timestamp: "2023-07-01", language: "Java" },
-  //       { id: 5, problemId: 5, problemName: "Problem 5", username: "user5", result: "Accepted", score: 100, runtime: 100, memory: 100, timestamp: "2023-07-02", language: "JavaScript" },
-  // ]
+
+
+    // const submissions = [
+    //     {
+    //         _id: "5f9b1b3b9d6b1e1b3c7e3b1b",
+    //         key: "5f9b1b3b9d6b1e1b3c7e3b1b",
+    //         problem_id: "1000",
+    //         problem_name: "A+B Problem",
+    //         user_name: "admin",
+    //         result_score: "100",
+    //         result_time: "0",
+    //         result_memory: "0",
+    //         submission_time: "2020-10-30 15:00:00",
+    //     },
+    //     {
+    //         _id: "5f9b1b3b9d6b1e1b3c7e3b1b",
+    //         key: "5f9b1b3b9d6b1e1b3c7e3b1b",
+    //         problem_id: "1000000",
+    //         problem_name: "A+B Problem",
+    //         user_name: "admin",
+    //         result_score: "100",
+    //         result_time: "0",
+    //         result_memory: "0",
+    //         submission_time: "2032-10-30 15:00:00",
+    //     },
+    //     ];
+
+    const onSearch = value => {
+        // 向后端发送请求，更新前端的搜索结果
+        /*
+        * 请求中需要包含的参数：
+        *  //needing params:
+        //sortDirection: asc or desc(default)
+        //sortBy: sorted field (set time as default)
+        //user_name: filtered username
+        //problem_name: filtered problem name
+        //problem_id: filtered problem id
+        //page: present page
+        //pageSize: size of per page
+        * */
+    };
+
 
   return (
       <div>
@@ -70,22 +96,52 @@ function AllSubmissions() {
           <div style={{height: 20,}}/>
             {/*占位*/}
             <div style={{height: 20,}}/>
+            {/*搜索框居中*/}
+            <div
+                style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginBottom: 30,
+                }}
+            >
+                <Space.Compact size="large">
+                    <Input placeholder="输入题目id"  />
+                    <Input placeholder="输入题目名称"  />
+                    <Input placeholder="输入用户名"  />
+                    <Button type="primary" onClick={onSearch}>搜索</Button>
+                </Space.Compact>
+            </div>
+            {/*pageSize是20*/}
             <Table dataSource={submissions}
-                     pagination={false}
+                     pagination={{ pageSize: 20 }}
+
                         style={{
                             marginLeft: 40,
                             marginRight: 40,
                         }}
+
                         columns={[
                             // 单击提交id，可以跳转到提交详情界面
+                            { title: '提交时间', dataIndex: 'submission_time' },
                             {
-                                title: '提交id',
-                                dataIndex: '_id' ,
+                                title: '题目id',
+                                dataIndex: 'problem_id' ,
+                                // 渲染一个链接，单击后跳到题目详情
                                 render: (text, record) => (
-                               <NavLink to={`/submission/${record._id}`}>{text}</NavLink>)
+                                    <NavLink to={`/problem/${record.problem_id}`}>
+                                        {text}
+                                    </NavLink>)
                             },
-                            { title: '题目id', dataIndex: 'problem_id' },
-                            { title: '题目名称', dataIndex: 'problem_name' },
+                            {
+                                title: '题目名称',
+                                dataIndex: 'problem_name' ,
+                                // 渲染一个链接，单击后根据题号跳到题目详情
+                                render: (text, record) => (
+                                    <NavLink to={`/problem/${record.problem_id}`}>
+                                        {text}
+                                    </NavLink>)
+                            },
                             { title: '用户名', dataIndex: 'user_name' },
                             // 除了Accepted，其他的都是红色，加粗；Accepted是绿色，加粗
                             {
@@ -105,7 +161,17 @@ function AllSubmissions() {
                                 render: (text, record) => (
                                     <span>{text} MB</span>
                                 )},
-                            { title: '提交时间', dataIndex: 'submission_time' },
+                            {
+                                title: '详情',
+                                dataIndex: '_id' ,
+                                // 渲染一个按钮，点击按钮跳转到提交详情界面
+                                render: (text, record) => (
+                                    <NavLink to={`/submission/${record._id}`}>
+                                        <Button>
+                                            详情
+                                        </Button>
+                                    </NavLink>)
+                            },
                         ]}
 
             />
