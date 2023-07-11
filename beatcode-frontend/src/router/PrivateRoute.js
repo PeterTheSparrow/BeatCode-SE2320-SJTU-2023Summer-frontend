@@ -15,6 +15,8 @@ import {Navigate, Route} from "react-router-dom";
  * 说明：
  * 1. 跳转逻辑。前端向后端发送请求checkAuth，后端返回是否登录的信息，前端根据信息判断是否跳转。
  * 2. 如果没有登录，跳转到登录页面，登录成功后跳转到原来的页面。
+ *
+ * 【注】本私有路由已经废弃，由路由守卫替代。
  * */
 export default class PrivateRoute extends React.Component{
     constructor(props) {

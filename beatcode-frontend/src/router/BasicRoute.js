@@ -35,18 +35,11 @@ const BasicRoute = () => {
     return (
         <Router history = {history}>
             <Routes>
-                {/*这里暂时先不使用权限检查，因此先实现最基础的路由*/}
-                {/*<Route path="/" element={<OJMainView />}>*/}
-                {/*<Route*/}
-                {/*    path={"/"}*/}
-                {/*    element={<RouteGuard element={<OJMainView />} isAuthed={false}*/}
-                {/*    />} >*/}
-                {/*让一些component成为OJMainView的子组件*/}
+                {/*这里使用了路由守卫来鉴权*/}
                 <Route
                     path={"/"}
                     element={<RouteGuard element={OJMainView } currURL={"/"}  />
                     } >
-
                     <Route path={"/"} element={<ProblemSet />} />
                     <Route path={"/ranking-board"} element={<RankingBoard />} />
                     <Route path={"/submissions"} element={<AllSubmissions />} />

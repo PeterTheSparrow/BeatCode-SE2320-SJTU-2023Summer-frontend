@@ -35,7 +35,7 @@
 
 ## 2. 代码规范
 
-1. 全部使用函数式组件编写！严禁使用类组件！
+1. 尽量不要使用类组件，使用函数组件。
 
 ## 3. 具体实现
 
@@ -138,26 +138,26 @@ export default YourComponent;
 
 用户模式：
 
-| url                 | 页面名称 |
-|---------------------| -------- |
-| /                   | 主界面   |
-| /login              | 登录界面 |
-| /register           | 注册界面 |
+| url              | 页面名称 |
+|------------------|------|
+| /                | 主界面  |
+| /login           | 登录界面 |
+| /register        | 注册界面 |
 | /problem/:problemId | 题目界面 |
-| /ranking-board      | 排行榜   |
-| /my-submissions     | 我的提交 |
-| /submission/:id     | 提交详情 |
+| /ranking-board   | 排行榜  |
+| /submissions     | 所有提交 |
+| /submission/:id  | 提交详情 |
 
 管理员模式：基本就是用户模式前加了一个/admin
 
-| url                       | 页面名称 |
-|---------------------------| -------- |
-| /admin                    | 主界面   |
+| url                    | 页面名称 |
+|------------------------|------|
+| /admin                 | 主界面  |
 | /admin/problem/:problemId | 题目界面 |
-| /admin/ranking-board      | 排行榜   |
-| /admin/my-submissions     | 我的提交 |
-| /admin/submission/:id     | 提交详情 |
-| /admin/edit-problem/:id   | 编辑题目 |
+| /admin/ranking-board   | 排行榜  |
+| /admin/submissions     | 我的提交 |
+| /admin/submission/:id  | 所有提交 |
+| /admin/edit-problem/:id | 编辑题目 |
 
 ## 5. TODO-List
 

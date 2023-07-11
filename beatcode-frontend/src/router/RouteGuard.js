@@ -14,13 +14,6 @@ import {apiUrlWindows} from "../utils/config-overrides";
  * 4. 用户与管理员的身份鉴权：
  * （1）用户和管理员不能进入互相的页面
  * */
-// const RouteGuard = ({element: Element, ...rest}) => {
-//     // 从后端鉴权获得用户是否登录、是否是管理员的信息
-//     const isAuthed = false;
-//     const isAdmin = false;
-//
-//
-// }
 
 class RouteGuard extends React.Component {
     constructor(props) {
@@ -93,6 +86,8 @@ class RouteGuard extends React.Component {
         }
     }
 }
+
+export default RouteGuard;
 
 // 写成函数组件
 // function RouteGuard({element: Element,currURL: url, ...rest}) {
@@ -182,9 +177,6 @@ class RouteGuard extends React.Component {
 //
 // }
 
-
-
-export default RouteGuard;
 
 /*
 * 特别说明：
