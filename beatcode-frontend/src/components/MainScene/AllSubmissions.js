@@ -16,6 +16,8 @@ function AllSubmissions() {
 
     const [submissions,setSubmissions]=useState([]);
     const getCallback=(data)=>{
+        const currentDate=Date();
+        console.log(currentDate.LocalDateTime);
         console.log(data.content);
         console.log(JSON.stringify(data.content[0]._id));
         const extractedSubmissions = data.content.map((item) => ({

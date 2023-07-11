@@ -3,10 +3,9 @@ import axios from "axios";
 import {theme} from "antd";
 
 export const submit=(data,callback)=>{
-    axios.post(`${apiUrl}/Submit`,{ params: data })
+    axios.post(`${apiUrl}/Submit`,data )
         .then(res=>{
-            console.log(res);
-            callback();
+            callback(res.data);
         })
         .catch(err=>{
             console.log(err);
