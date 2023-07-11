@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import postRequest_receive_string  from '../utils/ajax';
-import { apiUrl } from "../utils/config-overrides";
+import {apiUrl, apiUrlWindows} from "../utils/config-overrides";
 import {Navigate, Route} from "react-router-dom";
 
 
@@ -29,13 +29,13 @@ export default class PrivateRoute extends React.Component{
     componentDidMount() {
         // TODO 向后端进行一个检查
         // 检查是否是用户？
-        postRequest_receive_string(apiUrl + '/checkUser', {}, (data) => {
+        postRequest_receive_string(apiUrlWindows + '/checkUser', {}, (data) => {
             if (data === 'yes') {
                 this.setState({isLogin: true, isAdmin: false});
             }
         });
         // 检查是否是管理员？
-        postRequest_receive_string(apiUrl + '/checkAdmin', {}, (data) => {
+        postRequest_receive_string(apiUrlWindows + '/checkAdmin', {}, (data) => {
             if (data === 'yes') {
                 this.setState({isLogin: true, isAdmin: true});
             }
@@ -49,9 +49,9 @@ export default class PrivateRoute extends React.Component{
 
         console.log(this.state.hasAuthed);
 
-        if (!this.state.hasAuthed) {
-            return null;
-        }
+        // if (!this.state.hasAuthed) {
+        //     return null;
+        // }
 
         return (
             <Route path={path} exact={exact} strict={strict} render={(props) => (

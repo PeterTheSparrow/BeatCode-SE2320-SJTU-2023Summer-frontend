@@ -166,3 +166,13 @@ export default YourComponent;
   - edit-problem界面（管理员）
 - 前后端通信（Service）
 - 通过路由实现鉴权（参考陈昊鹏）
+
+## 7. TODO
+
+submission修改
+
+1. 三个搜索
+   2. username、problem name、problem id
+   3. 题目名称、题目id、提交时间sorting
+   4. 跳转页面——跳转到singleSub +按钮
+   5. 上面所有的都做分页

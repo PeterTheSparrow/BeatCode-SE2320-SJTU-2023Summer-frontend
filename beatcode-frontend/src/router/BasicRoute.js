@@ -13,7 +13,7 @@ import RegisterView from "../view/RegisterView";
 import OJAdminView from "../view/OJAdminView";
 import ProblemSetAdmin from "../components/AdminScene/ProblemSetAdmin";
 import EditSingleProblem from "../components/AdminScene/EditSingleProblem";
-import PrivateRoute from "./PrivateRoute";
+import RouteGuard from "./RouteGuard";
 
 /**
  * @Description: 路由配置
@@ -37,6 +37,10 @@ const BasicRoute = () => {
             <Routes>
                 {/*这里暂时先不使用权限检查，因此先实现最基础的路由*/}
                 <Route path="/" element={<OJMainView />}>
+                {/*<Route*/}
+                {/*    path={"/"}*/}
+                {/*    element={<RouteGuard element={<OJMainView />} isAuthed={false}*/}
+                {/*    />} >*/}
                 {/*让一些component成为OJMainView的子组件*/}
                     <Route path={"/"} element={<ProblemSet />} />
                     <Route path={"/ranking-board"} element={<RankingBoard />} />

@@ -9,11 +9,18 @@
  * 本函数中，返回为string类型，不要解析为json
  * */
 let postRequest_receive_string = (url, json, callback) => {
+    // 从localStorage中获取token，添加到请求头，如果没有token，则设置为空
+    let token = localStorage.getItem('seDeToken');
+    if (token === null) {
+        token = '';
+    }
+
     let opts = {
         method: "POST",
         body: JSON.stringify(json),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'golden-class-token' : token
         },
         // credentials: "include"
     };
@@ -81,11 +88,18 @@ let postRequest_v2 = (url, data, callback) => {
  * */
 let postRequest = (url, json, callback) => {
 
+    // 从localStorage中获取token，如果没有则设置为null
+    let token = localStorage.getItem('seDeToken');
+    if (token === null) {
+        token = '';
+    }
+
     let opts = {
         method: "POST",
         body: JSON.stringify(json),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'golden-class-token' : token
         },
         // credentials: "include"
     };
