@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from "react";
-import {Button, Col, Row, Spin, Table} from "antd";
+import {Button, Cascader, Col, Row, Spin, Table} from "antd";
 import {NavLink} from "react-router-dom";
 import {PieChart, Pie, Cell, Legend} from "recharts";
 import {getSubmissions} from "../../services/submissionService";
 import Search from "antd/es/input/Search";
+import { Radio } from 'antd';
 
 import {Input, Select, Space} from 'antd';
 import {SearchOutlined} from '@ant-design/icons';
@@ -23,6 +24,10 @@ function AllSubmissions() {
     const [searchText3, setSearchText3] = useState('');
     // 在没加载完数据之前，不显示表格
     const [tableLoading, setTableLoading] = useState(true);
+
+    // sorting的列名，sorting的方式
+    const [sortingColumn, setSortingColumn] = useState('submission_time');
+    const [sortingOrder, setSortingOrder] = useState('desc');
 
     const [submissions, setSubmissions] = useState([]);
     const getCallback = (data) => {
@@ -77,6 +82,57 @@ function AllSubmissions() {
     //     },
     //     ];
 
+
+    const options = [
+        {
+            value: 'submission_time',
+            label: 'time',
+            children: [
+                {
+                    value: 'asc',
+                    label: 'asc',
+                },
+                {
+                    value: 'desc',
+                    label: 'desc',
+                }
+            ],
+        },
+        {
+            value: 'problem_id',
+            label: 'problem id',
+            children: [
+                {
+                    value: 'asc',
+                    label: 'asc',
+                },
+                {
+                    value: 'desc',
+                    label: 'desc',
+                }
+            ],
+        },
+        {
+            value: 'problem_name',
+            label: 'problem name',
+            children: [
+                {
+                    value: 'asc',
+                    label: 'asc',
+                },
+                {
+                    value: 'desc',
+                    label: 'desc',
+                }
+            ],
+        }
+    ];
+    const onChange = (value) => {
+        console.log(value);
+        setSortingColumn(value[0]);
+        setSortingOrder(value[1]);
+    };
+
     const onSearch = value => {
         // 向后端发送请求，更新前端的搜索结果
         /*
@@ -101,40 +157,44 @@ function AllSubmissions() {
             problem_name: searchText2,
             problem_id: searchText1,
 
+            // 这两个是排序的东西
+            sortBy: sortingColumn,
+            sortDirection: sortingOrder,
+
 
         }, getCallback);
     };
 
     // TODO: const handlePageChange
 
-    if (tableLoading) {
-        return <div
-            style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: 20,
-                marginLeft: 20,
-                marginRight: 20,
-                marginBottom: 20,
-            }}
-        >
-            {/*spin居中*/}
-            <Spin
-                tip="Loading..."
-                size={"large"}
-                style={{
-                    marginTop: 20,
-                    marginLeft: 20,
-                    marginRight: 20,
-                }}
-            />
-            <div>
-                loading...
-            </div>
-            <div style={{height: 500,}}/>
-        </div>;
-    }
+    // if (tableLoading) {
+    //     return <div
+    //         style={{
+    //             display: "flex",
+    //             justifyContent: "center",
+    //             alignItems: "center",
+    //             marginTop: 20,
+    //             marginLeft: 20,
+    //             marginRight: 20,
+    //             marginBottom: 20,
+    //         }}
+    //     >
+    //         {/*spin居中*/}
+    //         <Spin
+    //             tip="Loading..."
+    //             size={"large"}
+    //             style={{
+    //                 marginTop: 20,
+    //                 marginLeft: 20,
+    //                 marginRight: 20,
+    //             }}
+    //         />
+    //         <div>
+    //             loading...
+    //         </div>
+    //         <div style={{height: 500,}}/>
+    //     </div>;
+    // }
 
     return (
         <div>
@@ -173,8 +233,16 @@ function AllSubmissions() {
                             value={searchText3}
                             onChange={(e) => setSearchText3(e.target.value)}
                         />
-                        <Button type="primary" onClick={onSearch}>搜索</Button>
+                        <Button
+                            onClick={onSearch}
+                        >
+                            搜索
+                        </Button>
                     </Space.Compact>
+                    <div style={{
+                        width: 20,
+                    }}></div>
+                    <Cascader options={options} onChange={onChange} placeholder="排序" />;
                 </div>
                 {/*pageSize是50*/}
                 <Table dataSource={submissions}
