@@ -63,8 +63,8 @@ function OJMainView() {
                             <Menu.Item key="/ranking-board" style={location.pathname === '/ranking-board' ? { fontWeight: 'bold' } : null}>
                                 <Link to="/ranking-board">排行榜</Link>
                             </Menu.Item>
-                            <Menu.Item key="/my-submissions" style={location.pathname === '/my-submissions' ? { fontWeight: 'bold' } : null}>
-                                <Link to="/my-submissions">评测状态</Link>
+                            <Menu.Item key="/submissions" style={location.pathname === '/submissions' ? { fontWeight: 'bold' } : null}>
+                                <Link to="/submissions">评测状态</Link>
                             </Menu.Item>
                             <Menu.Item key="/personal-info" style={location.pathname === '/personal-info' ? { fontWeight: 'bold' } : null}>
                                 <Link to="/personal-info">个人信息</Link>

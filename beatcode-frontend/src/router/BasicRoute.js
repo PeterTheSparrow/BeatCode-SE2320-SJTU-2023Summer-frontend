@@ -40,7 +40,7 @@ const BasicRoute = () => {
                 {/*让一些component成为OJMainView的子组件*/}
                     <Route path={"/"} element={<ProblemSet />} />
                     <Route path={"/ranking-board"} element={<RankingBoard />} />
-                    <Route path={"/my-submissions"} element={<AllSubmissions />} />
+                    <Route path={"/submissions"} element={<AllSubmissions />} />
                     <Route path={"/personal-info"} element={<PersonalInfo />} />
                     <Route path={"/problem/:id"} element={<SingleProblem />} />
                     <Route path={"/submission/:id"} element={<SingleSubmission />} />
@@ -54,7 +54,7 @@ const BasicRoute = () => {
 
                     {/*/!*下面这些组件全部是普通用户和管理员共用的*!/*/}
                     <Route path={"/admin/ranking-board"} element={<RankingBoard />} />
-                    <Route path={"/admin/my-submissions"} element={<AllSubmissions />} />
+                    <Route path={"/admin/submissions"} element={<AllSubmissions />} />
                     <Route path={"/admin/personal-info"} element={<PersonalInfo />} />
                     <Route path={"/admin/problem/:id"} element={<SingleProblem />} />
                     <Route path={"/admin/submission/:id"} element={<SingleSubmission />} />
