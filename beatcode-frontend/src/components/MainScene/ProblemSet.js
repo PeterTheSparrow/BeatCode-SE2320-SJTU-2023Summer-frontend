@@ -1,72 +1,7 @@
-import React, {useEffect, useRef, useState} from 'react';
-import Search from "antd/es/input/Search";
-
-import {Button, Cascader, Input, Space, Spin, Table, Tag} from 'antd';
-import {SearchOutlined} from "@ant-design/icons";
-import Highlighter from 'react-highlight-words';
+import React, {useEffect, useState} from 'react';
+import {Button, Input, Space, Table, Tag} from 'antd';
 import {getProblemSet} from "../../services/problemSetService";
 import Loading from "../Loading";
-
-
-/**
- * 题目数据
- * 1. 题号
- * 2. 题目名称
- * 3. 题目标签+标签对应的颜色（用tag渲染）；颜色是和标签一一对应的；不同的标签对应不同的颜色；
- *
- * 单击题目名称或者题号，跳转到题目详情界面
- * */
-// const data = [
-//     // 新增难度
-//     {
-//         key: '1',
-//         id: '1',
-//         name: '两数之和',
-//         tags: ['数组', '哈希表'],
-//         tagColors: ['blue', 'green'],
-//         difficulty: '简单',
-//     },
-//     {
-//         key: '2',
-//         id: '2',
-//         name: '两数相加',
-//         tags: ['链表', '数学'],
-//         tagColors: ['red', 'yellow'],
-//         difficulty: '中等',
-//     },
-//     {
-//         key: '3',
-//         id: '3',
-//         name: '无重复字符的最长子串',
-//         tags: ['哈希表', '双指针', '字符串', '滑动窗口'],
-//         tagColors: ['blue', 'green', 'red', 'yellow'],
-//         difficulty: '中等',
-//     },
-//     {
-//         key: '4',
-//         id: '4',
-//         name: '寻找两个正序数组的中位数',
-//         tags: ['数组', '二分查找', '分治算法'],
-//         tagColors: ['blue', 'green', 'red'],
-//         difficulty: '困难',
-//     },
-//     {
-//         key: '5',
-//         id: '5',
-//         name: '最长回文子串',
-//         tags: ['字符串', '动态规划'],
-//         tagColors: ['red', 'yellow'],
-//         difficulty: '中等',
-//     },
-//     {
-//         key: '6',
-//         id: '6',
-//         name: 'Z 字形变换',
-//         tags: ['字符串'],
-//         tagColors: ['red'],
-//         difficulty: '中等',
-//     },
-// ];
 
 /**
  * @Description: 题目列表
@@ -76,88 +11,27 @@ import Loading from "../Loading";
 const ProblemTable = () => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('title');
-    const searchInput = useRef(null);
 
     const [problemList, setProblemList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
 
-    const handleSearch = (selectedKeys, confirm, dataIndex) => {
-        confirm();
-        setSearchText(selectedKeys[0]);
-        setSearchedColumn(dataIndex);
-    };
-    const getColumnSearchProps = (dataIndex) => ({
-        filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters, close}) => (
-            <div
-                style={{
-                    padding: 8,
-                }}
-                onKeyDown={(e) => e.stopPropagation()}
-            >
-                <Input
-                    ref={searchInput}
-                    placeholder={`Search ${dataIndex}`}
-                    value={selectedKeys[0]}
-                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-                    style={{
-                        marginBottom: 8,
-                        display: 'block',
-                    }}
-                />
-                <Space>
-                    <Button
-                        type="primary"
-                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
-                        icon={<SearchOutlined/>}
-                        size="small"
-                        style={{
-                            width: 90,
-                        }}
-                    >
-                        Search
-                    </Button>
-                </Space>
-            </div>
-        ),
-        /**
-         * @Description: 用于设置表格的筛选规则
-         * @Param value: 筛选的值
-         * @Param record: 当前行的数据
-         * @Return: boolean
-         * */
-        onFilter: (value, record) =>
-            // record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
-            record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase()),
-        onFilterDropdownOpenChange: (visible) => {
-            if (visible) {
-                setTimeout(() => searchInput.current?.select(), 100);
-            }
-        },
-        render: (text) =>
-            searchedColumn === dataIndex ? (
-                <Highlighter
-                    highlightStyle={{
-                        backgroundColor: '#ffc069',
-                        padding: 0,
-                    }}
-                    searchWords={[searchText]}
-                    autoEscape
-                    textToHighlight={text ? text.toString() : ''}
-                />
-            ) : (
-                text
-            ),
-    });
-    // 表格的列信息；TODO 实现跳转
+    // TODO 待实现
+    const [searchText1, setSearchText1] = useState('');
+    const [searchText2, setSearchText2] = useState('');
+    const [searchText3, setSearchText3] = useState('');
+
+    const onSearch = (value) => {
+        console.log("hahaha:::",searchText1, searchText2, searchText3);
+    }
+
+    // 表格的列信息
     const columns = [
         {
             title: 'ID',
             dataIndex: 'id',
             key: 'id',
             width: '20%',
-            ...getColumnSearchProps('id'),
             render: (text, record) => (
                 <a href={`/problem/${record.id}`}>{text}</a>
             ),
@@ -167,7 +41,6 @@ const ProblemTable = () => {
             dataIndex: 'title',
             key: 'title',
             width: '25%',
-            ...getColumnSearchProps('title'),
             render: (text, record) => (
                 <a href={`/problem/${record.id}`}>{text}</a>
             ),
@@ -177,7 +50,6 @@ const ProblemTable = () => {
             dataIndex: 'difficulty',
             key: 'difficulty',
             width: '15%',
-            ...getColumnSearchProps('difficulty'),
         },
         {
             title: 'Tags',
@@ -188,7 +60,7 @@ const ProblemTable = () => {
                 <>
                     {tags.map((tag) => (
                         <Tag color={tag.color} key={tag.tag} style={{ fontSize: '13px', padding: '3px 6px' }}>
-                            {tag.caption}
+                            {tag.tag}
                         </Tag>
                     ))}
                 </>
@@ -222,45 +94,48 @@ const ProblemTable = () => {
     // 表格最多展示20题
     return (
     <div>
-        {/*<div style={{height: 20,}}/>*/}
-        {/*/!*搜索框居中*!/*/}
-        {/*<div*/}
-        {/*    style={{*/}
-        {/*        display: "flex",*/}
-        {/*        justifyContent: "center",*/}
-        {/*        alignItems: "center",*/}
-        {/*        marginBottom: 30,*/}
-        {/*    }}*/}
-        {/*>*/}
-        {/*    <Space.Compact size="large">*/}
-        {/*        <Input*/}
-        {/*            placeholder="输入题目id"*/}
-        {/*            value={searchText1}*/}
-        {/*            onChange={(e) => setSearchText1(e.target.value)}*/}
-        {/*        />*/}
-        {/*        <Input*/}
-        {/*            placeholder="输入题目名称"*/}
-        {/*            value={searchText2}*/}
-        {/*            onChange={(e) => setSearchText2(e.target.value)}*/}
-        {/*        />*/}
-        {/*        <Input*/}
-        {/*            placeholder="输入用户名"*/}
-        {/*            value={searchText3}*/}
-        {/*            onChange={(e) => setSearchText3(e.target.value)}*/}
-        {/*        />*/}
-        {/*        <Button*/}
-        {/*            onClick={onSearch}*/}
-        {/*        >*/}
-        {/*            搜索*/}
-        {/*        </Button>*/}
-        {/*    </Space.Compact>*/}
-        {/*    <div style={{*/}
-        {/*        width: 20,*/}
-        {/*    }}></div>*/}
-        {/*    <Cascader options={options} onChange={onChange} placeholder="排序" />;*/}
-        {/*</div>*/}
+        <div style={{height: 20,}}/>
+        {/*搜索框居中*/}
+        <div
+            style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: 30,
+            }}
+        >
+            <Space.Compact size="large">
+                <Input
+                    placeholder="输入题目id"
+                    value={searchText1}
+                    onChange={(e) => setSearchText1(e.target.value)}
+                />
+                <Input
+                    placeholder="输入题目名称"
+                    value={searchText2}
+                    onChange={(e) => setSearchText2(e.target.value)}
+                />
+                <Input
+                    placeholder="输入题目难度"
+                    value={searchText3}
+                    onChange={(e) => setSearchText3(e.target.value)}
+                />
+                <Button
+                    onClick={onSearch}
+                >
+                    搜索
+                </Button>
+            </Space.Compact>
+            <div style={{
+                width: 20,
+            }}></div>
+        </div>
         <Table
             columns={columns}
+            style={{
+                marginLeft: 20,
+                marginRight: 20,
+            }}
             dataSource={problemList}
             pagination={{pageSize: 20}}
             pagination={{
