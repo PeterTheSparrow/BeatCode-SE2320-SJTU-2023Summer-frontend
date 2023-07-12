@@ -209,7 +209,6 @@ const CodeEditor = () => {
                             overflow: 'auto',
                         }}
                     >
-                        <h1>问题简述</h1>
                         <ReactMarkdown
                             // children={markdownText}
                             children={detail}

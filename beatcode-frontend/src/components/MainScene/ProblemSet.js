@@ -23,6 +23,21 @@ const ProblemTable = () => {
 
     const onSearch = (value) => {
         console.log("hahaha:::",searchText1, searchText2, searchText3);
+
+        const callback = (data) => {
+            setProblemList(data.data);
+            console.log(data.data);
+            setIsLoading(false);
+        }
+
+        const data = {
+            "pageIndex": currentPage,
+            "pageSize": 20,
+            "titleContains": searchText2,
+            "hardLevel": searchText3,
+        }
+
+        getProblemSet(data, callback);
     }
 
     // 表格的列信息
@@ -71,16 +86,16 @@ const ProblemTable = () => {
     // 获取题目列表
     useEffect(() => {
         const callback = (data) => {
-            setProblemList(data);
-            console.log(data);
+            setProblemList(data.data);
+            console.log(data.data);
             setIsLoading(false);
         }
 
         const data = {
             "pageIndex": currentPage,
             "pageSize": 20,
-            "searchIndex": searchedColumn,
-            "searchKeyWord": searchText
+            "titleContains": searchText2,
+            "hardLevel": searchText3,
         }
 
 
@@ -105,20 +120,26 @@ const ProblemTable = () => {
             }}
         >
             <Space.Compact size="large">
-                <Input
-                    placeholder="输入题目id"
-                    value={searchText1}
-                    onChange={(e) => setSearchText1(e.target.value)}
-                />
+                {/*<Input*/}
+                {/*    placeholder="输入题目id"*/}
+                {/*    value={searchText1}*/}
+                {/*    onChange={(e) => setSearchText1(e.target.value)}*/}
+                {/*/>*/}
                 <Input
                     placeholder="输入题目名称"
                     value={searchText2}
                     onChange={(e) => setSearchText2(e.target.value)}
+                    style={{
+                        width: 300,
+                    }}
                 />
                 <Input
                     placeholder="输入题目难度"
                     value={searchText3}
                     onChange={(e) => setSearchText3(e.target.value)}
+                    style={{
+                        width: 300,
+                    }}
                 />
                 <Button
                     onClick={onSearch}
