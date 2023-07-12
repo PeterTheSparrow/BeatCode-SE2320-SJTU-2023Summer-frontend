@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import MonacoEditor from 'react-monaco-editor';
-import {Button, Col, Row, Select, Space} from 'antd';
+import {Button, Col, Descriptions, Row, Select, Space, Spin, Tag} from 'antd';
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -10,94 +10,25 @@ import 'monaco-editor/esm/vs/basic-languages/python/python.contribution';
 import 'monaco-editor/esm/vs/basic-languages/java/java.contribution';
 import 'monaco-editor/esm/vs/basic-languages/cpp/cpp.contribution';
 import {useNavigate} from "react-router-dom";
-import axios from "axios";
 import {submit} from "../../services/submissionService";
+import {getProblemDetail} from "../../services/problemSetService";
 
 
-/**
- * @Description: 前端硬编码的题目，格式为markdown
- * */
-const markdownText = ` # 数字求和！
-
-## 题目描述
-
-请编写一个函数 \`sumDigits\`，计算给定整数中所有数字的总和。
-
-## 函数签名
-
-\`\`\`python
-def sumDigits(n: int) -> int:
-    pass
-\`\`\`
-
-### 输入
-
-- 整数 \`n\`，满足 1 ≤ n ≤ 10^9。
-
-### 输出
-
-- 返回整数 \`n\` 中所有数字的总和。
-
-## 示例
-
-#### 示例 1
-
-输入：
-
-\`\`\`plaintext
-12345
-\`\`\`
-
-输出：
-
-\`\`\`plaintext
-15
-\`\`\`
-
-解释：\`1 + 2 + 3 + 4 + 5 = 15\`。
-
-#### 示例 2
-
-输入：
-
-\`\`\`plaintext
-987654321
-\`\`\`
-
-输出：
-
-\`\`\`plaintext
-45
-\`\`\`
-
-解释：\`9 + 8 + 7 + 6 + 5 + 4 + 3 + 2 + 1 = 45\`。
-
-## 时间要求
-
-你需要确保你的实现在所有测试用例下都能高效地运行。预期的时间复杂度应为 O(log n)，其中 n 是输入整数的位数。`;
 
 /**
  * @Description: 单个题目的组件，包含题目描述、代码编辑器、提交按钮等
  * */
 const CodeEditor = () => {
     const [language, setLanguage] = useState('C++');
+    // 代码编辑器的内容
     const [code, setCode] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    // 代码编辑器的主题（深色/浅色）
+    const [theme, setTheme] = useState('vs-light');
 
     const navigate = useNavigate();
 
-
-
-    /**
-    * 用户选择深色主题或浅色主题
-    * */
-    const [theme, setTheme] = useState('vs-dark');
-
-    const handleThemeChange = (event) => {
-        // 处理主题选择变化的逻辑
-        console.log(event);
-        setTheme(event);
-    }
 
     const editorOptions = {
         // selectOnLineNumbers: true，意思是点击行号就可以选中一整行
@@ -105,6 +36,67 @@ const CodeEditor = () => {
         // roundedSelection: false，意思是选中的时候是否为圆角
         roundedSelection: true,
     };
+
+    /*
+    * 以下是和题目相关的信息
+    * */
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    const [id, setId] = useState(1);
+    const [title, setTitle] = useState('数字求和');
+    // markdown格式的题目描述
+    const [detail, setDetail] = useState("1");
+    const [timeLimit, setTimeLimit] = useState(1000);
+    const [memoryLimit, setMemoryLimit] = useState(128);
+    const [difficulty, setDifficulty] = useState('easy');
+
+    const [tags, setTags] = useState([
+    ]);
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    // 用钩子初始化获取题目信息
+    useEffect(() => {
+
+        const callback=(data)=>{
+            console.log(data);
+
+            setId(data.id);
+            setTitle(data.title);
+            setDetail(data.detail);
+            setTimeLimit(data.time_limit);
+            setMemoryLimit(data.memory_limit);
+            setDifficulty(data.difficulty);
+            // setTags(data.tags);
+            // tag要一个一个读然后放进去
+            let tempTags=[];
+            for(let i=0;i<data.tags.length;i++){
+                tempTags.push(data.tags[i]);
+            }
+            setTags(tempTags);
+
+            setLoading(false);
+
+
+        }
+
+        // 需要发送的数据就是题号（只是数字，不是json），根据当前界面的url确定题号
+        const id = window.location.pathname.split('/')[2];
+
+        getProblemDetail(id,callback);
+        // getSingleProblem(id,callback);
+
+
+    }, []);
+
+
+
+
+    const handleThemeChange = (event) => {
+        // 处理主题选择变化的逻辑
+        console.log(event);
+        setTheme(event);
+    }
+
 
     const handleEditorChange = (value, event) => {
         // 处理编辑器内容变化的逻辑
@@ -137,8 +129,94 @@ const CodeEditor = () => {
         }, 2000);
     }
 
+    const labelStyle = {
+        fontWeight: 'bold',
+        // fontSize: '1.2rem',
+        fontSize: '1.0rem',
+    };
+    
+    if (loading) {
+        return <div
+            style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 20,
+                marginLeft: 20,
+                marginRight: 20,
+                marginBottom: 20,
+            }}
+        >
+            {/*spin居中*/}
+            <Spin
+                tip="Loading..."
+                size={"large"}
+                style={{
+                    marginTop: 20,
+                    marginLeft: 20,
+                    marginRight: 20,
+                }}
+            />
+            <div>
+                loading...
+            </div>
+            <div style={{height: 500,}}/>
+        </div>;
+    }
+
     return (
         <div>
+            <h1
+                style={{
+                    textAlign: 'center',
+                    marginTop: 10,
+                    marginBottom: 30,
+                    fontSize: 40,
+                    }}
+            >
+                {id}. {title}
+            </h1>
+            {/*渲染tag，居中*/}
+            <div
+                style={{
+                    marginLeft: 20,
+                    marginRight: 20,
+                    marginBottom: 20,
+                    marginTop: 20,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
+            >
+                {tags.map((tag, index) => (
+
+                    <React.Fragment key={index}>
+                        <Tag color={tag.color} style={{ fontSize: '16px', padding: '8px 12px' }}>{tag.tag}</Tag>
+                        {index < tags.length - 1 && <span style={{ height:40, display: 'inline-block' }} />}
+                    </React.Fragment>
+                ))}
+            </div>
+            <div
+                style={{
+                    marginLeft: 20,
+                    marginRight: 20,
+                    marginBottom: 20,
+                    marginTop: 20,
+                    // display: 'flex',
+                    // justifyContent: 'center',
+                    // alignItems: 'center',
+                    }}
+            >
+                <Descriptions
+                    // title="Responsive Descriptions"
+                    bordered
+                    column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}
+                >
+                    <Descriptions.Item label={<span style={labelStyle}>难度</span>}>{difficulty}</Descriptions.Item>
+                    <Descriptions.Item label={<span style={labelStyle}>时间限制</span>}>{timeLimit}ms</Descriptions.Item>
+                    <Descriptions.Item label={<span style={labelStyle}>内存限制</span>}>{memoryLimit}MB</Descriptions.Item>
+                </Descriptions>
+            </div>
             <Row>
                 <Col span={12}>
                     <div
@@ -151,9 +229,10 @@ const CodeEditor = () => {
                             overflow: 'auto',
                         }}
                     >
-                        <h1>ProblemDescription</h1>
+                        <h1>问题简述</h1>
                         <ReactMarkdown
-                            children={markdownText}
+                            // children={markdownText}
+                            children={detail}
                             remarkPlugins={[remarkGfm]}
                         />,
                     </div>
@@ -177,7 +256,7 @@ const CodeEditor = () => {
                                 ]}
                             />
                             <Select
-                                defaultValue="vs-dark"
+                                defaultValue="vs-light"
                                 style={{
                                     width: 120,
                                     marginBottom: 20,
@@ -206,7 +285,6 @@ const CodeEditor = () => {
                     >
 
                     </div>
-                    {/*TODO 需要实现语法高亮*/}
                     <MonacoEditor
                         height="600"
                         language={language}
