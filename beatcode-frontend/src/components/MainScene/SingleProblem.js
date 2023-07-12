@@ -115,12 +115,16 @@ const CodeEditor = () => {
         setLoading(true);
 
         // TODO 提交代码
-        const callback=()=>{
-            navigate(`/submissions`);
+        const callback=(res)=>{
+            console.log(res);
         }
         submit({
             "language":language,
             "code":code,
+            "problem_id":"1",
+            "problem_name":"a+b",
+            "user_id":114,
+            "user_name":514,
         },callback)
         setTimeout(() => {
             // TODO 2秒以内未能得到返回值并跳转，因此跳转回题目列表页面
