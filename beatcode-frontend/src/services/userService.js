@@ -1,13 +1,13 @@
 import {postRequest, postRequest_v2} from "../utils/ajax";
 import {message} from "antd";
 import {history} from "../utils/history";
-import {apiUrl} from "../utils/config-overrides";
+import {apiUrl, apiUrlWindows} from "../utils/config-overrides";
 
 /**
  * @Description: 检查是否登录（用户）
  * */
 export const checkUserLogin = (callback) => {
-    const url = `${apiUrl}/CheckUser`;
+    const url = `${apiUrlWindows}/CheckUser`;
 
     // call-back function
 
@@ -17,7 +17,7 @@ export const checkUserLogin = (callback) => {
  * @Description: 检查是否登录（管理员）
  * */
 export const checkAdminLogin = (callback) => {
-    const url = `${apiUrl}/CheckAdmin`;
+    const url = `${apiUrlWindows}/CheckAdmin`;
 }
 
 /**
@@ -25,7 +25,7 @@ export const checkAdminLogin = (callback) => {
  * 用户注册完成后，默认为直接登录完成。跳转到用户主界面
  * */
 export const RegisterService = (data) => {
-    const url = `${apiUrl}/Register`;
+    const url = `${apiUrlWindows}/Register`;
 
     // call-back function
     const callback = (data) => {
@@ -43,7 +43,7 @@ export const RegisterService = (data) => {
 }
 
 export const logout = () => {
-    const url = `${apiUrl}/Logout`;
+    const url = `${apiUrlWindows}/Logout`;
 
     // call-back function
     const callback = (data) => {
@@ -51,6 +51,8 @@ export const logout = () => {
             message.success(data.msg);
             history.push('/login');
             history.go();
+            // 清除token
+            localStorage.removeItem('seDeToken');
         }
         else {
             message.error(data.msg);
@@ -61,22 +63,39 @@ export const logout = () => {
 }
 
 export const login = (data) => {
-    const url = `${apiUrl}/Login`;
+    const url = `${apiUrlWindows}/Login`;
 
     // call-back function
     const callback = (data) => {
         if (data.status === 0) {
             message.success(data.msg);
-            // 普通用户 or 管理员
-            if (data.data.is_admin === 0) {
-                history.push('/');
-                history.go();
-            }
-            else
-            {
-                history.push('/admin');
-                history.go();
-            }
+            /*
+            * 新增内容：存储token
+            * token的存储其实有很多选择
+            * 1. cookie
+            * 2. localStorage（就你了）
+            * 3. sessionStorage
+            * */
+            const tokenKey = ['golden-class-token'];
+            localStorage.setItem('seDeToken', data.data[tokenKey]);
+
+            console.log("token!!!", localStorage.getItem('seDeToken'));
+
+            // 延时1s跳转
+            setTimeout(() => {
+                // 普通用户 or 管理员
+                if (data.data.is_admin === 0) {
+                    history.push('/');
+                    history.go();
+                }
+                else
+                {
+                    history.push('/admin');
+                    history.go();
+                }
+            } , 1000);
+
+
         }
         else {
             message.error(data.msg);
