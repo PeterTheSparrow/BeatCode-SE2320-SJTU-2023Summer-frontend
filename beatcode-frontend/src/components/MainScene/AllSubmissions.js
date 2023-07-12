@@ -56,33 +56,6 @@ function AllSubmissions() {
         }, getCallback);
     }, [])
 
-
-    // const submissions = [
-    //     {
-    //         _id: "5f9b1b3b9d6b1e1b3c7e3b1b",
-    //         key: "5f9b1b3b9d6b1e1b3c7e3b1b",
-    //         problem_id: "1000",
-    //         problem_name: "A+B Problem",
-    //         user_name: "admin",
-    //         result_score: "100",
-    //         result_time: "0",
-    //         result_memory: "0",
-    //         submission_time: "2020-10-30 15:00:00",
-    //     },
-    //     {
-    //         _id: "5f9b1b3b9d6b1e1b3c7e3b1b",
-    //         key: "5f9b1b3b9d6b1e1b3c7e3b1b",
-    //         problem_id: "1000000",
-    //         problem_name: "A+B Problem",
-    //         user_name: "admin",
-    //         result_score: "100",
-    //         result_time: "0",
-    //         result_memory: "0",
-    //         submission_time: "2032-10-30 15:00:00",
-    //     },
-    //     ];
-
-
     const options = [
         {
             value: 'submission_time',

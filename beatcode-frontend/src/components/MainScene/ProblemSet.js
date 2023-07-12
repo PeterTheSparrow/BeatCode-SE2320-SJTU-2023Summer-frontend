@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import Search from "antd/es/input/Search";
 
-import {Button, Input, Space, Spin, Table, Tag} from 'antd';
+import {Button, Cascader, Input, Space, Spin, Table, Tag} from 'antd';
 import {SearchOutlined} from "@ant-design/icons";
 import Highlighter from 'react-highlight-words';
 import {getProblemSet} from "../../services/problemSetService";
@@ -167,7 +167,7 @@ const ProblemTable = () => {
             dataIndex: 'title',
             key: 'title',
             width: '25%',
-            ...getColumnSearchProps('name'),
+            ...getColumnSearchProps('title'),
             render: (text, record) => (
                 <a href={`/problem/${record.id}`}>{text}</a>
             ),
@@ -204,16 +204,6 @@ const ProblemTable = () => {
             setIsLoading(false);
         }
 
-        /*
-         *
-         * 请求的格式：
-         *  {
-                "pageIndex": 1,
-                "pageSize": 10,
-                "searchIndex": "title",
-                "searchKeyWord": "路"
-            }
-        * */
         const data = {
             "pageIndex": currentPage,
             "pageSize": 20,
@@ -230,17 +220,57 @@ const ProblemTable = () => {
     }
 
     // 表格最多展示20题
-    return <Table
-        columns={columns}
-        dataSource={problemList}
-        pagination={{pageSize: 20}}
-        pagination={{
-            onChange: (page) => {
-                console.log(page);
-                setCurrentPage(page);
-            },
-        }}
-    />;
+    return (
+    <div>
+        {/*<div style={{height: 20,}}/>*/}
+        {/*/!*搜索框居中*!/*/}
+        {/*<div*/}
+        {/*    style={{*/}
+        {/*        display: "flex",*/}
+        {/*        justifyContent: "center",*/}
+        {/*        alignItems: "center",*/}
+        {/*        marginBottom: 30,*/}
+        {/*    }}*/}
+        {/*>*/}
+        {/*    <Space.Compact size="large">*/}
+        {/*        <Input*/}
+        {/*            placeholder="输入题目id"*/}
+        {/*            value={searchText1}*/}
+        {/*            onChange={(e) => setSearchText1(e.target.value)}*/}
+        {/*        />*/}
+        {/*        <Input*/}
+        {/*            placeholder="输入题目名称"*/}
+        {/*            value={searchText2}*/}
+        {/*            onChange={(e) => setSearchText2(e.target.value)}*/}
+        {/*        />*/}
+        {/*        <Input*/}
+        {/*            placeholder="输入用户名"*/}
+        {/*            value={searchText3}*/}
+        {/*            onChange={(e) => setSearchText3(e.target.value)}*/}
+        {/*        />*/}
+        {/*        <Button*/}
+        {/*            onClick={onSearch}*/}
+        {/*        >*/}
+        {/*            搜索*/}
+        {/*        </Button>*/}
+        {/*    </Space.Compact>*/}
+        {/*    <div style={{*/}
+        {/*        width: 20,*/}
+        {/*    }}></div>*/}
+        {/*    <Cascader options={options} onChange={onChange} placeholder="排序" />;*/}
+        {/*</div>*/}
+        <Table
+            columns={columns}
+            dataSource={problemList}
+            pagination={{pageSize: 20}}
+            pagination={{
+                onChange: (page) => {
+                    console.log(page);
+                    setCurrentPage(page);
+                },
+            }}
+        />;
+    </div>);
 };
 
 /**
