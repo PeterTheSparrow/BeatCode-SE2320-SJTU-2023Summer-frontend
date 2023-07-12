@@ -130,7 +130,6 @@ const CodeEditor = () => {
             "language":language,
             "code":code,
             "problem_id":"1",
-            "problem_name":"a+b",
             "user_id":114,
             "user_name":514,
         },callback)

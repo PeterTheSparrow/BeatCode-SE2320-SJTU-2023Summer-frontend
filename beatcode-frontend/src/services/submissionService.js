@@ -3,7 +3,15 @@ import axios from "axios";
 import {theme} from "antd";
 
 export const submit=(data,callback)=>{
-    axios.post(`${apiUrl}/Submit`,data )
+    let token= localStorage.getItem('seDeToken');
+    if (token === null) {
+        token = '';
+    }
+    axios.post(`${apiUrl}/Submit`,data , {
+        headers: {
+            'Content-Type': 'application/json',
+            'golden-class-token': token
+        }})
         .then(res=>{
             callback(res.data);
         })
@@ -12,8 +20,17 @@ export const submit=(data,callback)=>{
         })
 }
 export const getSubmissions=(data,callback)=>{
-    axios.post(`${apiUrl}/GetSubmissions`,data)
+    let token= localStorage.getItem('seDeToken');
+    if (token === null) {
+        token = '';
+    }
+    axios.post(`${apiUrl}/GetSubmissions`,data , {
+        headers: {
+            'Content-Type': 'application/json',
+            'golden-class-token': token
+        }})
         .then(res=>{
+            console.log(data);
             callback(res.data);
         })
         .catch(err=>{
@@ -21,7 +38,15 @@ export const getSubmissions=(data,callback)=>{
         })
 }
 export const getFullSubmission=(data,callback)=>{
-    axios.post(`${apiUrl}/GetFullSubmission`,data)
+    let token= localStorage.getItem('seDeToken');
+    if (token === null) {
+        token = '';
+    }
+    axios.post(`${apiUrl}/GetFullSubmission`,data , {
+        headers: {
+            'Content-Type': 'application/json',
+            'golden-class-token': token
+        }})
         .then(res=>{
             callback(res.data);
         })

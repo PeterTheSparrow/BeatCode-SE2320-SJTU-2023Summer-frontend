@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
-import {Collapse, Table, Typography} from "antd";
+import {Collapse, Popover, Spin, Table, Typography} from "antd";
 import MonacoEditor from "react-monaco-editor";
-import {useParams} from "react-router-dom";
+import {NavLink, useParams} from "react-router-dom";
 import {getFullSubmission} from "../../services/submissionService";
 
 
@@ -25,6 +25,7 @@ function SingleSubmission() {
     const [submission,setSubmission]=useState({});
     const [details,setDetails]=useState([]);
     const [monacoLanguage,setMonacoLanguage]=useState('') ;
+    const [isLoading,setIsLoading]=useState(true);
     const getCallback=(data)=>{
         console.log(data);
         setSubmission({
@@ -41,6 +42,8 @@ function SingleSubmission() {
             submission_time:data.submission_time,
             userId:data.userId,
             userName:data.userName,
+            state:data.state,
+            error:data.error,
         });
         setDetails(data.details);
         if(data.submission_language.toString()==="C++") {setMonacoLanguage("cpp");}
@@ -51,6 +54,38 @@ function SingleSubmission() {
             id:id,
         },getCallback)
     },[id]);
+    useEffect(()=>{
+        setIsLoading(false);
+    },[submission]);
+
+    if (isLoading) {
+        return <div
+            style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 20,
+                marginLeft: 20,
+                marginRight: 20,
+                marginBottom: 20,
+            }}
+        >
+            {/*spin居中*/}
+            <Spin
+                tip="Loading..."
+                size={"large"}
+                style={{
+                    marginTop: 20,
+                    marginLeft: 20,
+                    marginRight: 20,
+                }}
+            />
+            <div>
+                loading...
+            </div>
+            <div style={{height: 500,}}/>
+        </div>;
+    }
 
     return (
         // 组件长度固定，超过长度滚动
@@ -79,11 +114,19 @@ function SingleSubmission() {
                                 title: '题号',
                                 dataIndex: 'problemId',
                                 key: 'problemId',
+                                render: (text, record) => (
+                                    <NavLink to={`/problem/${record.problemId}`}>
+                                        {text}
+                                    </NavLink>)
                             },
                             {
                                 title: '题目名称',
                                 dataIndex: 'problemName',
                                 key: 'problemName',
+                                render: (text, record) => (
+                                    <NavLink to={`/problem/${record.problemId}`}>
+                                        {text}
+                                    </NavLink>)
                             },
                             {
                                 title: '提交者',
@@ -92,29 +135,36 @@ function SingleSubmission() {
                             },
                             {
                                 title: '评测结果',
-                                dataIndex: 'result_score',
-                                key: 'result_score',
-                                // Accepted： bold, lightgreen
-                                render: (text, record) => {
-                                    if (text === "100") {
-                                        return <span style={{fontWeight: "bold", color: "lightgreen"}}>{text}</span>
-                                    }
-                                    else {
-                                        return <span style={{fontWeight: "bold", color: "red"}}>{text}</span>
-                                    }
-                                }
+                                dataIndex: 'state',
+                                key: 'state',
+                                render: (text, record) => (
+                                    <span style={{
+                                        color: text === "Accepted" ? "#2ecc71" :
+                                            text === "Wrong Answer" ? "#c0392b" :
+                                                text === "Time Limit Exceeded" ? "#f39c12" :
+                                                    text === "Output Limit Exceeded" ? "#8e44ad" :
+                                                        text === "Memory Limit Exceeded" ? "#16a085" :
+                                                            text === "Judgement Failed" ? "#2c3e50" :
+                                                                text === "Compile Error" ? "#d35400" :
+                                                                    "#7f8c8d",
+                                        fontWeight: "bold"
+                                    }}>{text}</span>
+                                )
                             },
                             {
                                 title: '得分',
                                 dataIndex: 'result_score',
                                 key: 'result_score',
+                                render: (text, record) => {
+                                    return <span>{text?text:0}</span>
+                                }
                             },
                             {
                                 title: '运行时间',
                                 dataIndex: 'result_time',
                                 key: 'result_time',
                                 render: (text, record) => {
-                                    return <span>{text}ms</span>
+                                    return <span>{text?text:0} ms</span>
                                 }
                             },
                             {
@@ -122,7 +172,7 @@ function SingleSubmission() {
                                 dataIndex: 'result_memory',
                                 key: 'result_memory',
                                 render: (text, record) => {
-                                    return <span>{text}MB</span>
+                                    return <span>{text?text:0} KB</span>
                                 }
                             },
                         ]}
@@ -136,38 +186,83 @@ function SingleSubmission() {
             >
                 评测详情
             </Title>
-            {/*table一页展示5个*/}
-            <Table dataSource={details}
-                   style={{
-                       marginLeft: 40,
-                       marginRight: 40,
-                   }}
-                   columns={[
-                            {title: '测试点', dataIndex: 'num', key: 'num',},
-                            {title: '得分', dataIndex: 'score', key: 'score',},
-                            {title: '状态', dataIndex: 'info', key: 'info',
-                                // Accept绿色加粗，其他红色加粗
-                                render: (text, record) => {
-                                    if (text === 'Accepted') {
-                                        return <div style={{color: 'lightgreen', fontWeight: 'bold'}}>{text}</div>
-                                    } else {
-                                        return <div style={{color: 'red', fontWeight: 'bold'}}>{text}</div>
-                                    }
-                                }
-                            },
-                            {title: '运行时间', dataIndex: 'time', key: 'time',
-                                render: (text, record) => {
-                                    return <span>{text}ms</span>
-                                },
-                            },
-                            {title: '运行内存', dataIndex: 'memory', key: 'memory',
-                                render: (text, record) => {
-                                    return <span>{text}MB</span>
-                                },
-                            },
-                        ]}
-            />
+            {(submission.state === "Judgement Failed" || submission.state === "Compile Error")?
+                <div
+                    style={{
+                        marginLeft: 30,
+                        marginRight: 30,
+                        marginTop: 20,
+                        marginBottom: 20,
+                    }}
+                >
 
+                    <Collapse
+                        items={[{ key: '1', label: '单击查看关于本次评测的更多信息',
+                            children: <p style={{ whiteSpace: 'pre-wrap' }}>
+                                {submission.full_result+"\n错误信息：\n"+
+                                    submission.error.toString()
+                                        .replace(/&lt;/g, "<")
+                                        .replace(/&gt;/g, ">")
+                                        .replace(/&amp;/g, "&")
+                                        .replace(/&quot;/g, "\"")
+                                        .replace(/&#39;/g, "\'")
+                                        .replace(/&apos;/g, "\'")
+                                        .replace(/&copy;/g, "©")
+                                        .replace(/&reg;/g, "®")
+                                        .replace(/&trade;/g, "™")
+                                        .replace(/&euro;/g, "€")
+                                        .replace(/&yen;/g, "¥")
+                                }
+                        </p> }]}
+                    />
+                    {/*占位*/}
+                    <div>
+                        <div style={{height: 30,}}/>
+                    </div>
+                </div>
+                :
+                <Table dataSource={details}
+                       style={{
+                           marginLeft: 40,
+                           marginRight: 40,
+                       }}
+                       columns={[
+                           {title: '测试点', dataIndex: 'num', key: 'num',},
+                           {title: '得分', dataIndex: 'score', key: 'score',},
+                           {title: '状态', dataIndex: 'info', key: 'info',
+                               // Accept绿色加粗，其他红色加粗
+                               render: (text, record) => {
+                                       return (
+                                           <Popover placement="rightBottom"  content={record.res} title="测试点详细信息">
+                                               <a style={{
+                                                   color: text === "Accepted" ? "#2ecc71" :
+                                                       text === "Wrong Answer" ? "#c0392b" :
+                                                       text === "Time Limit Exceeded" ? "#f39c12" :
+                                                       text === "Output Limit Exceeded" ? "#8e44ad" :
+                                                       text === "Memory Limit Exceeded" ? "#16a085" :
+                                                       text === "Judgement Failed" ? "#2c3e50" :
+                                                       text === "Compile Error" ? "#d35400" :
+                                                       "#7f8c8d",
+                                                   fontWeight: 'bold'
+                                               }}>{text}</a>
+                                            </Popover>
+                                       );
+
+                               }
+                           },
+                           {title: '运行时间', dataIndex: 'time', key: 'time',
+                               render: (text, record) => {
+                                   return <span>{text}ms</span>
+                               },
+                           },
+                           {title: '运行内存', dataIndex: 'memory', key: 'memory',
+                               render: (text, record) => {
+                                   return <span>{text}MB</span>
+                               },
+                           },
+                       ]}
+                />
+            }
 
             <Title level={3} style={{marginLeft: 20,}}>
                 代码
@@ -190,31 +285,6 @@ function SingleSubmission() {
                     }}
                 />
             </div>
-
-
-            <Title level={3} style={{marginLeft: 20,}}>
-                更多
-            </Title>
-            <div
-                style={{
-                    marginLeft: 30,
-                    marginRight: 30,
-                    marginTop: 20,
-                    marginBottom: 20,
-                }}
-            >
-
-                <Collapse
-                    items={[{ key: '1', label: '单击查看关于本次评测的更多信息',
-                        children: <p style={{ whiteSpace: 'pre-line' }}>{submission.full_result}</p> }]}
-                />
-                {/*占位*/}
-                <div>
-                    <div style={{height: 30,}}/>
-                </div>
-            </div>
-
-
         </div>
     );
 }
