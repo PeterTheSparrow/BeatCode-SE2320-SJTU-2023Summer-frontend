@@ -6,8 +6,8 @@ import {getSubmissions} from "../../services/submissionService";
 import Search from "antd/es/input/Search";
 import { Radio } from 'antd';
 
-import {Input, Select, Space} from 'antd';
-import {SearchOutlined} from '@ant-design/icons';
+import {Input,  Space} from 'antd';
+import Loading from "../Loading";
 
 /**
  * @Description: 某个用户所有的提交
@@ -168,32 +168,7 @@ function AllSubmissions() {
     // TODO: const handlePageChange
 
     if (tableLoading) {
-        return <div
-            style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: 20,
-                marginLeft: 20,
-                marginRight: 20,
-                marginBottom: 20,
-            }}
-        >
-            {/*spin居中*/}
-            <Spin
-                tip="Loading..."
-                size={"large"}
-                style={{
-                    marginTop: 20,
-                    marginLeft: 20,
-                    marginRight: 20,
-                }}
-            />
-            <div>
-                loading...
-            </div>
-            <div style={{height: 500,}}/>
-        </div>;
+        return <Loading/>;
     }
 
     return (

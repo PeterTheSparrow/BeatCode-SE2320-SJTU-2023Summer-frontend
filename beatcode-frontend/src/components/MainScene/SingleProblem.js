@@ -12,6 +12,7 @@ import 'monaco-editor/esm/vs/basic-languages/cpp/cpp.contribution';
 import {useNavigate} from "react-router-dom";
 import {submit} from "../../services/submissionService";
 import {getProblemDetail} from "../../services/problemSetService";
+import Loading from "../Loading";
 
 
 
@@ -140,32 +141,7 @@ const CodeEditor = () => {
     };
 
     if (loading) {
-        return <div
-            style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: 20,
-                marginLeft: 20,
-                marginRight: 20,
-                marginBottom: 20,
-            }}
-        >
-            {/*spin居中*/}
-            <Spin
-                tip="Loading..."
-                size={"large"}
-                style={{
-                    marginTop: 20,
-                    marginLeft: 20,
-                    marginRight: 20,
-                }}
-            />
-            <div>
-                loading...
-            </div>
-            <div style={{height: 500,}}/>
-        </div>;
+        return <Loading />;
     }
 
     return (

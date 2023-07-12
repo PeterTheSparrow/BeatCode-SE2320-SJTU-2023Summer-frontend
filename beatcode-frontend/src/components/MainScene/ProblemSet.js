@@ -5,6 +5,7 @@ import {Button, Input, Space, Spin, Table, Tag} from 'antd';
 import {SearchOutlined} from "@ant-design/icons";
 import Highlighter from 'react-highlight-words';
 import {getProblemSet} from "../../services/problemSetService";
+import Loading from "../Loading";
 
 
 /**
@@ -127,7 +128,8 @@ const ProblemTable = () => {
          * @Return: boolean
          * */
         onFilter: (value, record) =>
-            record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+            // record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+            record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase()),
         onFilterDropdownOpenChange: (visible) => {
             if (visible) {
                 setTimeout(() => searchInput.current?.select(), 100);
@@ -224,32 +226,7 @@ const ProblemTable = () => {
     }, []);
 
     if (isLoading) {
-        return <div
-            style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: 20,
-                marginLeft: 20,
-                marginRight: 20,
-                marginBottom: 20,
-            }}
-        >
-            {/*spin居中*/}
-            <Spin
-                tip="Loading..."
-                size={"large"}
-                style={{
-                    marginTop: 20,
-                    marginLeft: 20,
-                    marginRight: 20,
-                }}
-            />
-            <div>
-                loading...
-            </div>
-            <div style={{height: 500,}}/>
-        </div>;
+        return <Loading/>;
     }
 
     // 表格最多展示20题
