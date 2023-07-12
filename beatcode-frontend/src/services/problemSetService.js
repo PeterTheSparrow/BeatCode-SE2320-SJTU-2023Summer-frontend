@@ -6,7 +6,9 @@ import axios from "axios";
 * 获得所有题目的列表
 * */
 export const getProblemSet = (data, callback) => {
-    // TODO
+    const url = `${apiUrlWindows}/GetProblemList`;
+
+    postRequest(url, data, callback);
 }
 
 /*

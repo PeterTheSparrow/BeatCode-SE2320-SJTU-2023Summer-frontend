@@ -138,7 +138,7 @@ const CodeEditor = () => {
         // fontSize: '1.2rem',
         fontSize: '1.0rem',
     };
-    
+
     if (loading) {
         return <div
             style={{

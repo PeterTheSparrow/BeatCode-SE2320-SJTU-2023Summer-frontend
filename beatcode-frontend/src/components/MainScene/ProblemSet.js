@@ -1,10 +1,10 @@
 import React, {useEffect, useRef, useState} from 'react';
 import Search from "antd/es/input/Search";
 
-import {Button, Input, Space, Table, Tag} from 'antd';
+import {Button, Input, Space, Spin, Table, Tag} from 'antd';
 import {SearchOutlined} from "@ant-design/icons";
 import Highlighter from 'react-highlight-words';
-
+import {getProblemSet} from "../../services/problemSetService";
 
 
 /**
@@ -15,57 +15,57 @@ import Highlighter from 'react-highlight-words';
  *
  * 单击题目名称或者题号，跳转到题目详情界面
  * */
-const data = [
-    // 新增难度
-    {
-        key: '1',
-        id: '1',
-        name: '两数之和',
-        tags: ['数组', '哈希表'],
-        tagColors: ['blue', 'green'],
-        difficulty: '简单',
-    },
-    {
-        key: '2',
-        id: '2',
-        name: '两数相加',
-        tags: ['链表', '数学'],
-        tagColors: ['red', 'yellow'],
-        difficulty: '中等',
-    },
-    {
-        key: '3',
-        id: '3',
-        name: '无重复字符的最长子串',
-        tags: ['哈希表', '双指针', '字符串', '滑动窗口'],
-        tagColors: ['blue', 'green', 'red', 'yellow'],
-        difficulty: '中等',
-    },
-    {
-        key: '4',
-        id: '4',
-        name: '寻找两个正序数组的中位数',
-        tags: ['数组', '二分查找', '分治算法'],
-        tagColors: ['blue', 'green', 'red'],
-        difficulty: '困难',
-    },
-    {
-        key: '5',
-        id: '5',
-        name: '最长回文子串',
-        tags: ['字符串', '动态规划'],
-        tagColors: ['red', 'yellow'],
-        difficulty: '中等',
-    },
-    {
-        key: '6',
-        id: '6',
-        name: 'Z 字形变换',
-        tags: ['字符串'],
-        tagColors: ['red'],
-        difficulty: '中等',
-    },
-];
+// const data = [
+//     // 新增难度
+//     {
+//         key: '1',
+//         id: '1',
+//         name: '两数之和',
+//         tags: ['数组', '哈希表'],
+//         tagColors: ['blue', 'green'],
+//         difficulty: '简单',
+//     },
+//     {
+//         key: '2',
+//         id: '2',
+//         name: '两数相加',
+//         tags: ['链表', '数学'],
+//         tagColors: ['red', 'yellow'],
+//         difficulty: '中等',
+//     },
+//     {
+//         key: '3',
+//         id: '3',
+//         name: '无重复字符的最长子串',
+//         tags: ['哈希表', '双指针', '字符串', '滑动窗口'],
+//         tagColors: ['blue', 'green', 'red', 'yellow'],
+//         difficulty: '中等',
+//     },
+//     {
+//         key: '4',
+//         id: '4',
+//         name: '寻找两个正序数组的中位数',
+//         tags: ['数组', '二分查找', '分治算法'],
+//         tagColors: ['blue', 'green', 'red'],
+//         difficulty: '困难',
+//     },
+//     {
+//         key: '5',
+//         id: '5',
+//         name: '最长回文子串',
+//         tags: ['字符串', '动态规划'],
+//         tagColors: ['red', 'yellow'],
+//         difficulty: '中等',
+//     },
+//     {
+//         key: '6',
+//         id: '6',
+//         name: 'Z 字形变换',
+//         tags: ['字符串'],
+//         tagColors: ['red'],
+//         difficulty: '中等',
+//     },
+// ];
 
 /**
  * @Description: 题目列表
@@ -74,8 +74,12 @@ const data = [
  * */
 const ProblemTable = () => {
     const [searchText, setSearchText] = useState('');
-    const [searchedColumn, setSearchedColumn] = useState('');
+    const [searchedColumn, setSearchedColumn] = useState('title');
     const searchInput = useRef(null);
+
+    const [problemList, setProblemList] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -83,7 +87,7 @@ const ProblemTable = () => {
         setSearchedColumn(dataIndex);
     };
     const getColumnSearchProps = (dataIndex) => ({
-        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+        filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters, close}) => (
             <div
                 style={{
                     padding: 8,
@@ -105,7 +109,7 @@ const ProblemTable = () => {
                     <Button
                         type="primary"
                         onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
-                        icon={<SearchOutlined />}
+                        icon={<SearchOutlined/>}
                         size="small"
                         style={{
                             width: 90,
@@ -158,8 +162,8 @@ const ProblemTable = () => {
         },
         {
             title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
+            dataIndex: 'title',
+            key: 'title',
             width: '25%',
             ...getColumnSearchProps('name'),
             render: (text, record) => (
@@ -178,29 +182,87 @@ const ProblemTable = () => {
             dataIndex: 'tags',
             key: 'tags',
             width: '40%',
-            ...getColumnSearchProps('tags'),
             render: (tags, record) => (
                 <>
-                    {tags.map((tag, index) => {
-                        let color = record.tagColors[index];
-                        return (
-                            <Tag color={color} key={tag} style={{ fontSize: '13px', padding: '3px 6px' }}>
-                                {tag}
-                            </Tag>
-                        );
-                    }
-                    )}
+                    {tags.map((tag) => (
+                        <Tag color={tag.color} key={tag.tag} style={{ fontSize: '13px', padding: '3px 6px' }}>
+                            {tag.caption}
+                        </Tag>
+                    ))}
                 </>
             ),
         },
     ];
 
+    // 获取题目列表
+    useEffect(() => {
+        const callback = (data) => {
+            setProblemList(data);
+            console.log(data);
+            setIsLoading(false);
+        }
+
+        /*
+         *
+         * 请求的格式：
+         *  {
+                "pageIndex": 1,
+                "pageSize": 10,
+                "searchIndex": "title",
+                "searchKeyWord": "路"
+            }
+        * */
+        const data = {
+            "pageIndex": currentPage,
+            "pageSize": 20,
+            "searchIndex": searchedColumn,
+            "searchKeyWord": searchText
+        }
+
+
+        getProblemSet(data, callback);
+    }, []);
+
+    if (isLoading) {
+        return <div
+            style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 20,
+                marginLeft: 20,
+                marginRight: 20,
+                marginBottom: 20,
+            }}
+        >
+            {/*spin居中*/}
+            <Spin
+                tip="Loading..."
+                size={"large"}
+                style={{
+                    marginTop: 20,
+                    marginLeft: 20,
+                    marginRight: 20,
+                }}
+            />
+            <div>
+                loading...
+            </div>
+            <div style={{height: 500,}}/>
+        </div>;
+    }
+
     // 表格最多展示20题
     return <Table
         columns={columns}
-        dataSource={data}
-        pagination={{ pageSize: 20 }}
-
+        dataSource={problemList}
+        pagination={{pageSize: 20}}
+        pagination={{
+            onChange: (page) => {
+                console.log(page);
+                setCurrentPage(page);
+            },
+        }}
     />;
 };
 
@@ -212,96 +274,9 @@ const ProblemTable = () => {
  * */
 export function ProblemSet() {
 
-    // 所有的标签信息
-    const [tags, setTags] = useState([]);
 
-    // 前端硬编码标签信息（和颜色）
     useEffect(() => {
-        setTags([
-            {
-                name: '数组',
-                color: 'blue',
-            },
-            {
-                name: '哈希表',
-                color: 'green',
-            },
-            {
-                name: '链表',
-                color: 'red',
-            },
-            {
-                name: '数学',
-                color: 'yellow',
-            },
-            {
-                name: '双指针',
-                color: 'purple',
-            },
-            {
-                name: '字符串',
-                color: 'cyan',
-            },
-            {
-                name: '滑动窗口',
-                color: 'geekblue',
-            },
-            {
-                name: '动态规划',
-                color: 'magenta',
-            },
-            {
-                name: '二分查找',
-                color: 'volcano',
-            },
-            {
-                name: '分治算法',
-                color: 'orange',
-            },
-            {
-                name: '回溯算法',
-                color: 'gold',
-            },
-            {
-                name: '贪心算法',
-                color: 'lime',
-            },
-            {
-                name: '深度优先搜索',
-                color: 'green',
-            },
-            {
-                name: '广度优先搜索',
-                color: 'cyan',
-            },
-            {
-                name: '位运算',
-                color: 'blue',
-            },
-            {
-                name: '栈',
-                color: 'purple',
-            },
-            {
-                name: '堆',
-                color: 'geekblue',
-            },
-            {
-                name: '树',
-                color: 'magenta',
-            },
-            {
-                name: '图',
-                color: 'volcano',
-            },
-            {
-                name: '排序',
-                color: 'orange',
-            },
-        ]);
     }, []);
-
-
 
 
     return (
@@ -346,7 +321,7 @@ export function ProblemSet() {
                     }}
                 >
                 </div>
-                <ProblemTable />
+                <ProblemTable/>
             </div>
 
         </div>
