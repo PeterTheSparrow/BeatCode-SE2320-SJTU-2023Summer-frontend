@@ -23,16 +23,25 @@ function AllSubmissions() {
     const [searchText2, setSearchText2] = useState('');
     const [searchText3, setSearchText3] = useState('');
     // 在没加载完数据之前，不显示表格
-    const [tableLoading, setTableLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
 
     // sorting的列名，sorting的方式
     const [sortingColumn, setSortingColumn] = useState('submission_time');
     const [sortingOrder, setSortingOrder] = useState('desc');
 
     const [submissions, setSubmissions] = useState([]);
+    const [pageNum,setPageNum]=useState("1");
+    const [pageSize,setPageSize]=useState("20");
+    const [totalPage,setTotalPage]=useState(0);
+    const [totalElements,setTotalElements]=useState(0);
     const getCallback = (data) => {
-        console.log(data.content);
-        console.log(JSON.stringify(data.content[0]._id));
+        console.log("received data for getSubmissions: ");
+        console.log(data);
+
+        setTotalElements(data.totalElements);
+        setTotalPage(data.totalPages);
+        setPageNum(data.number+1);
+        setPageSize(data.size);
         const extractedSubmissions = data.content.map((item) => ({
             _id: item.string_id,
             key: item.string_id,
@@ -43,87 +52,90 @@ function AllSubmissions() {
             result_time: item.result_time,
             result_memory: item.result_memory,
             submission_time: item.submission_time,
+            state:item.state,
         }));
         setSubmissions(extractedSubmissions);
-
-        // 已经加载完成，设置为false
-        setTableLoading(false);
     }
     useEffect(() => {
+        setIsLoading(true);
         getSubmissions({
-            page: "1",
-            pageSize: "50",
+            // 新搜索的话，页数一定是1
+            page: pageNum,
+            pageSize: pageSize,
+
+            // 这三个都是搜索框里的东西
+            user_name: searchText3,
+            problem_name: searchText2,
+            problem_id: searchText1,
+
+            // 这两个是排序的东西
+            sortBy: sortingColumn,
+            sortDirection: sortingOrder,
+
         }, getCallback);
-    }, [])
+    }, [pageNum,pageSize])
+    useEffect(() => {
+        // submissions 更新时，将 isLoading 设置为 false
+        setIsLoading(false);
+    }, [submissions])
 
     const options = [
         {
             value: 'submission_time',
-            label: 'time',
+            label: '提交时间',
             children: [
                 {
                     value: 'asc',
-                    label: 'asc',
+                    label: '升序',
                 },
                 {
                     value: 'desc',
-                    label: 'desc',
+                    label: '降序',
                 }
             ],
         },
         {
             value: 'problem_id',
-            label: 'problem id',
+            label: '题目id',
             children: [
                 {
                     value: 'asc',
-                    label: 'asc',
+                    label: '升序',
                 },
                 {
                     value: 'desc',
-                    label: 'desc',
+                    label: '降序',
                 }
             ],
         },
         {
             value: 'problem_name',
-            label: 'problem name',
+            label: '题目名称',
             children: [
                 {
                     value: 'asc',
-                    label: 'asc',
+                    label: '升序',
                 },
                 {
                     value: 'desc',
-                    label: 'desc',
+                    label: '降序',
                 }
             ],
         }
     ];
     const onChange = (value) => {
         console.log(value);
+        if(!value)return;
         setSortingColumn(value[0]);
         setSortingOrder(value[1]);
     };
 
     const onSearch = value => {
-        // 向后端发送请求，更新前端的搜索结果
-        /*
-        * 请求中需要包含的参数：
-        *
-        //needing params:
-        //sortDirection: asc or desc(default)
-        //sortBy: sorted field (set time as default)
-        //user_name: filtered username
-        //problem_name: filtered problem name
-        //problem_id: filtered problem id
-        //page: present page
-        //pageSize: size of per page
-        * */
+        setIsLoading(true);
         getSubmissions({
             // 新搜索的话，页数一定是1
-            page: "1",
-            pageSize: "50",
+            page: pageNum,
+            pageSize: pageSize,
 
             // 这三个都是搜索框里的东西
             user_name: searchText3,
@@ -140,8 +152,33 @@ function AllSubmissions() {
 
     // TODO: const handlePageChange
 
-    if (tableLoading) {
-        return <Loading/>;
+    if (isLoading) {
+        return <div
+            style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 20,
+                marginLeft: 20,
+                marginRight: 20,
+                marginBottom: 20,
+            }}
+        >
+            {/*spin居中*/}
+            <Spin
+                tip="Loading..."
+                size={"large"}
+                style={{
+                    marginTop: 20,
+                    marginLeft: 20,
+                    marginRight: 20,
+                }}
+            />
+            <div>
+                loading...
+            </div>
+            <div style={{height: 500,}}/>
+        </div>;
     }
 
     return (
@@ -190,11 +227,22 @@ function AllSubmissions() {
                     <div style={{
                         width: 20,
                     }}></div>
-                    <Cascader options={options} onChange={onChange} placeholder="排序" />;
+                    <Cascader options={options} onChange={onChange} placeholder="排序" />
                 </div>
                 {/*pageSize是50*/}
                 <Table dataSource={submissions}
-                       pagination={{pageSize: 50}}
+                       pagination={{
+                           pageSize: parseInt(pageSize),
+                           current: parseInt(pageNum),
+                           showQuickJumper: true,
+                           total: totalElements,
+                           defaultCurrent: 1,
+                           showTotal: ()=>`共有${totalElements}条记录`,
+                           onChange: (page,pageSize)=>{
+                               setPageNum(page);
+                               setPageSize(pageSize);
+                           },
+                       }}
 
                        style={{
                            marginLeft: 40,
@@ -203,7 +251,6 @@ function AllSubmissions() {
 
                        columns={[
                            // 单击提交id，可以跳转到提交详情界面
-                           {title: '提交时间', dataIndex: 'submission_time'},
                            {
                                title: '题目id',
                                dataIndex: 'problem_id',
@@ -226,37 +273,46 @@ function AllSubmissions() {
                            // 除了Accepted，其他的都是红色，加粗；Accepted是绿色，加粗
                            {
                                title: '通过状态',
-                               dataIndex: 'result_score',
+                               dataIndex: 'state',
                                render: (text, record) => (
-                                   <span style={{
-                                       color: text === "100" ? "lightgreen" : "red",
-                                       fontWeight: "bold"
-                                   }}>{text}</span>
+                                   <NavLink to={`/submission/${record._id}`}>
+                                       <span style={{
+                                           color: text === "Accepted" ? "#2ecc71" :
+                                               text === "Wrong Answer" ? "#c0392b" :
+                                               text === "Time Limit Exceeded" ? "#f39c12" :
+                                               text === "Output Limit Exceeded" ? "#8e44ad" :
+                                               text === "Memory Limit Exceeded" ? "#16a085" :
+                                               text === "Judgement Failed" ? "#2c3e50" :
+                                               text === "Compile Error" ? "#d35400" :
+                                               "#7f8c8d",
+                                           fontWeight: "bold"
+                                       }}>{text}</span>
+                                   </NavLink>
                                )
                            },
-                           {title: '得分', dataIndex: 'result_score'},
+                           {title: '得分', dataIndex: 'result_score',
+                               render: (text, record) => (
+                                   <span>{text?text:"0"}</span>
+                               )},
                            {
                                title: '运行时间', dataIndex: 'result_time',
                                render: (text, record) => (
-                                   <span>{text} ms</span>
+                                   <span>{text?text:"0"} ms</span>
                                )
                            },
                            {
                                title: '运行内存', dataIndex: 'result_memory',
                                render: (text, record) => (
-                                   <span>{text} MB</span>
+                                   <span>{text?text:"0"} KB</span>
                                )
                            },
                            {
-                               title: '详情',
-                               dataIndex: '_id',
-                               // 渲染一个按钮，点击按钮跳转到提交详情界面
-                               render: (text, record) => (
+                               title: '提交时间', dataIndex: 'submission_time',
+                               render: (text,record) => (
                                    <NavLink to={`/submission/${record._id}`}>
-                                       <Button>
-                                           详情
-                                       </Button>
-                                   </NavLink>)
+                                       {text}
+                                   </NavLink>
+                               )
                            },
                        ]}
 
@@ -269,57 +325,3 @@ function AllSubmissions() {
 }
 
 export default AllSubmissions;
-
-
-// <div
-//               style={{
-//                 marginTop: 20,
-//                 marginLeft: 20,
-//                 marginRight: 20,
-//               }}
-//         >
-//             {/*占位*/}
-// <div style={{height: 50,}}/>
-// <Row>
-//     <Col span={12}>
-//         <h1>提交历史</h1>
-//         <Table dataSource={[{submissionNum, passedProblemNum, passedSubmissionNum, passedRate}]}
-//                pagination={false}
-//                style={{
-//                    marginLeft: 40,
-//                    marginRight: 40,
-//                    marginBottom: 40,
-//                }}
-//                columns={[
-//                    { title: '提交数目', dataIndex: 'submissionNum' },
-//                    { title: '通过题目数目', dataIndex: 'passedProblemNum' },
-//                    { title: '通过提交数目', dataIndex: 'passedSubmissionNum' },
-//                    { title: '通过率', dataIndex: 'passedRate' },
-//                ]}
-//         />
-//     </Col>
-//     <Col span={12}>
-//         <div style={{ marginTop: 20 }}>
-//             <PieChart width={400} height={300}>
-//                 <Pie
-//                     data={passedRateData}
-//                     dataKey="value"
-//                     nameKey="name"
-//                     cx="50%"
-//                     cy="50%"
-//                     outerRadius={80}
-//                     fill="#8884d8"
-//                     label
-//                 >
-//                     {/*饼图*/}
-//                     {passedRateData.map((entry, index) => (
-//                         <Cell key={`cell-${index}`} fill={index === 0 ? "#82ca9d" : "#8884d8"} />
-//                     ))}
-//                 </Pie>
-//                 <Legend />
-//             </PieChart>
-//         </div>
-//     </Col>
-// </Row>
-//
-// </div>
