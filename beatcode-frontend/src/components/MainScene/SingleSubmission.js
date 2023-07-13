@@ -207,11 +207,6 @@ function SingleSubmission() {
                                         .replace(/&quot;/g, "\"")
                                         .replace(/&#39;/g, "\'")
                                         .replace(/&apos;/g, "\'")
-                                        .replace(/&copy;/g, "©")
-                                        .replace(/&reg;/g, "®")
-                                        .replace(/&trade;/g, "™")
-                                        .replace(/&euro;/g, "€")
-                                        .replace(/&yen;/g, "¥")
                                 }
                         </p> }]}
                     />
@@ -233,7 +228,15 @@ function SingleSubmission() {
                                // Accept绿色加粗，其他红色加粗
                                render: (text, record) => {
                                        return (
-                                           <Popover placement="rightBottom"  content={record.res} title="测试点详细信息">
+                                           <Popover placement="rightBottom"
+                                                    content={record.res
+                                                        .replace(/&lt;/g, "<")
+                                                        .replace(/&gt;/g, ">")
+                                                        .replace(/&amp;/g, "&")
+                                                        .replace(/&quot;/g, "\"")
+                                                        .replace(/&#39;/g, "\'")
+                                                        .replace(/&apos;/g, "\'")}
+                                                    title="测试点详细信息">
                                                <a style={{
                                                    color: text === "Accepted" ? "#2ecc71" :
                                                        text === "Wrong Answer" ? "#c0392b" :
