@@ -1,71 +1,7 @@
-import React, {useEffect, useRef, useState} from 'react';
-import Search from "antd/es/input/Search";
-
+import React, {useEffect, useState} from 'react';
 import {Button, Input, Space, Table, Tag} from 'antd';
-import {SearchOutlined} from "@ant-design/icons";
-import Highlighter from 'react-highlight-words';
-
-
-
-/**
- * 题目数据
- * 1. 题号
- * 2. 题目名称
- * 3. 题目标签+标签对应的颜色（用tag渲染）；颜色是和标签一一对应的；不同的标签对应不同的颜色；
- *
- * 单击题目名称或者题号，跳转到题目详情界面
- * */
-const data = [
-    // 新增难度
-    {
-        key: '1',
-        id: '1',
-        name: '两数之和',
-        tags: ['数组', '哈希表'],
-        tagColors: ['blue', 'green'],
-        difficulty: '简单',
-    },
-    {
-        key: '2',
-        id: '2',
-        name: '两数相加',
-        tags: ['链表', '数学'],
-        tagColors: ['red', 'yellow'],
-        difficulty: '中等',
-    },
-    {
-        key: '3',
-        id: '3',
-        name: '无重复字符的最长子串',
-        tags: ['哈希表', '双指针', '字符串', '滑动窗口'],
-        tagColors: ['blue', 'green', 'red', 'yellow'],
-        difficulty: '中等',
-    },
-    {
-        key: '4',
-        id: '4',
-        name: '寻找两个正序数组的中位数',
-        tags: ['数组', '二分查找', '分治算法'],
-        tagColors: ['blue', 'green', 'red'],
-        difficulty: '困难',
-    },
-    {
-        key: '5',
-        id: '5',
-        name: '最长回文子串',
-        tags: ['字符串', '动态规划'],
-        tagColors: ['red', 'yellow'],
-        difficulty: '中等',
-    },
-    {
-        key: '6',
-        id: '6',
-        name: 'Z 字形变换',
-        tags: ['字符串'],
-        tagColors: ['red'],
-        difficulty: '中等',
-    },
-];
+import {getProblemSet} from "../../services/problemSetService";
+import Loading from "../Loading";
 
 /**
  * @Description: 题目列表
@@ -74,94 +10,52 @@ const data = [
  * */
 const ProblemTable = () => {
     const [searchText, setSearchText] = useState('');
-    const [searchedColumn, setSearchedColumn] = useState('');
-    const searchInput = useRef(null);
+    const [searchedColumn, setSearchedColumn] = useState('title');
 
-    const handleSearch = (selectedKeys, confirm, dataIndex) => {
-        confirm();
-        setSearchText(selectedKeys[0]);
-        setSearchedColumn(dataIndex);
-    };
-    const getColumnSearchProps = (dataIndex) => ({
-        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-            <div
-                style={{
-                    padding: 8,
-                }}
-                onKeyDown={(e) => e.stopPropagation()}
-            >
-                <Input
-                    ref={searchInput}
-                    placeholder={`Search ${dataIndex}`}
-                    value={selectedKeys[0]}
-                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-                    style={{
-                        marginBottom: 8,
-                        display: 'block',
-                    }}
-                />
-                <Space>
-                    <Button
-                        type="primary"
-                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
-                        icon={<SearchOutlined />}
-                        size="small"
-                        style={{
-                            width: 90,
-                        }}
-                    >
-                        Search
-                    </Button>
-                </Space>
-            </div>
-        ),
-        /**
-         * @Description: 用于设置表格的筛选规则
-         * @Param value: 筛选的值
-         * @Param record: 当前行的数据
-         * @Return: boolean
-         * */
-        onFilter: (value, record) =>
-            record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
-        onFilterDropdownOpenChange: (visible) => {
-            if (visible) {
-                setTimeout(() => searchInput.current?.select(), 100);
-            }
-        },
-        render: (text) =>
-            searchedColumn === dataIndex ? (
-                <Highlighter
-                    highlightStyle={{
-                        backgroundColor: '#ffc069',
-                        padding: 0,
-                    }}
-                    searchWords={[searchText]}
-                    autoEscape
-                    textToHighlight={text ? text.toString() : ''}
-                />
-            ) : (
-                text
-            ),
-    });
-    // 表格的列信息；TODO 实现跳转
+    const [problemList, setProblemList] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    // TODO 待实现
+    const [searchText1, setSearchText1] = useState('');
+    const [searchText2, setSearchText2] = useState('');
+    const [searchText3, setSearchText3] = useState('');
+
+    const onSearch = (value) => {
+        console.log("hahaha:::",searchText1, searchText2, searchText3);
+
+        const callback = (data) => {
+            setProblemList(data.data);
+            console.log(data.data);
+            setIsLoading(false);
+        }
+
+        const data = {
+            "pageIndex": currentPage,
+            "pageSize": 20,
+            "titleContains": searchText2,
+            "hardLevel": searchText3,
+        }
+
+        getProblemSet(data, callback);
+    }
+
+    // 表格的列信息
     const columns = [
         {
             title: 'ID',
             dataIndex: 'id',
             key: 'id',
             width: '20%',
-            ...getColumnSearchProps('id'),
             render: (text, record) => (
                 <a href={`/problem/${record.id}`}>{text}</a>
             ),
         },
         {
             title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
+            dataIndex: 'title',
+            key: 'title',
             width: '25%',
-            ...getColumnSearchProps('name'),
             render: (text, record) => (
                 <a href={`/problem/${record.id}`}>{text}</a>
             ),
@@ -171,37 +65,108 @@ const ProblemTable = () => {
             dataIndex: 'difficulty',
             key: 'difficulty',
             width: '15%',
-            ...getColumnSearchProps('difficulty'),
         },
         {
             title: 'Tags',
             dataIndex: 'tags',
             key: 'tags',
             width: '40%',
-            ...getColumnSearchProps('tags'),
             render: (tags, record) => (
                 <>
-                    {tags.map((tag, index) => {
-                        let color = record.tagColors[index];
-                        return (
-                            <Tag color={color} key={tag} style={{ fontSize: '13px', padding: '3px 6px' }}>
-                                {tag}
-                            </Tag>
-                        );
-                    }
-                    )}
+                    {tags.map((tag) => (
+                        <Tag color={tag.color} key={tag.tag} style={{ fontSize: '13px', padding: '3px 6px' }}>
+                            {tag.tag}
+                        </Tag>
+                    ))}
                 </>
             ),
         },
     ];
 
-    // 表格最多展示20题
-    return <Table
-        columns={columns}
-        dataSource={data}
-        pagination={{ pageSize: 20 }}
+    // 获取题目列表
+    useEffect(() => {
+        const callback = (data) => {
+            setProblemList(data.data);
+            console.log(data.data);
+            setIsLoading(false);
+        }
 
-    />;
+        const data = {
+            "pageIndex": currentPage,
+            "pageSize": 20,
+            "titleContains": searchText2,
+            "hardLevel": searchText3,
+        }
+
+
+        getProblemSet(data, callback);
+    }, []);
+
+    if (isLoading) {
+        return <Loading/>;
+    }
+
+    // 表格最多展示20题
+    return (
+    <div>
+        <div style={{height: 20,}}/>
+        {/*搜索框居中*/}
+        <div
+            style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: 30,
+            }}
+        >
+            <Space.Compact size="large">
+                {/*<Input*/}
+                {/*    placeholder="输入题目id"*/}
+                {/*    value={searchText1}*/}
+                {/*    onChange={(e) => setSearchText1(e.target.value)}*/}
+                {/*/>*/}
+                <Input
+                    placeholder="输入题目名称"
+                    value={searchText2}
+                    onChange={(e) => setSearchText2(e.target.value)}
+                    style={{
+                        width: 300,
+                    }}
+                />
+                <Input
+                    placeholder="输入题目难度"
+                    value={searchText3}
+                    onChange={(e) => setSearchText3(e.target.value)}
+                    style={{
+                        width: 300,
+                    }}
+                />
+                <Button
+                    onClick={onSearch}
+                >
+                    搜索
+                </Button>
+            </Space.Compact>
+            <div style={{
+                width: 20,
+            }}></div>
+        </div>
+        <Table
+            columns={columns}
+            style={{
+                marginLeft: 20,
+                marginRight: 20,
+            }}
+            dataSource={problemList}
+            pagination={{pageSize: 20}}
+            pagination={{
+                onChange: (page) => {
+                    console.log(page);
+                    setCurrentPage(page);
+                },
+            }}
+        />;
+    </div>);
 };
 
 /**
@@ -212,96 +177,9 @@ const ProblemTable = () => {
  * */
 export function ProblemSet() {
 
-    // 所有的标签信息
-    const [tags, setTags] = useState([]);
 
-    // 前端硬编码标签信息（和颜色）
     useEffect(() => {
-        setTags([
-            {
-                name: '数组',
-                color: 'blue',
-            },
-            {
-                name: '哈希表',
-                color: 'green',
-            },
-            {
-                name: '链表',
-                color: 'red',
-            },
-            {
-                name: '数学',
-                color: 'yellow',
-            },
-            {
-                name: '双指针',
-                color: 'purple',
-            },
-            {
-                name: '字符串',
-                color: 'cyan',
-            },
-            {
-                name: '滑动窗口',
-                color: 'geekblue',
-            },
-            {
-                name: '动态规划',
-                color: 'magenta',
-            },
-            {
-                name: '二分查找',
-                color: 'volcano',
-            },
-            {
-                name: '分治算法',
-                color: 'orange',
-            },
-            {
-                name: '回溯算法',
-                color: 'gold',
-            },
-            {
-                name: '贪心算法',
-                color: 'lime',
-            },
-            {
-                name: '深度优先搜索',
-                color: 'green',
-            },
-            {
-                name: '广度优先搜索',
-                color: 'cyan',
-            },
-            {
-                name: '位运算',
-                color: 'blue',
-            },
-            {
-                name: '栈',
-                color: 'purple',
-            },
-            {
-                name: '堆',
-                color: 'geekblue',
-            },
-            {
-                name: '树',
-                color: 'magenta',
-            },
-            {
-                name: '图',
-                color: 'volcano',
-            },
-            {
-                name: '排序',
-                color: 'orange',
-            },
-        ]);
     }, []);
-
-
 
 
     return (
@@ -325,7 +203,7 @@ export function ProblemSet() {
                 {/*        // <Tag key={index} color={tag.color}>*/}
                 {/*        //     {tag.name}*/}
                 {/*        // </Tag>*/}
-                {/*        */}
+
                 {/*        <React.Fragment key={index}>*/}
                 {/*            <Tag color={tag.color} style={{ fontSize: '16px', padding: '8px 12px' }}>{tag.name}</Tag>*/}
                 {/*            {index < tags.length - 1 && <span style={{ height:40, display: 'inline-block' }} />}*/}
@@ -346,7 +224,7 @@ export function ProblemSet() {
                     }}
                 >
                 </div>
-                <ProblemTable />
+                <ProblemTable/>
             </div>
 
         </div>

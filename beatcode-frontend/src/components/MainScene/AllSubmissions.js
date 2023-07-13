@@ -6,8 +6,8 @@ import {getSubmissions} from "../../services/submissionService";
 import Search from "antd/es/input/Search";
 import { Radio } from 'antd';
 
-import {Input, Select, Space} from 'antd';
-import {SearchOutlined} from '@ant-design/icons';
+import {Input,  Space} from 'antd';
+import Loading from "../Loading";
 
 /**
  * @Description: 某个用户所有的提交
