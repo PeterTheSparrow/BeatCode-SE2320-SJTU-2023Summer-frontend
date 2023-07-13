@@ -122,15 +122,11 @@ const CodeEditor = () => {
         submit({
             "language":language,
             "code":code,
-            "problem_id":"1",
-            "user_id":114,
-            "user_name":514,
+            "problem_id":id,
         },callback)
         setTimeout(() => {
-            // TODO 2秒以内未能得到返回值并跳转，因此跳转回题目列表页面
            navigate(`/submissions`);
-
-        }, 2000);
+        }, 500);
     }
 
     const labelStyle = {

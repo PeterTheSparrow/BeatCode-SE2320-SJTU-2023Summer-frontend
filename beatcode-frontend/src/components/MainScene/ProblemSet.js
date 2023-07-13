@@ -22,11 +22,9 @@ const ProblemTable = () => {
     const [searchText3, setSearchText3] = useState('');
 
     const onSearch = (value) => {
-        console.log("hahaha:::",searchText1, searchText2, searchText3);
 
         const callback = (data) => {
-            setProblemList(data.data);
-            console.log(data.data);
+            setProblemList(data.data.page);
             setIsLoading(false);
         }
 
@@ -86,8 +84,7 @@ const ProblemTable = () => {
     // 获取题目列表
     useEffect(() => {
         const callback = (data) => {
-            setProblemList(data.data);
-            console.log(data.data);
+            setProblemList(data.data.page);
             setIsLoading(false);
         }
 
@@ -158,8 +155,8 @@ const ProblemTable = () => {
                 marginRight: 20,
             }}
             dataSource={problemList}
-            pagination={{pageSize: 20}}
             pagination={{
+                pageSize: 20,
                 onChange: (page) => {
                     console.log(page);
                     setCurrentPage(page);
