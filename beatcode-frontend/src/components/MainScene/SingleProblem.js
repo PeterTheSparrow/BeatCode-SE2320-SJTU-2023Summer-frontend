@@ -208,7 +208,7 @@ const CodeEditor = () => {
                             // children={markdownText}
                             children={detail}
                             remarkPlugins={[remarkGfm]}
-                        />,
+                        />
                     </div>
                 </Col>
                 <Col span={12}>
