@@ -68,7 +68,7 @@ const ProblemTable = () => {
             title: 'Tags',
             dataIndex: 'tags',
             key: 'tags',
-            width: '40%',
+            width: '30%',
             render: (tags, record) => (
                 <>
                     {tags.map((tag) => (
@@ -79,11 +79,24 @@ const ProblemTable = () => {
                 </>
             ),
         },
+        {
+            title: 'Condition',
+            dataIndex: 'condition',
+            key: 'condition',
+            width: '10%',
+            render: (text, record) => (
+                <>
+                    {text}
+                </>
+            ),
+
+        }
     ];
 
     // 获取题目列表
     useEffect(() => {
         const callback = (data) => {
+            console.log(data);
             setProblemList(data.data.page);
             setIsLoading(false);
         }
@@ -97,7 +110,7 @@ const ProblemTable = () => {
 
 
         getProblemSet(data, callback);
-    }, []);
+    }, [currentPage,searchText2,searchText3]);
 
     if (isLoading) {
         return <Loading/>;
