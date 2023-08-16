@@ -22,11 +22,9 @@ const ProblemTable = () => {
     const [searchText3, setSearchText3] = useState('');
 
     const onSearch = (value) => {
-        console.log("hahaha:::",searchText1, searchText2, searchText3);
-
         const callback = (data) => {
-            setProblemList(data.data);
-            console.log(data.data);
+            console.log("::",data.page);
+            setProblemList(data.page.data);
             setIsLoading(false);
         }
 
@@ -86,8 +84,7 @@ const ProblemTable = () => {
     // 获取题目列表
     useEffect(() => {
         const callback = (data) => {
-            setProblemList(data.data);
-            console.log(data.data);
+            setProblemList(data.data.page);
             setIsLoading(false);
         }
 
@@ -120,11 +117,6 @@ const ProblemTable = () => {
             }}
         >
             <Space.Compact size="large">
-                {/*<Input*/}
-                {/*    placeholder="输入题目id"*/}
-                {/*    value={searchText1}*/}
-                {/*    onChange={(e) => setSearchText1(e.target.value)}*/}
-                {/*/>*/}
                 <Input
                     placeholder="输入题目名称"
                     value={searchText2}
@@ -192,24 +184,6 @@ export function ProblemSet() {
                     }}
                 >
                 </div>
-                {/*<div*/}
-                {/*    style={{*/}
-                {/*            marginLeft: 20,*/}
-                {/*            marginRight: 20,*/}
-                {/*            marginBottom: 20,*/}
-                {/*        }}*/}
-                {/*>*/}
-                {/*    {tags.map((tag, index) => (*/}
-                {/*        // <Tag key={index} color={tag.color}>*/}
-                {/*        //     {tag.name}*/}
-                {/*        // </Tag>*/}
-
-                {/*        <React.Fragment key={index}>*/}
-                {/*            <Tag color={tag.color} style={{ fontSize: '16px', padding: '8px 12px' }}>{tag.name}</Tag>*/}
-                {/*            {index < tags.length - 1 && <span style={{ height:40, display: 'inline-block' }} />}*/}
-                {/*        </React.Fragment>*/}
-                {/*    ))}*/}
-                {/*</div>*/}
             </div>
             <div
                 style={{

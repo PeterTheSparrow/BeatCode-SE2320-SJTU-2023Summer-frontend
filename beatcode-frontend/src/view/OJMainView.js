@@ -1,9 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Col, Layout, Menu, Row, theme} from 'antd';
+import React from 'react';
+import { Col, Layout, Menu, Row, theme} from 'antd';
 import {Link, Outlet, useLocation} from "react-router-dom";
-import {SmileTwoTone, UserOutlined} from "@ant-design/icons";
-import {checkUserLogin} from "../services/userService";
-import {checkAdminLogin} from "../services/userService";
+import {UserOutlined} from "@ant-design/icons";
 const { Header, Content, Footer } = Layout;
 
 
