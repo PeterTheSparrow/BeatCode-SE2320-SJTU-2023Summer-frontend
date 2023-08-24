@@ -86,7 +86,13 @@ const ProblemTable = () => {
             width: '10%',
             render: (text, record) => (
                 <>
-                    {text}
+                    {
+                        text!=="100"
+                            ?
+                            <text style={{color: `#ff0000`}}>{text}</text>
+                            :
+                            <text style={{color: `#00ff00`}}>{text}</text>
+                    }
                 </>
             ),
 
