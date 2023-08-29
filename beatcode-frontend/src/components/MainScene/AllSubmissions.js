@@ -239,8 +239,8 @@ function AllSubmissions() {
                            defaultCurrent: 1,
                            showTotal: ()=>`共有${totalElements}条记录`,
                            onChange: (page,pageSize)=>{
-                               setPageNum(page);
-                               setPageSize(pageSize);
+                               setPageNum(page.toString());
+                               setPageSize(pageSize.toString());
                            },
                        }}
 
