@@ -1,7 +1,7 @@
 import React from 'react';
 import {Col, Layout, Menu, Row, theme} from 'antd';
 import {Link, Outlet, useLocation} from "react-router-dom";
-import {SmileTwoTone, UserOutlined} from "@ant-design/icons";
+import {UserOutlined} from "@ant-design/icons";
 const { Header, Content, Footer } = Layout;
 
 
@@ -61,8 +61,12 @@ function OJAdminView() {
                             <Menu.Item key="/admin/ranking-board" style={location.pathname === '/admin/ranking-board' ? { fontWeight: 'bold' } : null}>
                                 <Link to="/admin/ranking-board">排行榜</Link>
                             </Menu.Item>
-                            <Menu.Item key="/admin/my-submissions" style={location.pathname === '/admin/my-submissions' ? { fontWeight: 'bold' } : null}>
-                                <Link to="/admin/my-submissions">我的提交</Link>
+                            <Menu.Item key="/admin/submissions" style={location.pathname === '/admin/my-submissions' ? { fontWeight: 'bold' } : null}>
+                                <Link to="/admin/submissions">所有提交</Link>
+                            </Menu.Item>
+                            {/*往题库中添加题目*/}
+                            <Menu.Item key="/admin/add-problem" style={location.pathname === '/admin/add-problem' ? { fontWeight: 'bold' } : null}>
+                                <Link to="/admin/add-problem">添加题目</Link>
                             </Menu.Item>
                             <Menu.Item key="/admin/personal-info" style={location.pathname === '/admin/personal-info' ? { fontWeight: 'bold' } : null}>
                                 <Link to="/admin/personal-info">个人信息</Link>
@@ -72,7 +76,7 @@ function OJAdminView() {
                     </Col>
                     <Col span={8}>
                         {/*超链接，点击一下跳跃到用户信息界面*/}
-                        <Link to="/personal-info">
+                        <Link to="/admin/personal-info">
                             {/*大小：很大*/}
                             <UserOutlined
                                 style={{

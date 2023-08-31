@@ -14,6 +14,7 @@ import OJAdminView from "../view/OJAdminView";
 import ProblemSetAdmin from "../components/AdminScene/ProblemSetAdmin";
 import EditSingleProblem from "../components/AdminScene/EditSingleProblem";
 import RouteGuard from "./RouteGuard";
+import AddSingleProblem from "../components/AdminScene/AddSingleProblem";
 
 /**
  * @Description: 路由配置
@@ -57,6 +58,7 @@ const BasicRoute = () => {
                     {/*/!*管理员独有的：ProblemSetAdmin、EditSingleProblem（修改某道题目的信息）*!/*/}
                     <Route path={"/admin"} element={<ProblemSetAdmin />} />
                     <Route path={"/admin/edit-problem/:id"} element={<EditSingleProblem />} />
+                    <Route path={"/admin/add-problem"} element={<AddSingleProblem />} />
 
                     {/*/!*下面这些组件全部是普通用户和管理员共用的*!/*/}
                     <Route path={"/admin/ranking-board"} element={<RankingBoard />} />

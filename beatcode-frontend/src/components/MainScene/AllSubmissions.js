@@ -1,21 +1,15 @@
 import React, {useEffect, useState} from "react";
 import {Button, Cascader, Col, Row, Spin, Table} from "antd";
 import {NavLink} from "react-router-dom";
-import {PieChart, Pie, Cell, Legend} from "recharts";
 import {getSubmissions} from "../../services/submissionService";
-import Search from "antd/es/input/Search";
-import { Radio } from 'antd';
 
 import {Input,  Space} from 'antd';
-import Loading from "../Loading";
 
 /**
- * @Description: 某个用户所有的提交
+ * @Description: 可以看到所有用户的所有提交
  *
- * 1. 统计信息：提交数目、通过数目、通过率（列表+统计图）
- * 2. 提交列表：每一次提交，包含提交id、题目id、题目名称、提交时间戳、语言、结果
- *
- * TODO 点击提交id，可以跳转到提交详情界面
+ * 1. 搜索栏：可以根据题目id、题目名称、用户名进行搜索；可以根据提交时间、题目id、题目名称进行排序
+ * 2. 提交列表：每一次提交：题目id	题目名称	用户名	通过状态	得分	运行时间	运行内存	提交时间
  * */
 function AllSubmissions() {
 

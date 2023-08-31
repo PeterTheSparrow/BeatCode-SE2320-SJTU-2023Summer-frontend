@@ -22,6 +22,12 @@ import {logout} from "../../services/userService";
  *  2.3 验证邮箱验证码是否正确
  * 3. 修改密码
  *  3.1 通过已经验证的邮箱发送验证码，如果正确则修改密码
+ *
+ * 1. 每次点击save之后，都需要从后台重新加载数据
+ * 2. 【用户信息的获取】现在的问题是去两个服务里面分别请求，还是在一个服务里面请求（这样就需要后端两个服务来通信了，
+ *  感觉还是后端两个服务来通信比较合理一些）
+ * 3. 【用户信息的修改】
+ * 4. 所以每次查询的时候，我如何判断是哪个用户来查了？
  * */
 function PersonalInfo() {
     const [isEditModeUsername, setIsEditModeUsername] = useState(false);
@@ -29,7 +35,6 @@ function PersonalInfo() {
     const [isEditModePassword, setIsEditModePassword] = useState(false);
     const [isEditModePhone, setIsEditModePhone] = useState(false);
 
-    // const [showEditButton, setShowEditButton] = useState(false);
     const [showEditButtonUsername, setShowEditButtonUsername] = useState(false);
     const [showEditButtonEmail, setShowEditButtonEmail] = useState(false);
     const [showEditButtonPassword, setShowEditButtonPassword] = useState(false);
@@ -65,171 +70,195 @@ function PersonalInfo() {
             style = {{
                 marginBottom: 50,
                 marginTop: 10,
-                marginLeft: 50,
-                marginRight: 50,
-                width: "70%",
+                marginLeft: 30,
+                // marginRight: 50,
+                width: "90%",
             }}
         >
-            <div
-                style={{
-                    height: 50,
-                }}
-            ></div>
-            <Card
-                title="Username"
-                onMouseEnter={() => setShowEditButtonUsername(true)}
-                onMouseLeave={() => setShowEditButtonUsername(false)}
-                extra={
-                    showEditButtonUsername && (
-                        <Button onClick={() => setIsEditModeUsername(true)}>Edit</Button>
-                    )
-                }
-            >
-                {isEditModeUsername ? (
-                        <Row gutter={10} align="middle" style={{ marginBottom: 10 }}>
-                            <Col flex="auto">
-                                <Input
-                                    name="username"
-                                    value={username}
-                                    onChange={handleInputChange}
-                                    style={{ width: "60%" }}
-                                />
-                            </Col>
-                            <Col>
-                                <Button onClick={() => setIsEditModeUsername(false)}>Save</Button>
-                            </Col>
-                            <Col>
-                                <Button onClick={() => setIsEditModeUsername(false)}>Cancel</Button>
-                            </Col>
-                        </Row>
+            <Row>
+                <Col span={6}>
 
-                    ) : (
-                    <div>
-                        <p>{username}</p>
-                    </div>
-                )}
-            </Card>
+                </Col>
+                <Col span={12}>
+                    <div
+                        style={{
+                            height: 50,
+                        }}
+                    ></div>
+                    <Card
+                        title="Username"
+                        onMouseEnter={() => setShowEditButtonUsername(true)}
+                        onMouseLeave={() => setShowEditButtonUsername(false)}
+                        extra={
+                            showEditButtonUsername && (
+                                <Button onClick={() => setIsEditModeUsername(true)}>Edit</Button>
+                            )
+                        }
+                        style = {{
+                            marginBottom: 10,
+                            }}
+                    >
+                        {isEditModeUsername ? (
+                            <Row gutter={10} align="middle" style={{ marginBottom: 10 }}>
+                                <Col flex="auto">
+                                    <Input
+                                        name="username"
+                                        value={username}
+                                        onChange={handleInputChange}
+                                        style={{ width: "60%" }}
+                                    />
+                                </Col>
+                                <Col>
+                                    <Button onClick={() => setIsEditModeUsername(false)}>Save</Button>
+                                </Col>
+                                <Col>
+                                    <Button onClick={() => setIsEditModeUsername(false)}>Cancel</Button>
+                                </Col>
+                            </Row>
+
+                        ) : (
+                            <div>
+                                <p>{username}</p>
+                            </div>
+                        )}
+                    </Card>
 
 
 
-            <Card
-                title="Email"
-                onMouseEnter={() => setShowEditButtonEmail(true)}
-                onMouseLeave={() => setShowEditButtonEmail(false)}
-                extra={
-                    showEditButtonEmail && (
-                        <Button onClick={() => setIsEditModeEmail(true)}>Edit</Button>
-                    )
-                }
-            >
-                {isEditModeEmail ? (
-                    <Row gutter={10} align="middle" style={{ marginBottom: 10 }}>
-                        <Col flex="auto">
-                            <Input
-                                name="email"
-                                value={email}
-                                onChange={handleInputChange}
-                                style={{ width: "60%" }}
-                            />
-                        </Col>
-                        <Col>
-                            <Button onClick={() => setIsEditModeEmail(false)}>Save</Button>
-                        </Col>
-                        <Col>
-                            <Button onClick={() => setIsEditModeEmail(false)}>Cancel</Button>
-                        </Col>
-                    </Row>
-                ) : (
-                    <div>
-                        <p>{email}</p>
-                    </div>
-                )}
-            </Card>
+                    <Card
+                        title="Email"
+                        onMouseEnter={() => setShowEditButtonEmail(true)}
+                        onMouseLeave={() => setShowEditButtonEmail(false)}
+                        extra={
+                            showEditButtonEmail && (
+                                <Button onClick={() => setIsEditModeEmail(true)}>Edit</Button>
+                            )
+                        }
+                        style = {{
+                            marginBottom: 10,
+                        }}
+                        boardered={false}
+                    >
+                        {isEditModeEmail ? (
+                            <Row gutter={10} align="middle" style={{ marginBottom: 10 }}>
+                                <Col flex="auto">
+                                    <Input
+                                        name="email"
+                                        value={email}
+                                        onChange={handleInputChange}
+                                        style={{ width: "60%" }}
+                                    />
+                                </Col>
+                                <Col>
+                                    <Button onClick={() => setIsEditModeEmail(false)}>Save</Button>
+                                </Col>
+                                <Col>
+                                    <Button onClick={() => setIsEditModeEmail(false)}>Cancel</Button>
+                                </Col>
+                            </Row>
+                        ) : (
+                            <div>
+                                <p>{email}</p>
+                            </div>
+                        )}
+                    </Card>
 
-            <Card
-                title="Password"
-                onMouseEnter={() => setShowEditButtonPassword(true)}
-                onMouseLeave={() => setShowEditButtonPassword(false)}
-                extra={
-                    showEditButtonPassword && (
-                        <Button onClick={() => setIsEditModePassword(true)}>Edit</Button>
-                    )
-                }
-            >
-                {isEditModePassword ? (
-                    <Row gutter={10} align="middle" style={{ marginBottom: 10 }}>
-                        <Col flex="auto">
-                            <Input
-                                name="password"
-                                value={password}
-                                onChange={handleInputChange}
-                                style={{ width: "60%" }}
-                            />
-                        </Col>
-                        <Col>
-                            <Button onClick={() => setIsEditModePassword(false)}>Save</Button>
-                        </Col>
-                        <Col>
-                            <Button onClick={() => setIsEditModePassword(false)}>Cancel</Button>
-                        </Col>
-                    </Row>
-                ) : (
-                    <div>
-                        <p>{password}</p>
-                    </div>
-                )}
-            </Card>
+                    <Card
+                        title="Password"
+                        onMouseEnter={() => setShowEditButtonPassword(true)}
+                        onMouseLeave={() => setShowEditButtonPassword(false)}
+                        extra={
+                            showEditButtonPassword && (
+                                <Button onClick={() => setIsEditModePassword(true)}>Edit</Button>
+                            )
+                        }
+                        style = {{
+                            marginBottom: 10,
+                        }}
+                    >
+                        {isEditModePassword ? (
+                            <Row gutter={10} align="middle" style={{ marginBottom: 10 }}>
+                                <Col flex="auto">
+                                    <Input
+                                        name="password"
+                                        value={password}
+                                        onChange={handleInputChange}
+                                        style={{ width: "60%" }}
+                                    />
+                                </Col>
+                                <Col>
+                                    <Button onClick={() => setIsEditModePassword(false)}>Save</Button>
+                                </Col>
+                                <Col>
+                                    <Button onClick={() => setIsEditModePassword(false)}>Cancel</Button>
+                                </Col>
+                            </Row>
+                        ) : (
+                            <div>
+                                <p>{password}</p>
+                            </div>
+                        )}
+                    </Card>
 
-            <Card
-                title="Phone"
-                onMouseEnter={() => setShowEditButtonPhone(true)}
-                onMouseLeave={() => setShowEditButtonPhone(false)}
-                extra={
-                    showEditButtonPhone && (
-                        <Button onClick={() => setIsEditModePhone(true)}>Edit</Button>
-                    )
-                }
-            >
-                {isEditModePhone ? (
-                    <Row gutter={10} align="middle" style={{ marginBottom: 10 }}>
-                        <Col flex="auto">
-                            <Input
-                                name="phone"
-                                value={phone}
-                                onChange={handleInputChange}
-                                style={{ width: "60%" }}
-                            />
-                        </Col>
-                        <Col>
-                            <Button onClick={() => setIsEditModePhone(false)}>Save</Button>
-                        </Col>
-                        <Col>
-                            <Button onClick={() => setIsEditModePhone(false)}>Cancel</Button>
-                        </Col>
-                    </Row>
-                ) : (
-                    <div>
-                        <p>{phone}</p>
-                    </div>
-                )}
-            </Card>
+                    <Card
+                        title="Phone"
+                        onMouseEnter={() => setShowEditButtonPhone(true)}
+                        onMouseLeave={() => setShowEditButtonPhone(false)}
+                        extra={
+                            showEditButtonPhone && (
+                                <Button onClick={() => setIsEditModePhone(true)}>Edit</Button>
+                            )
+                        }
+                        style = {{
+                            marginBottom: 10,
+                        }}
+                    >
+                        {isEditModePhone ? (
+                            <Row gutter={10} align="middle" style={{ marginBottom: 10 }}>
+                                <Col flex="auto">
+                                    <Input
+                                        name="phone"
+                                        value={phone}
+                                        onChange={handleInputChange}
+                                        style={{ width: "60%" }}
+                                    />
+                                </Col>
+                                <Col>
+                                    <Button onClick={() => setIsEditModePhone(false)}>Save</Button>
+                                </Col>
+                                <Col>
+                                    <Button onClick={() => setIsEditModePhone(false)}>Cancel</Button>
+                                </Col>
+                            </Row>
+                        ) : (
+                            <div>
+                                <p>{phone}</p>
+                            </div>
+                        )}
+                    </Card>
 
-            <Button type="primary" htmlType="submit"
-                    danger={true}
-                    onClick={logout_service}
-                    size={"large"}
-                    style={{
-                        marginTop: 20,
-                        marginLeft: 0,
-                    }}>
-                退出登录
-            </Button>
+                    <Button type="primary" htmlType="submit"
+                            danger={true}
+                            onClick={logout_service}
+                            size={"large"}
+                            style={{
+                                marginTop: 20,
+                                marginLeft: 0,
+                            }}>
+                        退出登录
+                    </Button>
 
-            <div
-                style={{
-                    height: 50,
-                }}
-            ></div>
+                    <div
+                        style={{
+                            height: 50,
+                        }}
+                    ></div>
+                </Col>
+                <Col span={6}>
+
+                </Col>
+            </Row>
+
         </div>
     );
 }

@@ -16,6 +16,7 @@ import Loading from "../Loading";
 
 
 
+
 /**
  * @Description: 单个题目的组件，包含题目描述、代码编辑器、提交按钮等
  * */
@@ -51,6 +52,8 @@ const CodeEditor = () => {
     const [difficulty, setDifficulty] = useState('easy');
 
     const [tags, setTags] = useState([
+    ]);
+    const [suggestions, setSuggestions] = useState([
     ]);
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -102,6 +105,37 @@ const CodeEditor = () => {
     const handleEditorChange = (value, event) => {
         // 处理编辑器内容变化的逻辑
         setCode(value);
+
+
+        // // 使用ajax请求
+        // let opts = {
+        //     method: "POST",
+        //     body: JSON.stringify({
+        //         prompt: value,
+        //         max_tokens: 64,
+        //     }),
+        //
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'Authorization': 'Bearer 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',
+        //     }
+        // };
+        //
+        // fetch('https://api.openai.com/v1/engines/davinci/completions',opts)
+        //     .then((response) => {
+        //         console.log(response);
+        //         return response.json()
+        //     }
+        //     )
+        //     .then((data) => {
+        //         console.log(data);
+        //         setSuggestions(data.choices);
+        //     }
+        //     )
+        //     .catch((error) => {
+        //         console.log(error);
+        //     }
+        //     );
     };
 
     const handleLanguageChange = (event) => {
