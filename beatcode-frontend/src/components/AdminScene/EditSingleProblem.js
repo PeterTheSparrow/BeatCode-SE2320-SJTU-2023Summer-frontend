@@ -270,7 +270,10 @@ function EditSingleProblem() {
                 {/*    2. 所有生成的标签都通过tag组件实时渲染*/}
                 {/*    3. 点击标签，可以修改标签的信息*/}
                 {/*    4. 点击标签右上角的x，可以删除标签*/}
-                <Form.Item label="Tags" name="tags">
+                <Form.Item
+                    label="Tags"
+                    name="tags"
+                >
                     <Space wrap>
                         {tags.map((tag) => (
                             // tag用最大的size
@@ -366,17 +369,19 @@ function EditSingleProblem() {
 
                 <Form.Item
                     wrapperCol={{
-                        offset: 8,
+                        offset: 4,
                         span: 16,
                     }}
                 >
+                    {/*按钮在最右边*/}
                     <Button
                         type="primary"
                         htmlType="submit"
                         size={"large"}
                         onClick={handleSubmit}
+
                     >
-                        Submit
+                        提交您的修改
                     </Button>
                 </Form.Item>
 
@@ -390,6 +395,9 @@ function EditSingleProblem() {
                             // message: 'Please upload test cases!',
                         } ,
                     ]}
+                    style={{
+                        marginTop: '50px',
+                        }}
                 >
                     <Dragger {...props}>
                         <p className="ant-upload-drag-icon">
