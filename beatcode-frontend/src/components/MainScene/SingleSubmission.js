@@ -245,6 +245,7 @@ function SingleSubmission() {
                                                        text === "Memory Limit Exceeded" ? "#16a085" :
                                                        text === "Judgement Failed" ? "#2c3e50" :
                                                        text === "Compile Error" ? "#d35400" :
+                                                           text === "Runtime Error" ? "#0b0286" :
                                                        "#7f8c8d",
                                                    fontWeight: 'bold'
                                                }}>{text}</a>

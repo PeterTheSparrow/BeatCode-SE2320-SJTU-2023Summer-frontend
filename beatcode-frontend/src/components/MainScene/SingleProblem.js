@@ -215,7 +215,7 @@ const CodeEditor = () => {
                     <div>
                         <Space wrap>
                             <Select
-                                defaultValue="C++"
+                                defaultValue="C++20"
                                 style={{
                                     width: 120,
                                     marginBottom: 20,
@@ -223,10 +223,11 @@ const CodeEditor = () => {
                             }}
                                 onChange={handleLanguageChange}
                                 options={[
-                                    { value: 'C++', label: 'C++' },
+                                    { value: 'C++20', label: 'C++20' },
                                     { value: 'C', label: 'C' },
-                                    { value: 'java', label: 'Java' },
-                                    { value: 'python', label: 'Python' },
+                                    { value: 'Java17', label: 'Java17' },
+                                    { value: 'Python3', label: 'Python3' },
+                                    { value: 'Pascal', label: 'Pascal' },
                                 ]}
                             />
                             <Select
