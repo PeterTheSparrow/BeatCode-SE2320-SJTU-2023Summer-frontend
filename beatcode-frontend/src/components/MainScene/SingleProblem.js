@@ -60,7 +60,6 @@ const CodeEditor = () => {
 
     // 用钩子初始化获取题目信息
     useEffect(() => {
-
         const callback=(data)=>{
             console.log(data);
 
@@ -83,12 +82,16 @@ const CodeEditor = () => {
 
         }
 
-        // 需要发送的数据就是题号（只是数字，不是json），根据当前界面的url确定题号
-        const id = window.location.pathname.split('/')[2];
+        // 由于管理员和普通用户的url不同，因此需要判断
+        let id;
+        if(window.location.pathname.split('/')[1]==='admin'){
+            id = window.location.pathname.split('/')[3];
+        }
+        else{
+            id = window.location.pathname.split('/')[2];
+        }
 
         getProblemDetail(id,callback);
-        // getSingleProblem(id,callback);
-
 
     }, []);
 

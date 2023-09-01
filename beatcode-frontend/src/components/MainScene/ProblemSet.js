@@ -123,7 +123,7 @@ const ProblemTable = () => {
                     value={searchText2}
                     onChange={(e) => setSearchText2(e.target.value)}
                     style={{
-                        width: 300,
+                        width: '60%',
                     }}
                 />
                 <Input
@@ -147,8 +147,9 @@ const ProblemTable = () => {
         <Table
             columns={columns}
             style={{
-                marginLeft: 20,
-                marginRight: 20,
+                marginLeft: '2.5%',
+                marginRight: '2.5%',
+                width: '95%',
             }}
             dataSource={problemList}
             pagination={{pageSize: 20}}
