@@ -2,6 +2,7 @@ import React from 'react';
 import {Col, Layout, Menu, Row, theme} from 'antd';
 import {Link, Outlet, useLocation} from "react-router-dom";
 import {UserOutlined} from "@ant-design/icons";
+
 const { Header, Content, Footer } = Layout;
 
 
@@ -111,6 +112,7 @@ function OJAdminView() {
                     {/*定义二级路由的出口*/}
                     < Outlet />
                 </div>
+                {/*<FloatingButtonChat />*/}
             </Content>
             <Footer
                 style={{

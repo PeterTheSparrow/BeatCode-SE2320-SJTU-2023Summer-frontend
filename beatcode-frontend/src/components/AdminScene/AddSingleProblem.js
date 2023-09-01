@@ -39,9 +39,9 @@ function AddSingleProblem() {
     disabled: isbannedUploadingFile,
     name: 'file',   // 后端接收的参数名
     multiple: false, // 是否支持多选文件
-    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76', // 上传的地址 TODO 修改为后端接口
+    action: 'ipads.se.sjtu.edu.cn', // 上传的地址 TODO 修改为后端接口
 
-    // 上传文件之前的钩子，参数为上传的文件，若返回 false 或者 Promise 则停止上传。
+    // onChange(info): 上传文件的回调函数
     onChange(info) {
       const { status } = info.file;
       if (status !== 'uploading') {
@@ -54,7 +54,7 @@ function AddSingleProblem() {
       }
     },
 
-    // 上传文件之前的钩子，参数为上传的文件，若返回 false 或者 Promise 则停止上传。
+    // onDrop(e): 拖拽文件的回调函数
     onDrop(e) {
       console.log('Dropped files', e.dataTransfer.files);
     },

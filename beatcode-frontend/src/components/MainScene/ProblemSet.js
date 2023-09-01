@@ -114,6 +114,7 @@ const ProblemTable = () => {
                 justifyContent: "center",
                 alignItems: "center",
                 marginBottom: 30,
+                width: "100%",
             }}
         >
             <Space.Compact size="large">
