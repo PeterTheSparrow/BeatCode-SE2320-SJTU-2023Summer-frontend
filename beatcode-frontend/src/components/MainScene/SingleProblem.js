@@ -20,8 +20,9 @@ import Loading from "../Loading";
 /**
  * @Description: 单个题目的组件，包含题目描述、代码编辑器、提交按钮等
  * */
+const defaultLanguage="C++20";
 const CodeEditor = () => {
-    const [language, setLanguage] = useState('C++');
+    const [language, setLanguage] = useState(defaultLanguage);
     // 代码编辑器的内容
     const [code, setCode] = useState('');
     const [loading, setLoading] = useState(true);
@@ -159,15 +160,11 @@ const CodeEditor = () => {
         submit({
             "language":language,
             "code":code,
-            "problem_id":"1",
-            "user_id":114,
-            "user_name":514,
+            "problem_id":id,
         },callback)
         setTimeout(() => {
-            // TODO 2秒以内未能得到返回值并跳转，因此跳转回题目列表页面
            navigate(`/submissions`);
-
-        }, 2000);
+        }, 500);
     }
 
     const labelStyle = {
@@ -249,14 +246,14 @@ const CodeEditor = () => {
                             // children={markdownText}
                             children={detail}
                             remarkPlugins={[remarkGfm]}
-                        />,
+                        />
                     </div>
                 </Col>
                 <Col span={12}>
                     <div>
                         <Space wrap>
                             <Select
-                                defaultValue="C++"
+                                defaultValue={defaultLanguage}
                                 style={{
                                     width: 120,
                                     marginBottom: 20,
@@ -264,10 +261,11 @@ const CodeEditor = () => {
                             }}
                                 onChange={handleLanguageChange}
                                 options={[
-                                    { value: 'C++', label: 'C++' },
+                                    { value: 'C++20', label: 'C++20' },
                                     { value: 'C', label: 'C' },
-                                    { value: 'java', label: 'Java' },
-                                    { value: 'python', label: 'Python' },
+                                    { value: 'Java17', label: 'Java17' },
+                                    { value: 'Python3', label: 'Python3' },
+                                    { value: 'Pascal', label: 'Pascal' },
                                 ]}
                             />
                             <Select

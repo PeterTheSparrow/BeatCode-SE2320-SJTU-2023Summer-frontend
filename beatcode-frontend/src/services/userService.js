@@ -2,6 +2,7 @@ import {postRequest} from "../utils/ajax";
 import {message} from "antd";
 import {history} from "../utils/history";
 import {apiUrl, apiUrlWindows} from "../utils/config-overrides";
+import axios from "axios";
 
 /**
  * @Description: 检查是否登录（用户）
@@ -109,4 +110,22 @@ export const login = (data) => {
     };
 
     postRequest(url, data, callback);
+}
+export const getRanking=(data,callback)=>{
+    let token= localStorage.getItem('seDeToken');
+    if (token === null) {
+        token = '';
+    }
+    axios.post(`${apiUrl}/getRanking`,data , {
+        headers: {
+            'Content-Type': 'application/json',
+            'golden-class-token': token
+        }})
+        .then(res=>{
+            console.log(data);
+            callback(res.data);
+        })
+        .catch(err=>{
+            console.log(err);
+        })
 }

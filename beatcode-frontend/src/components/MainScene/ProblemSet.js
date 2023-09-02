@@ -22,9 +22,9 @@ const ProblemTable = () => {
     const [searchText3, setSearchText3] = useState('');
 
     const onSearch = (value) => {
+
         const callback = (data) => {
-            console.log("::",data.page);
-            setProblemList(data.page.data);
+            setProblemList(data.data.page);
             setIsLoading(false);
         }
 
@@ -68,7 +68,7 @@ const ProblemTable = () => {
             title: 'Tags',
             dataIndex: 'tags',
             key: 'tags',
-            width: '40%',
+            width: '30%',
             render: (tags, record) => (
                 <>
                     {tags.map((tag) => (
@@ -79,6 +79,24 @@ const ProblemTable = () => {
                 </>
             ),
         },
+        {
+            title: 'Condition',
+            dataIndex: 'condition',
+            key: 'condition',
+            width: '10%',
+            render: (text, record) => (
+                <>
+                    {
+                        text!=="100"
+                            ?
+                            <text style={{color: `#ff0000`}}>{text}</text>
+                            :
+                            <text style={{color: `#00ff00`}}>{text}</text>
+                    }
+                </>
+            ),
+
+        }
     ];
 
     // 获取题目列表
@@ -97,7 +115,7 @@ const ProblemTable = () => {
 
 
         getProblemSet(data, callback);
-    }, []);
+    }, [currentPage,searchText2,searchText3]);
 
     if (isLoading) {
         return <Loading/>;
@@ -152,8 +170,8 @@ const ProblemTable = () => {
                 width: '95%',
             }}
             dataSource={problemList}
-            pagination={{pageSize: 20}}
             pagination={{
+                pageSize: 20,
                 onChange: (page) => {
                     console.log(page);
                     setCurrentPage(page);

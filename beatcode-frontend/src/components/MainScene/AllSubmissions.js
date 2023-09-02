@@ -70,7 +70,7 @@ function AllSubmissions() {
     }, [pageNum,pageSize])
     useEffect(() => {
         // submissions 更新时，将 isLoading 设置为 false
-        setIsLoading(false);
+        if(totalElements>0) setIsLoading(false);
     }, [submissions])
 
     const options = [
@@ -233,8 +233,8 @@ function AllSubmissions() {
                            defaultCurrent: 1,
                            showTotal: ()=>`共有${totalElements}条记录`,
                            onChange: (page,pageSize)=>{
-                               setPageNum(page);
-                               setPageSize(pageSize);
+                               setPageNum(page.toString());
+                               setPageSize(pageSize.toString());
                            },
                        }}
 
@@ -278,6 +278,7 @@ function AllSubmissions() {
                                                text === "Memory Limit Exceeded" ? "#16a085" :
                                                text === "Judgement Failed" ? "#2c3e50" :
                                                text === "Compile Error" ? "#d35400" :
+                                                   text === "Runtime Error" ? "#0b0286" :
                                                "#7f8c8d",
                                            fontWeight: "bold"
                                        }}>{text}</span>
