@@ -1,12 +1,30 @@
-import React, {useMemo, useState} from "react";
+import React, {useMemo, useState} from 'react';
+import 'easymde/dist/easymde.min.css';
+import MarkdownIt from 'markdown-it';
+import Editor from "react-markdown-editor-lite";
+import 'react-markdown-editor-lite/lib/index.css';
 import {Button, Col, ColorPicker, Form, Input, message, Modal, Select, Space, Tag, Upload} from "antd";
-import MdEditor from "react-markdown-editor-lite";
+import Dragger from "antd/es/upload/Dragger";
 import {InboxOutlined} from "@ant-design/icons";
-import MarkdownIt from "markdown-it";
+import {getProblemDetail, updateProblem} from "../../services/problemSetService";
+import Loading from "../Loading";
+import ReactMarkdown from "react-markdown";
 
 // Initialize a markdown parser
 const mdParser = new MarkdownIt(/* Markdown-it options */);
 
+/**
+ * @Description : 添加题目
+ *
+ * 1. 题目本身信息和测试样例信息分开上传
+ *
+ * 对于题目description的修改，采用的markdown编辑器是：
+ * https://github.com/HarryChen0506/react-markdown-editor-lite
+ *
+ *
+ * 合法性检查：
+ * 1. 所有的输入框都不能为空，否则不发送请求
+ * */
 function AddSingleProblem() {
 
   /*
@@ -24,24 +42,17 @@ function AddSingleProblem() {
   const [detail, setDetail] = React.useState("");
   const [difficulty, setDifficulty] = React.useState("");
 
-  const [isLoading, setIsLoading] = React.useState(true);
-
-  const [isbannedUploadingFile, setIsbannedUploadingFile] = React.useState(true);
-
-
-
   /////////////////////////////// 上传题目样例文件 /////////////////////////////////////////////////////
 
   const { Dragger } = Upload;
 
   // props是上传文件的配置
   const props = {
-    disabled: isbannedUploadingFile,
     name: 'file',   // 后端接收的参数名
     multiple: false, // 是否支持多选文件
-    action: 'ipads.se.sjtu.edu.cn', // 上传的地址 TODO 修改为后端接口
+    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76', // 上传的地址 TODO 修改为后端接口
 
-    // onChange(info): 上传文件的回调函数
+    // 上传文件之前的钩子，参数为上传的文件，若返回 false 或者 Promise 则停止上传。
     onChange(info) {
       const { status } = info.file;
       if (status !== 'uploading') {
@@ -54,7 +65,7 @@ function AddSingleProblem() {
       }
     },
 
-    // onDrop(e): 拖拽文件的回调函数
+    // 上传文件之前的钩子，参数为上传的文件，若返回 false 或者 Promise 则停止上传。
     onDrop(e) {
       console.log('Dropped files', e.dataTransfer.files);
     },
@@ -62,15 +73,16 @@ function AddSingleProblem() {
 
   ////////////////////////////// 题目信息的初始化 /////////////////////////////////////////////////////
 
-  // 初始化：从后端获取题目信息
   React.useEffect(() => {
-    // TODO: 从后端获取题目信息
+
   } ,[]);
 
+
   const handleEditorChange = ({ html, text }) => {
-    console.log('handleEditorChange', html, text)
-    // TODO 将text存储到detail中
-  }
+    const newValue = text.replace(/\d/g, "");
+    // console.log(newValue);
+    setDetail(newValue);
+  };
 
   ////////////////////////////////// tag的编辑 /////////////////////////////////////////////////////
   const [form] = Form.useForm();
@@ -80,6 +92,8 @@ function AddSingleProblem() {
 
   const [name, setName] = React.useState("");
   const [description, setDescription] = React.useState("");
+
+  const mdEditor = React.useRef(null);
 
   // showModal是点击add按钮后的回调函数，用于显示对话框
   const showModal = () => {
@@ -141,8 +155,6 @@ function AddSingleProblem() {
     setName("");
     setDescription("");
 
-
-
   };
 
   // handleEditTag是点击标签后的回调函数，用于编辑标签
@@ -174,14 +186,56 @@ function AddSingleProblem() {
   // handleDeleteTag是点击标签右上角的x后的回调函数，用于删除标签
   const handleDeleteTag = (tagId) => {
     setTags((prevTags) => prevTags.filter((tag) => tag.id !== tagId));
-
-    // TODO for debug：打印所有的tag
-    console.log(tags);
   };
 
-  const handleSubmit = (values) => {
-    console.log(values);
-    console.log(tags)
+  const handleSubmit = () => {
+    // 检查所有的输入框是否为空："" or undefined
+    if (title === "" || detail === "" || difficulty === "" || tags.length === 0 || difficulty === undefined) {
+      message.error("请填写完整的题目信息！");
+      return;
+    }
+
+    // 将数据打包为json
+    /**
+     * @param map 题目的json，格式如下：
+     *            {
+     *            "problemId": 1,
+     *            "title": "题目标题",
+     *            "detail": "题目描述",
+     *            "difficulty": "难度",
+     *            "objectArray": [
+     *            {
+     *            "name": "标签名",
+     *            "description": "标签描述",
+     *            "color": "标签颜色"
+     *            }
+     *            ]
+     *            }
+     * @return message
+     * */
+    const data = {
+      "problemId": -1,
+      "title": title,
+      "detail": detail,
+      "difficulty": difficulty,
+      "objectArray": tags
+    }
+
+    const callback = (data) => {
+      // 解析返回的json，如果status为0，则表示成功；否则表示失败
+      if (data.status === 0) {
+        message.success(data.msg);
+        // 等待3秒，自动刷新页面
+        setTimeout(() => {
+          window.location.reload();
+        } ,3000);
+      }
+      else {
+        message.error(data.msg);
+      }
+    }
+
+    updateProblem(data, callback);
   }
 
 
@@ -207,7 +261,10 @@ function AddSingleProblem() {
               maxWidth: 1200,
             }}
             initialValues={{
-              remember: true,
+              problemId: problemId,
+              title: title,
+              // detail: detail,
+              difficulty: difficulty,
             }}
             autoComplete="off"
         >
@@ -215,42 +272,16 @@ function AddSingleProblem() {
           <Form.Item
               label="problemId"
               name="problemId"
-              rules={[
-                {
-                  // required: true,
-                  // message: 'Please input problemId!',
-                } ,
-              ]}
           >
             <Input disabled={true}/>
           </Form.Item>
           <Form.Item
               label="title"
               name="title"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input title!',
-                } ,
-              ]}
+              onReset={() => setTitle("")}
+              onChange={(e) => setTitle(e.target.value)}
           >
             <Input />
-          </Form.Item>
-
-          <Form.Item
-              label="detail"
-              name="detail"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input detail!',
-                } ,
-              ]}
-          >
-            <MdEditor style={{
-              height: '500px',
-              width: '100%'
-            }} renderHTML={text => mdParser.render(text)} onChange={handleEditorChange} />
           </Form.Item>
 
           {/*    标签使用tag组件*/}
@@ -259,12 +290,14 @@ function AddSingleProblem() {
           {/*    3. 点击标签，可以修改标签的信息*/}
           {/*    4. 点击标签右上角的x，可以删除标签*/}
           <Form.Item
-              label="Tags"
+              label="tags"
               name="tags"
+              initialValue={tags}
           >
             <Space wrap>
               {tags.map((tag) => (
                   // tag用最大的size
+                  // tag初始化的方式：name, description, color
                   <Tag
                       key={tag.id}
                       closable
@@ -331,16 +364,12 @@ function AddSingleProblem() {
           <Form.Item
               label="difficulty"
               name="difficulty"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please select difficulty!',
-                } ,
-              ]}
           >
             <Select
                 placeholder="Select a difficulty"
                 allowClear
+                onChange={(value) => setDifficulty(value)}
+                onClear={() => setDifficulty("")}
             >
               {/*难度分为：入门、简单、中等、困难、省选/NOI-*/}
               <Select.Option value="入门">入门</Select.Option>
@@ -352,53 +381,65 @@ function AddSingleProblem() {
           </Form.Item>
 
 
-
-
-
           <Form.Item
-              wrapperCol={{
-                offset: 4,
-                span: 16,
-              }}
+              label="detail"
+              name="detail"
           >
-            {/*按钮在最右边*/}
-            <Button
-                type="primary"
-                htmlType="submit"
-                size={"large"}
-                onClick={handleSubmit}
-
-            >
-              提交您的修改
-            </Button>
           </Form.Item>
 
-          {/*上传包含题目样例文件的压缩包*/}
-          <Form.Item
-              label="test cases"
-              name="test cases"
-              rules={[
-                {
-                  // required: true,
-                  // message: 'Please upload test cases!',
-                } ,
-              ]}
-              style={{
-                marginTop: '50px',
-              }}
-          >
-            <Dragger {...props}>
-              <p className="ant-upload-drag-icon">
-                <InboxOutlined />
-              </p>
-              <p className="ant-upload-text">单击或拖动文件到此区域上传</p>
-              <p className="ant-upload-hint">
-                在此处上传测试样例的压缩文件；注意！请先提交题目，再上传测试样例！
-              </p>
-            </Dragger>
-          </Form.Item>
 
         </Form>
+
+        <Editor
+            ref={mdEditor}
+            value={detail}
+            style={{
+              height: "500px",
+              marginLeft: '17%',
+              width: '66%',
+            }}
+            onChange={handleEditorChange}
+            renderHTML={(text) => mdParser.render(text)}
+        />
+
+        <div
+            style={{
+              height: 30,
+            }}
+        ></div>
+
+        <Button
+            type="primary"
+            htmlType="submit"
+            size={"large"}
+            onClick={handleSubmit}
+            style={{
+              marginLeft: '17%',
+            }}
+        >
+          提交修改
+        </Button>
+
+        <div
+            style={{
+              height: 30,
+            }}
+        ></div>
+
+        <Dragger
+            style={{
+              width: '66%',
+              marginLeft: '17%',
+            }}
+            {...props}>
+          <p className="ant-upload-drag-icon">
+            <InboxOutlined />
+          </p>
+          <p className="ant-upload-text">单击或拖动文件到此区域上传</p>
+          <p className="ant-upload-hint">
+            在此处上传测试样例的压缩文件；您上传的文件将会直接覆盖后端原本的文件
+          </p>
+        </Dragger>
 
         <div
             style={{
@@ -408,7 +449,9 @@ function AddSingleProblem() {
 
         </div>
 
-      </div> );
+      </div>
+  );
 }
+
 
 export default AddSingleProblem;

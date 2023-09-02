@@ -1,7 +1,8 @@
 import React from 'react';
-import { Col, Layout, Menu, Row, theme} from 'antd';
+import {Button, Col, Layout, Menu, Popover, Row, theme} from 'antd';
 import {Link, Outlet, useLocation} from "react-router-dom";
 import {UserOutlined} from "@ant-design/icons";
+import {logout} from "../services/userService";
 const { Header, Content, Footer } = Layout;
 
 
@@ -14,6 +15,24 @@ const { Header, Content, Footer } = Layout;
  * 3. Footer：版权信息
  * */
 function OJMainView() {
+    const logout_service = () => {
+        logout();
+    }
+    const content = (
+        <div
+            style={{
+                width: '170px',
+                }}
+        >
+            <Button type="link" href="/personal-info">个人信息</Button>
+            <Button
+                onClick={logout_service}
+                danger={true}
+            >
+                退出
+            </Button>
+        </div>
+    );
     const location = useLocation();
     const {
         token: { colorBgContainer },
@@ -71,9 +90,24 @@ function OJMainView() {
 
                     </Col>
                     <Col span={8}>
-                        {/*超链接，点击一下跳跃到用户信息界面*/}
-                        <Link to="/personal-info">
-                            {/*大小：很大*/}
+                        {/*/!*超链接，点击一下跳跃到用户信息界面*!/*/}
+                        {/*<Link to="/personal-info">*/}
+                        {/*    /!*大小：很大*!/*/}
+                        {/*    <UserOutlined*/}
+                        {/*        style={{*/}
+                        {/*            fontSize: '32px',*/}
+                        {/*            color: '#1890ff',*/}
+                        {/*            // float: 'right',*/}
+                        {/*            marginTop: '20px',*/}
+                        {/*            marginBottom: '10px',*/}
+                        {/*            marginRight: '20px',*/}
+                        {/*            marginLeft: '180px',*/}
+                        {/*        }}*/}
+                        {/*    />*/}
+                        {/*</Link>*/}
+                        <Popover
+                            content = {content}
+                        >
                             <UserOutlined
                                 style={{
                                     fontSize: '32px',
@@ -85,7 +119,7 @@ function OJMainView() {
                                     marginLeft: '180px',
                                 }}
                             />
-                        </Link>
+                        </Popover>
                     </Col>
                 </Row>
 
