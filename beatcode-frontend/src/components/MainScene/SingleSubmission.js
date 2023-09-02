@@ -239,6 +239,7 @@ function SingleSubmission() {
                                                     title="测试点详细信息">
                                                <a style={{
                                                    color: text === "Accepted" ? "#2ecc71" :
+                                                       text === "Extra Test Passed" ? "#63ffa4" :
                                                        text === "Wrong Answer" ? "#c0392b" :
                                                        text === "Time Limit Exceeded" ? "#f39c12" :
                                                        text === "Output Limit Exceeded" ? "#8e44ad" :

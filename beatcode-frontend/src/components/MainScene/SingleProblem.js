@@ -19,8 +19,9 @@ import Loading from "../Loading";
 /**
  * @Description: 单个题目的组件，包含题目描述、代码编辑器、提交按钮等
  * */
+const defaultLanguage="C++20";
 const CodeEditor = () => {
-    const [language, setLanguage] = useState('C++');
+    const [language, setLanguage] = useState(defaultLanguage);
     // 代码编辑器的内容
     const [code, setCode] = useState('');
     const [loading, setLoading] = useState(true);
@@ -215,7 +216,7 @@ const CodeEditor = () => {
                     <div>
                         <Space wrap>
                             <Select
-                                defaultValue="C++20"
+                                defaultValue={defaultLanguage}
                                 style={{
                                     width: 120,
                                     marginBottom: 20,
