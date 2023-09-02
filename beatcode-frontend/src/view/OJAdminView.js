@@ -1,7 +1,9 @@
 import React from 'react';
-import {Col, Layout, Menu, Row, theme} from 'antd';
+import {Button, Col, Layout, Menu, Popover, Row, theme} from 'antd';
 import {Link, Outlet, useLocation} from "react-router-dom";
-import {SmileTwoTone, UserOutlined} from "@ant-design/icons";
+import {UserOutlined} from "@ant-design/icons";
+import {logout} from "../services/userService";
+
 const { Header, Content, Footer } = Layout;
 
 
@@ -14,6 +16,24 @@ const { Header, Content, Footer } = Layout;
  * 3. Footer：版权信息
  * */
 function OJAdminView() {
+    const logout_service = () => {
+        logout();
+    }
+    const content = (
+        <div
+            style={{
+                width: '170px',
+                }}
+        >
+            <Button type="link" href="/admin/personal-info">个人信息</Button>
+            <Button
+                onClick={logout_service}
+                danger={true}
+                >
+                退出
+            </Button>
+        </div>
+    );
     const location = useLocation();
     const {
         token: { colorBgContainer },
@@ -35,7 +55,7 @@ function OJAdminView() {
                 >
                     <Col span={8}>
                         {/*单击logo能够从任何地方跳转到根目录*/}
-                        <Link to="/">
+                        <Link to="/admin/">
                             <img
                                 src={require('../img/logo.jpg')}
                                 alt="logo"
@@ -61,8 +81,12 @@ function OJAdminView() {
                             <Menu.Item key="/admin/ranking-board" style={location.pathname === '/admin/ranking-board' ? { fontWeight: 'bold' } : null}>
                                 <Link to="/admin/ranking-board">排行榜</Link>
                             </Menu.Item>
-                            <Menu.Item key="/admin/my-submissions" style={location.pathname === '/admin/my-submissions' ? { fontWeight: 'bold' } : null}>
-                                <Link to="/admin/my-submissions">我的提交</Link>
+                            <Menu.Item key="/admin/submissions" style={location.pathname === '/admin/my-submissions' ? { fontWeight: 'bold' } : null}>
+                                <Link to="/admin/submissions">所有提交</Link>
+                            </Menu.Item>
+                            {/*往题库中添加题目*/}
+                            <Menu.Item key="/admin/add-problem" style={location.pathname === '/admin/add-problem' ? { fontWeight: 'bold' } : null}>
+                                <Link to="/admin/add-problem">添加题目</Link>
                             </Menu.Item>
                             <Menu.Item key="/admin/personal-info" style={location.pathname === '/admin/personal-info' ? { fontWeight: 'bold' } : null}>
                                 <Link to="/admin/personal-info">个人信息</Link>
@@ -71,9 +95,7 @@ function OJAdminView() {
 
                     </Col>
                     <Col span={8}>
-                        {/*超链接，点击一下跳跃到用户信息界面*/}
-                        <Link to="/personal-info">
-                            {/*大小：很大*/}
+                        <Popover content={content}>
                             <UserOutlined
                                 style={{
                                     fontSize: '32px',
@@ -85,7 +107,7 @@ function OJAdminView() {
                                     marginLeft: '180px',
                                 }}
                             />
-                        </Link>
+                        </Popover>
                     </Col>
                 </Row>
 
@@ -107,6 +129,7 @@ function OJAdminView() {
                     {/*定义二级路由的出口*/}
                     < Outlet />
                 </div>
+                {/*<FloatingButtonChat />*/}
             </Content>
             <Footer
                 style={{
