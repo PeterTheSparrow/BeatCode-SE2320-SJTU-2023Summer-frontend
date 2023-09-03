@@ -4,21 +4,10 @@ import {history} from "../utils/history";
 import {apiUrl, apiUrlWindows} from "../utils/config-overrides";
 import axios from "axios";
 
-/**
- * @Description: 检查是否登录（用户）
- * */
-export const checkUserLogin = (callback) => {
-    const url = `${apiUrlWindows}/CheckUser`;
+export const getUserInfo = (data, callback) => {
+    const url = `${apiUrlWindows}/getUserInfo`;
 
-    // call-back function
-
-}
-
-/**
- * @Description: 检查是否登录（管理员）
- * */
-export const checkAdminLogin = (callback) => {
-    const url = `${apiUrlWindows}/CheckAdmin`;
+    postRequest(url, data, callback);
 }
 
 /**
@@ -128,4 +117,10 @@ export const getRanking=(data,callback)=>{
         .catch(err=>{
             console.log(err);
         })
+}
+
+export const updateUsername = (data, callback) => {
+    const url = `${apiUrlWindows}/updateUserName`;
+
+    postRequest(url, data, callback);
 }

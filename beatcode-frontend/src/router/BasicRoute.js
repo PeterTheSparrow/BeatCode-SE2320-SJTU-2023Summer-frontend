@@ -15,6 +15,7 @@ import ProblemSetAdmin from "../components/AdminScene/ProblemSetAdmin";
 import EditSingleProblem from "../components/AdminScene/EditSingleProblem";
 import RouteGuard from "./RouteGuard";
 import AddSingleProblem from "../components/AdminScene/AddSingleProblem";
+import PersonalRecord from "../components/MainScene/PersonalRecord";
 
 /**
  * @Description: 路由配置
@@ -47,6 +48,7 @@ const BasicRoute = () => {
                     <Route path={"/personal-info"} element={<PersonalInfo />} />
                     <Route path={"/problem/:id"} element={<SingleProblem />} />
                     <Route path={"/submission/:id"} element={<SingleSubmission />} />
+                    <Route path={"/PersonalRecord"} element={<PersonalRecord />} />
                 </Route>
 
 

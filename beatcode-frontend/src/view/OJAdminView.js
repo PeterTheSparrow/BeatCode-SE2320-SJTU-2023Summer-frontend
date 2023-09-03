@@ -25,7 +25,7 @@ function OJAdminView() {
                 width: '170px',
                 }}
         >
-            <Button type="link" href="/admin/personal-info">个人信息</Button>
+            <Button type="link" href="/admin/personal-info">个人资料</Button>
             <Button
                 onClick={logout_service}
                 danger={true}

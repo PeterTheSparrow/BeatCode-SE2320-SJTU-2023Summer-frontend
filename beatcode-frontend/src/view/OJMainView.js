@@ -13,8 +13,12 @@ const { Header, Content, Footer } = Layout;
  * 1. Header：导航栏，由三部分组成：logo，菜单，用户信息
  * 2. Content：内容区域，由一个组件组成（component）
  * 3. Footer：版权信息
+ *
+ * outlet传参方式详见：
+ * https://blog.csdn.net/weixin_43294560/article/details/123031705
  * */
-function OJMainView() {
+function OJMainView(props) {
+    const { userId } = props;
     const logout_service = () => {
         logout();
     }
@@ -24,7 +28,7 @@ function OJMainView() {
                 width: '170px',
                 }}
         >
-            <Button type="link" href="/personal-info">个人信息</Button>
+            <Button type="link" href="/personal-info">个人资料</Button>
             <Button
                 onClick={logout_service}
                 danger={true}
@@ -83,8 +87,11 @@ function OJMainView() {
                             <Menu.Item key="/submissions" style={location.pathname === '/submissions' ? { fontWeight: 'bold' } : null}>
                                 <Link to="/submissions">评测状态</Link>
                             </Menu.Item>
-                            <Menu.Item key="/personal-info" style={location.pathname === '/personal-info' ? { fontWeight: 'bold' } : null}>
-                                <Link to="/personal-info">个人信息</Link>
+                            {/*<Menu.Item key="/personal-info" style={location.pathname === '/personal-info' ? { fontWeight: 'bold' } : null}>*/}
+                            {/*    <Link to="/personal-info">个人信息</Link>*/}
+                            {/*</Menu.Item>*/}
+                            <Menu.Item key="/PersonalRecord" style={location.pathname === '/PersonalRecord' ? { fontWeight: 'bold' } : null}>
+                                <Link to="/PersonalRecord">个人记录</Link>
                             </Menu.Item>
                         </Menu>
 
@@ -139,7 +146,8 @@ function OJMainView() {
                     }}
                 >
                     {/*定义二级路由的出口*/}
-                    < Outlet />
+                    {/*TODO userId传给子组件*/}
+                    < Outlet context={{ userId: userId }} />
                 </div>
             </Content>
             <Footer

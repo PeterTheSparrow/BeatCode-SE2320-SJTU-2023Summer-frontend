@@ -1,6 +1,9 @@
-import React, {useState} from "react";
-import {Input, Button, Col, Row, Card} from 'antd';
-import {logout} from "../../services/userService";
+import React, {useEffect, useState} from "react";
+import {Input, Button, Col, Row, Card, Form, Tooltip, Divider, message} from 'antd';
+import {getUserInfo, logout, updateUsername} from "../../services/userService";
+import {postRequest} from "../../utils/ajax";
+import {apiUrlWindows} from "../../utils/config-overrides";
+import { useOutletContext } from "react-router-dom";
 
 /**
  * @Description: 个人信息界面
@@ -30,332 +33,221 @@ import {logout} from "../../services/userService";
  * 4. 所以每次查询的时候，我如何判断是哪个用户来查了？
  * */
 function PersonalInfo() {
-    const [isEditModeUsername, setIsEditModeUsername] = useState(false);
-    const [isEditModeEmail, setIsEditModeEmail] = useState(false);
-    const [isEditModePassword, setIsEditModePassword] = useState(false);
-    const [isEditModePhone, setIsEditModePhone] = useState(false);
-
-    const [showEditButtonUsername, setShowEditButtonUsername] = useState(false);
-    const [showEditButtonEmail, setShowEditButtonEmail] = useState(false);
-    const [showEditButtonPassword, setShowEditButtonPassword] = useState(false);
-    const [showEditButtonPhone, setShowEditButtonPhone] = useState(false);
-
-    const [isLoading, setIsLoading] = useState(true);
-
-    const [userData, setUserData] = useState({
-        username: 'JohnDoe', // Replace with actual user data
-        password: '********',
-        email: '123@gmail.com',
-        phone: '12345678910',
-    });
+    const outletData = useOutletContext(); // {userId: 82}
 
 
-    const handleInputChange = event => {
-        const { name, value } = event.target;
-        setUserData(prevUserData => ({
-            ...prevUserData,
-            [name]: value,
-        }));
+    // 使用 state 来存储每个字段的编辑状态和值
+    // const [userid, setUserid] = useState(0);
+    const [userData, setUserData] = useState({});
+    const [isEditingUsername, setIsEditingUsername] = useState(false);
+    const [isEditingPassword, setIsEditingPassword] = useState(false);
+    const [isEditingEmail, setIsEditingEmail] = useState(false);
+    const [isEditingPhoneNumber, setIsEditingPhoneNumber] = useState(false);
+
+    // 使用 state 来存储正在编辑的用户信息
+    const [editedData, setEditedData] = useState({});
+
+    // 处理编辑按钮点击事件
+    const handleEditClick = (field) => {
+        // 将正在编辑的字段初始化为当前用户信息的值
+        setEditedData({ [field]: userData[field] });
+
+        // 设置对应字段的编辑状态为 true
+        if (field === 'username') setIsEditingUsername(true);
+        if (field === 'password') setIsEditingPassword(true);
+        if (field === 'email') setIsEditingEmail(true);
+        if (field === 'phoneNumber') setIsEditingPhoneNumber(true);
     };
 
-    const logout_service = () => {
-        logout();
+    // 处理取消编辑按钮点击事件
+    /*
+    * field指的是哪个字段
+    * */
+    const handleCancelEdit = (field) => {
+        // 取消编辑状态并清除编辑数据
+        setEditedData({});
+        if (field === 'username') setIsEditingUsername(false);
+        if (field === 'password') setIsEditingPassword(false);
+        if (field === 'email') setIsEditingEmail(false);
+        if (field === 'phoneNumber') setIsEditingPhoneNumber(false);
+    };
+
+    // 处理单独字段的表单提交事件
+    const handleSubmit = (field) => {
+        // // 更新用户信息，这里只是一个示例，实际情况中应该将数据提交到后端进行保存
+        // setUserData({ ...userData, ...editedData });
+        //
+        //
+
+        // 取消对应字段的编辑状态
+        if (field === 'username') {
+            setIsEditingUsername(false);
+
+            // 发送请求到后端
+            const callback = (data) => {
+                // 打印后端传回的message
+                if (data.status === 0) {
+                    message.success(data.msg);
+                    // 更新用户信息
+                    setUserData({ ...userData, ...editedData });
+                }
+                else {
+                    message.error(data.msg);
+                    // 因为修改失败，所以不更新
+                }
+            }
+            console.log("send info:", {userId: outletData.userId, userName: editedData.username})
+            updateUsername({userId: outletData.userId, userName: editedData.username}, callback)
+        }
+        if (field === 'password') setIsEditingPassword(false);
+        if (field === 'email') setIsEditingEmail(false);
+        if (field === 'phoneNumber') setIsEditingPhoneNumber(false);
+    };
+
+    const sendVerificationCode = () => {
+
     }
 
-    const { username, password , email, phone } = userData;
+    // useEffect从后端获取初始化用户数据
+    useEffect(() => {
+        // 根据用户id从后端获得用户数据
+        const callback = (data) => {
+            console.log("data:::---", data);
+
+            // 更新用户信息
+            setUserData({
+                username: data.userName,
+                email: data.email,
+                phoneNumber: data.phone,
+                password: data.password,
+            });
+        }
+
+        getUserInfo({userId: outletData.userId}, callback)
+
+    }, []);
 
     return (
-        <div
-            className="user-profile"
-            style = {{
-                marginBottom: 50,
-                marginTop: 10,
-                marginLeft: 30,
-                // marginRight: 50,
-                width: "90%",
-            }}
-        >
-            <Row>
-                <Col span={6}>
+        <div>
+            <Form
+                layout="vertical"
+                style={{
+                    marginLeft: '23%',
+                    marginRight: '23%',
+                    }}
+            >
+                {/*padding*/}
+                <div
+                    style={{
+                        height: 40,
+                    }}
+                >
+                </div>
 
-                </Col>
-                <Col span={12}>
-                    <div
-                        style={{
-                            height: 50,
-                        }}
-                    ></div>
-                    <Card
-                        title="Username"
-                        onMouseEnter={() => setShowEditButtonUsername(true)}
-                        onMouseLeave={() => setShowEditButtonUsername(false)}
-                        extra={
-                            showEditButtonUsername && (
-                                <Button onClick={() => setIsEditModeUsername(true)}>Edit</Button>
-                            )
-                        }
-                        style = {{
-                            marginBottom: 10,
-                            }}
-                    >
-                        {isEditModeUsername ? (
-                            <Row gutter={10} align="middle" style={{ marginBottom: 10 }}>
-                                <Col flex="auto">
+                {/*用户名的label加粗*/}
+                <Form.Item label={<span style={{ fontWeight: 'bold' }}>用户名</span>}>
+                    {/*如果正在编辑用户名，则显示输入框*/}
+                    {isEditingUsername ? (
+                        <>
+                            <Row gutter={16}>
+                                <Col span={16}>
                                     <Input
-                                        name="username"
-                                        value={username}
-                                        onChange={handleInputChange}
-                                        style={{ width: "60%" }}
+                                        value={editedData.username}
+                                        onChange={(e) => setEditedData({ ...editedData, username: e.target.value })}
                                     />
                                 </Col>
-                                <Col>
-                                    <Button onClick={() => setIsEditModeUsername(false)}>Save</Button>
+                                <Col span={4}>
+                                    <Button type="primary"
+                                            onClick={() => handleSubmit('username')}
+                                            style={{
+                                                width: '90%',
+                                            }}>
+                                        提交
+                                    </Button>
                                 </Col>
-                                <Col>
-                                    <Button onClick={() => setIsEditModeUsername(false)}>Cancel</Button>
+                                <Col span={4}>
+                                    <Button
+                                        onClick={() => handleCancelEdit('username')}
+                                        style={{
+                                            width: '90%',
+                                        }}>
+                                        取消
+                                    </Button>
                                 </Col>
                             </Row>
+                        </>
+                    ) : (
+                        <Tooltip title="编辑">
+                            <span onClick={() => handleEditClick('username')}>{userData.username}</span>
+                        </Tooltip>
+                    )}
+                </Form.Item>
 
-                        ) : (
-                            <div>
-                                <p>{username}</p>
-                            </div>
-                        )}
-                    </Card>
+                <Divider />
 
 
+                <Divider />
 
-                    <Card
-                        title="Email"
-                        onMouseEnter={() => setShowEditButtonEmail(true)}
-                        onMouseLeave={() => setShowEditButtonEmail(false)}
-                        extra={
-                            showEditButtonEmail && (
-                                <Button onClick={() => setIsEditModeEmail(true)}>Edit</Button>
-                            )
-                        }
-                        style = {{
-                            marginBottom: 10,
-                        }}
-                        boardered={false}
-                    >
-                        {isEditModeEmail ? (
-                            <Row gutter={10} align="middle" style={{ marginBottom: 10 }}>
-                                <Col flex="auto">
+
+                <Form.Item label={<span style={{ fontWeight: 'bold' }}>邮箱</span>}>
+                    {isEditingEmail ? (
+                        <>
+                            <Row gutter={16}>
+                                <Col span={16}>
                                     <Input
-                                        name="email"
-                                        value={email}
-                                        onChange={handleInputChange}
-                                        style={{ width: "60%" }}
+                                        value={editedData.email}
+                                        onChange={(e) => setEditedData({ ...editedData, email: e.target.value })}
                                     />
                                 </Col>
-                                <Col>
-                                    <Button onClick={() => setIsEditModeEmail(false)}>Save</Button>
+                                <Col span={4}>
+                                    <Button type="primary"
+                                            onClick={() => handleSubmit('email')}
+                                            style={{
+                                                width: '90%',
+                                    }}>
+                                        提交
+                                    </Button>
                                 </Col>
-                                <Col>
-                                    <Button onClick={() => setIsEditModeEmail(false)}>Cancel</Button>
+                                <Col span={4}>
+                                    <Button
+                                        onClick={() => handleCancelEdit('email')}
+                                        style={{
+                                            width: '90%',
+                                        }}>
+                                        取消
+                                    </Button>
                                 </Col>
                             </Row>
-                        ) : (
-                            <div>
-                                <p>{email}</p>
-                            </div>
-                        )}
-                    </Card>
-
-                    <Card
-                        title="Password"
-                        onMouseEnter={() => setShowEditButtonPassword(true)}
-                        onMouseLeave={() => setShowEditButtonPassword(false)}
-                        extra={
-                            showEditButtonPassword && (
-                                <Button onClick={() => setIsEditModePassword(true)}>Edit</Button>
-                            )
-                        }
-                        style = {{
-                            marginBottom: 10,
-                        }}
-                    >
-                        {isEditModePassword ? (
-                            <Row gutter={10} align="middle" style={{ marginBottom: 10 }}>
-                                <Col flex="auto">
+                            <Row gutter={16} style={{ marginTop: 10 }}>
+                                <Col span={12}>
                                     <Input
-                                        name="password"
-                                        value={password}
-                                        onChange={handleInputChange}
-                                        style={{ width: "60%" }}
+                                        value={editedData.emailCode}
+                                        onChange={(e) => setEditedData({ ...editedData, emailCode: e.target.value })}
                                     />
                                 </Col>
-                                <Col>
-                                    <Button onClick={() => setIsEditModePassword(false)}>Save</Button>
-                                </Col>
-                                <Col>
-                                    <Button onClick={() => setIsEditModePassword(false)}>Cancel</Button>
+                                <Col span={12}>
+                                    <Button>发送验证码</Button>
                                 </Col>
                             </Row>
-                        ) : (
-                            <div>
-                                <p>{password}</p>
-                            </div>
-                        )}
-                    </Card>
+                        </>
+                    ) : (
+                        <Tooltip title="编辑">
+                            <span onClick={() => handleEditClick('email')}>{userData.email}</span>
+                        </Tooltip>
+                    )}
+                </Form.Item>
 
-                    <Card
-                        title="Phone"
-                        onMouseEnter={() => setShowEditButtonPhone(true)}
-                        onMouseLeave={() => setShowEditButtonPhone(false)}
-                        extra={
-                            showEditButtonPhone && (
-                                <Button onClick={() => setIsEditModePhone(true)}>Edit</Button>
-                            )
-                        }
-                        style = {{
-                            marginBottom: 10,
-                        }}
-                    >
-                        {isEditModePhone ? (
-                            <Row gutter={10} align="middle" style={{ marginBottom: 10 }}>
-                                <Col flex="auto">
-                                    <Input
-                                        name="phone"
-                                        value={phone}
-                                        onChange={handleInputChange}
-                                        style={{ width: "60%" }}
-                                    />
-                                </Col>
-                                <Col>
-                                    <Button onClick={() => setIsEditModePhone(false)}>Save</Button>
-                                </Col>
-                                <Col>
-                                    <Button onClick={() => setIsEditModePhone(false)}>Cancel</Button>
-                                </Col>
-                            </Row>
-                        ) : (
-                            <div>
-                                <p>{phone}</p>
-                            </div>
-                        )}
-                    </Card>
+                <Divider />
 
-                    <Button type="primary" htmlType="submit"
-                            danger={true}
-                            onClick={logout_service}
-                            size={"large"}
-                            style={{
-                                marginTop: 20,
-                                marginLeft: 0,
-                            }}>
-                        退出登录
-                    </Button>
 
-                    <div
-                        style={{
-                            height: 50,
-                        }}
-                    ></div>
-                </Col>
-                <Col span={6}>
-
-                </Col>
-            </Row>
-
+            </Form>
+            <div
+                style={{
+                    height: 40,
+                }}
+            ></div>
         </div>
     );
 }
 
 export default PersonalInfo;
-
-
-// const [username, setUsername] = useState('');
-// const [email, setEmail] = useState('');
-// const [password, setPassword] = useState('');
-// const [telephone, setTelephone] = useState('');
-//
-// const [isLoading, setIsLoading] = useState(false);
-//
-// // 初始化
-// useEffect(() => {
-//
-// } , []);
-//
-// const onFinish = (values) => {
-//     console.log(values);
-//     // implement save logic
-// };
-//
-// const logout_service = () => {
-//     console.log("logout");
-//     logout();
-// }
-//
-// if (isLoading) {
-//     return <Loading />;
-// }
-//
-//
-// return (
-//     // 组件位于页面居中偏左
-//     <div
-//         style={{
-//             height: 530,
-//             display: 'flex',
-//             justifyContent: 'center',
-//             alignItems: 'center',
-//             flexDirection: 'column',
-//         }}
-//     >
-//         {/*需要两个占位组件*/}
-//         <div
-//             style={{
-//                 height: 60,
-//             }}
-//         />
-//         {/*表格居中*/}
-//         <Form
-//             name="personal-info"
-//             onFinish={onFinish}
-//             labelCol={{ span: 8 }}
-//             wrapperCol={{ span: 16 }}
-//             style={{
-//                 // marginTop: 20,
-//                 marginLeft: 20,
-//                 marginRight: 20,
-//                 marginBottom: 20,
-//                 width: 550,
-//             }}
-//         >
-//             <Form.Item label="用户名" name="username">
-//                 <Input />
-//             </Form.Item>
-//             <Form.Item label="邮箱" name="email">
-//                 <Input />
-//             </Form.Item>
-//             <Form.Item label="密码" name="password">
-//                 <Input.Password />
-//             </Form.Item>
-//             <Form.Item label="电话" name="phone">
-//                 <Input />
-//             </Form.Item>
-//             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-//                 <Row gutter={8}> {/* 使用 Row 组件 */}
-//                     <Col span={16}> {/* 使用 Col 组件，邮箱输入框占比16 */}
-//                         <Button type="primary" htmlType="submit">
-//                             保存
-//                         </Button>
-//                     </Col>
-//                     <Col span={8}> {/* 使用 Col 组件，按钮占比8 */}
-//                         <Button type="primary" htmlType="submit"
-//                                 danger={true}
-//                                 onClick={logout_service}
-//                                 style={{
-//                                     marginLeft: 0,
-//                                 }}>
-//                             退出登录
-//                         </Button>
-//                     </Col>
-//                 </Row>
-//             </Form.Item>
-//         </Form>
-//
-//     </div>
-// );

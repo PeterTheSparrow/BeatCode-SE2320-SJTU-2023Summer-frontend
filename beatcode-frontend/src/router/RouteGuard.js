@@ -20,30 +20,34 @@ class RouteGuard extends React.Component {
         super(props);
 
         this.state = {
+            // userId，初始值为空
+            userId: '',
             isAdmin: false,
             isUser: false,
             isLoadingUser: true,
-            isLoadingAdmin: true
+            isLoadingAdmin: true,
         };
     }
 
     componentDidMount() {
         // 检查是否是管理员
         postRequest(apiUrlWindows + '/CheckAdmin', {}, (data) => {
-            console.log("judge admin:::", data);
+            // console.log("judge admin:::", data);
             this.setState({
                 isAdmin: data.msg === 'yes',
-                isLoadingAdmin: false
+                userId: data.data.user_id,
+                isLoadingAdmin: false,
             });
         });
 
         // 检查是否是用户（是管理员就不是用户）
         if (!this.state.isAdmin) {
             postRequest(apiUrlWindows + '/CheckUser', {}, (data) => {
-                console.log("judge user:::",data);
+                // console.log("judge user:::",data);
                 this.setState({
                     isUser: data.msg === 'yes',
-                    isLoadingUser: false
+                    userId: data.data.user_id,
+                    isLoadingUser: false,
                 });
             });
         } else {
@@ -56,29 +60,27 @@ class RouteGuard extends React.Component {
         const { isAdmin, isUser, isLoadingAdmin, isLoadingUser } = this.state;
 
         if (isLoadingAdmin || isLoadingUser) {
-            console.log('isLoading');
+            // console.log('isLoading');
             return null;
         }
 
         if (!isAdmin && !isUser) {
-            console.log('isAdmin: ' + isAdmin);
-            console.log('isUser: ' + isUser);
+            // console.log('isAdmin: ' + isAdmin);
+            // console.log('isUser: ' + isUser);
             return <Navigate to='/login' />;
         }
 
         if (isAdmin || isUser) {
-            console.log('isAdmin: ' + isAdmin);
-            console.log('isUser: ' + isUser);
 
             if (url.startsWith('/admin')) {
                 if (isAdmin) {
-                    return <Element {...rest} />;
+                    return <Element userId={this.state.userId} {...rest} />;
                 } else {
                     return <Navigate to='/' />;
                 }
             } else {
                 if (isUser) {
-                    return <Element {...rest} />;
+                    return <Element userId={this.state.userId} {...rest} />;
                 } else {
                     return <Navigate to='/admin' />;
                 }
