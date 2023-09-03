@@ -102,6 +102,7 @@ const ProblemTable = () => {
     // 获取题目列表
     useEffect(() => {
         const callback = (data) => {
+            console.log("problemList:::---", data.data.page)
             setProblemList(data.data.page);
             setIsLoading(false);
         }

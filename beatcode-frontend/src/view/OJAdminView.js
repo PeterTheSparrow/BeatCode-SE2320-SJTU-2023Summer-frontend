@@ -15,7 +15,8 @@ const { Header, Content, Footer } = Layout;
  * 2. Content：内容区域，由一个组件组成（component）
  * 3. Footer：版权信息
  * */
-function OJAdminView() {
+function OJAdminView(props) {
+    const { userId } = props;
     const logout_service = () => {
         logout();
     }
@@ -127,7 +128,7 @@ function OJAdminView() {
                     }}
                 >
                     {/*定义二级路由的出口*/}
-                    < Outlet />
+                    < Outlet context={{ userId: userId }} />
                 </div>
                 {/*<FloatingButtonChat />*/}
             </Content>

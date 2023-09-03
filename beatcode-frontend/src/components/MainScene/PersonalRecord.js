@@ -43,6 +43,7 @@ function HotMap() {
             rectSize={8}
             rectRender={(props, data) => {
                 // 如果日期不在范围内，则不显示
+                // TODO 这的日期判别是buggy不严谨的，需要改进
                 if (data.date < '2016/01/01' || data.date > '2016/12/31') {
                     return null;
                 }
@@ -59,6 +60,7 @@ function HotMap() {
 
 function SubmissionTable() {
     return (
+        // 这里的表格可以直接沿用首页的表格
         <div>submission table</div>
     )
 }

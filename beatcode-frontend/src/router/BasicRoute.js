@@ -68,6 +68,7 @@ const BasicRoute = () => {
                     <Route path={"/admin/personal-info"} element={<PersonalInfo />} />
                     <Route path={"/admin/problem/:id"} element={<SingleProblem />} />
                     <Route path={"/admin/submission/:id"} element={<SingleSubmission />} />
+                    <Route path={"/admin/PersonalRecord"} element={<PersonalRecord />} />
                 </Route>
 
 
