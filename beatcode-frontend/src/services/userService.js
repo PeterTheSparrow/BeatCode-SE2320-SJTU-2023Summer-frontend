@@ -1,4 +1,4 @@
-import {postRequest, postRequest_v2} from "../utils/ajax";
+import {postRequest} from "../utils/ajax";
 import {message} from "antd";
 import {history} from "../utils/history";
 import {apiUrl, apiUrlWindows} from "../utils/config-overrides";
@@ -39,6 +39,12 @@ export const RegisterService = (data) => {
             message.error(data.msg);
         }
     }
+
+    postRequest(url, data, callback);
+}
+
+export const sendCodeService = (data, callback) => {
+    const url = `${apiUrlWindows}/createCode`;
 
     postRequest(url, data, callback);
 }

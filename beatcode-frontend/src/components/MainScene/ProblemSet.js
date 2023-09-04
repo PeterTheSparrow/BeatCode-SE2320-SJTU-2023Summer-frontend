@@ -102,7 +102,6 @@ const ProblemTable = () => {
     // 获取题目列表
     useEffect(() => {
         const callback = (data) => {
-            console.log(data);
             setProblemList(data.data.page);
             setIsLoading(false);
         }
@@ -133,20 +132,16 @@ const ProblemTable = () => {
                 justifyContent: "center",
                 alignItems: "center",
                 marginBottom: 30,
+                width: "100%",
             }}
         >
             <Space.Compact size="large">
-                {/*<Input*/}
-                {/*    placeholder="输入题目id"*/}
-                {/*    value={searchText1}*/}
-                {/*    onChange={(e) => setSearchText1(e.target.value)}*/}
-                {/*/>*/}
                 <Input
                     placeholder="输入题目名称"
                     value={searchText2}
                     onChange={(e) => setSearchText2(e.target.value)}
                     style={{
-                        width: 300,
+                        width: '60%',
                     }}
                 />
                 <Input
@@ -170,8 +165,9 @@ const ProblemTable = () => {
         <Table
             columns={columns}
             style={{
-                marginLeft: 20,
-                marginRight: 20,
+                marginLeft: '2.5%',
+                marginRight: '2.5%',
+                width: '95%',
             }}
             dataSource={problemList}
             pagination={{
@@ -208,24 +204,6 @@ export function ProblemSet() {
                     }}
                 >
                 </div>
-                {/*<div*/}
-                {/*    style={{*/}
-                {/*            marginLeft: 20,*/}
-                {/*            marginRight: 20,*/}
-                {/*            marginBottom: 20,*/}
-                {/*        }}*/}
-                {/*>*/}
-                {/*    {tags.map((tag, index) => (*/}
-                {/*        // <Tag key={index} color={tag.color}>*/}
-                {/*        //     {tag.name}*/}
-                {/*        // </Tag>*/}
-
-                {/*        <React.Fragment key={index}>*/}
-                {/*            <Tag color={tag.color} style={{ fontSize: '16px', padding: '8px 12px' }}>{tag.name}</Tag>*/}
-                {/*            {index < tags.length - 1 && <span style={{ height:40, display: 'inline-block' }} />}*/}
-                {/*        </React.Fragment>*/}
-                {/*    ))}*/}
-                {/*</div>*/}
             </div>
             <div
                 style={{

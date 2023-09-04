@@ -17,5 +17,19 @@ export const getProblemSet = (data, callback) => {
 export const getProblemDetail = (data, callback) => {
     const url = `${apiUrlWindows}/GetProblemDetail`;
 
+    console.log(url);
+
+    postRequest(url, data, callback);
+}
+
+export const updateProblem = (data, callback) => {
+    const url = `${apiUrlWindows}/UpdateProblem`;
+
+    postRequest(url, data, callback);
+}
+
+export const updateTestCase = (data, callback) => {
+    const url = `${apiUrlWindows}/UpdateTestcase`;
+
     postRequest(url, data, callback);
 }

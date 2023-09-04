@@ -1,18 +1,24 @@
 import React from "react";
-// import { login, registerFunc } from "../services/UserService";
-import { Button, Checkbox, Form, Input, Select } from "antd";
+import {Button, Col, Form, Input, message, Row, Select} from "antd";
 import {
+    CheckOutlined,
     LockOutlined,
     PhoneOutlined,
     SendOutlined,
     UserOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { RegisterService } from "../../services/userService"
+import {RegisterService, sendCodeService} from "../../services/userService"
 
 const { Option } = Select;
 
 const RegisterForm = () => {
+    // 存储邮箱地址
+    const [email, setEmail] = React.useState("");
+
+    const [count, setCount] = React.useState(10);
+    const [isDisabled, setIsDisabled] = React.useState(false);
+
     const handleSubmit = (data) => {
         console.log(data);
         // 对表单所有内容进行检验，不能有任何一个为空
@@ -53,10 +59,60 @@ const RegisterForm = () => {
             "pass": data.password,
             "email": data.email,
             "phone": data.phone,
+            "code": data.code,
         });
 
 
     };
+
+    // 发送验证码
+    const sendCode = () => {
+        // 检查邮箱是否为空
+        if (email === "") {
+            message.error("邮箱不能为空！");
+            return;
+        }
+
+        // 如果不为空，发送验证码
+        let data = {
+            "email": email,
+        }
+
+        // call-back function
+        const callback0 = (data) => {
+            console.log("data", data.status);
+            console.log("data msg", data.msg)
+            if (data.status === 0) {
+                message.success("验证码已发送，请注意查收");
+
+                // 验证码成功发送后，将按钮设置为不可用状态，持续60s
+                // 设置时间为10s
+                setCount(10);
+                setIsDisabled(true);
+                let timer = setInterval(() => {
+                    setCount((preCount) => preCount - 1);
+                }, 1000);
+
+                setTimeout(() => {
+                    clearInterval(timer);
+                    setIsDisabled(false);
+                    setCount(10);
+                }, 10000);
+
+
+            }
+            else if (data.status === 4) {
+                message.error("邮箱已被注册！");
+            }
+            else {
+                message.error("验证码发送失败！请稍后重试");
+            }
+        }
+
+        sendCodeService(data, callback0);
+
+
+    }
 
     return (
         <Form
@@ -122,9 +178,43 @@ const RegisterForm = () => {
                     },
                 ]}
             >
+                <Row gutter={8}> {/* 使用 Row 组件 */}
+                    <Col span={16}> {/* 使用 Col 组件，邮箱输入框占比16 */}
+                        <Input
+                            prefix={<SendOutlined />}
+                            placeholder="Email"
+                            onChange={(e) => {
+                                setEmail(e.target.value);
+                            }}
+                        />
+                    </Col>
+                    <Col span={8}> {/* 使用 Col 组件，按钮占比8 */}
+                        <Button
+                            type="primary"
+                            style={{
+                                width: "100%",
+                            }}
+                            onClick={sendCode}
+                            disabled={isDisabled}
+                        >
+                            {isDisabled ? `${count} s` : "Send Code"}
+                        </Button>
+                    </Col>
+                </Row>
+            </Form.Item>
+
+            <Form.Item
+                name="code"
+                rules={[
+                    {
+                        required: true,
+                        message: "Please input your verify code!",
+                    },
+                ]}
+            >
                 <Input
-                    prefix={<SendOutlined />}
-                    placeholder="Email"
+                    prefix={<CheckOutlined />}
+                    placeholder="Verify Code"
                 />
             </Form.Item>
 
