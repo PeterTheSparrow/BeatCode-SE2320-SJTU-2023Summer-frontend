@@ -9,7 +9,7 @@ import remarkGfm from "remark-gfm";
 import 'monaco-editor/esm/vs/basic-languages/python/python.contribution';
 import 'monaco-editor/esm/vs/basic-languages/java/java.contribution';
 import 'monaco-editor/esm/vs/basic-languages/cpp/cpp.contribution';
-import {useNavigate} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import {submit} from "../../services/submissionService";
 import {getProblemDetail} from "../../services/problemSetService";
 import Loading from "../Loading";
@@ -255,6 +255,17 @@ const CodeEditor = () => {
                         >
                             提交评测
                         </Button>
+                        <NavLink
+                            to={`/submissions?id=${id}`}
+                            value="large"
+                            style={{
+                                marginLeft: 20,
+                                color: "#139876",
+                            }}
+                            loading={loading}
+                        >
+                            提交详情
+                        </NavLink>
                     </div>
                     <div
 

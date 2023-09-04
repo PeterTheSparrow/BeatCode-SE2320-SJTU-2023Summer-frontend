@@ -42,7 +42,7 @@ const BasicRoute = () => {
                     } >
                     <Route path={"/"} element={<ProblemSet />} />
                     <Route path={"/ranking-board"} element={<RankingBoard />} />
-                    <Route path={"/submissions"} element={<AllSubmissions />} />
+                    <Route path={"/submissions/:searchRegex?"} element={<AllSubmissions />} />
                     <Route path={"/personal-info"} element={<PersonalInfo />} />
                     <Route path={"/problem/:id"} element={<SingleProblem />} />
                     <Route path={"/submission/:id"} element={<SingleSubmission />} />
