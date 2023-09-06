@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
-import {Button, Cascader, Col, Row, Spin, Table} from "antd";
-import {NavLink} from "react-router-dom";
+import {Button, Cascader,Spin, Table} from "antd";
+import {NavLink, useNavigate} from "react-router-dom";
 import {getSubmissions} from "../../services/submissionService";
 
 import {Input,  Space} from 'antd';
@@ -12,11 +12,18 @@ import {Input,  Space} from 'antd';
  * 2. 提交列表：每一次提交：题目id	题目名称	用户名	通过状态	得分	运行时间	运行内存	提交时间
  * */
 function AllSubmissions() {
-
-    const [searchText1, setSearchText1] = useState('');
-    const [searchText2, setSearchText2] = useState('');
-    const [searchText3, setSearchText3] = useState('');
-    // 在没加载完数据之前，不显示表格
+    const query = new URLSearchParams(window.location.search);
+    const urlParamProblemId=query.get('id');
+    const urlParamProblemName=query.get('title');
+    const urlParamUserName=query.get('user');
+    const [searchTextProblemId, setSearchTextProblemId] = useState(urlParamProblemId===null?'':urlParamProblemId);
+    const [searchTextProblemName, setSearchTextProblemName] = useState(urlParamProblemName===null?'':urlParamProblemName);
+    const [searchTextUserName, setSearchTextUserName] = useState(urlParamUserName===null?'':urlParamUserName);
+    // for (let param of query) {
+    //     if(param[0]==="id")setSearchTextProblemId(param[1]);
+    //     else if(param[0]==="title")setSearchTextProblemId(param[1]);
+    //     else if(param[0]==="user")setSearchTextProblemId(param[1]);
+    // }
     const [isLoading, setIsLoading] = useState(true);
 
     // sorting的列名，sorting的方式
@@ -25,9 +32,12 @@ function AllSubmissions() {
 
     const [submissions, setSubmissions] = useState([]);
     const [pageNum,setPageNum]=useState("1");
-    const [pageSize,setPageSize]=useState("20");
+    const [pageSize,setPageSize]=useState("15");
     const [totalPage,setTotalPage]=useState(0);
     const [totalElements,setTotalElements]=useState(0);
+
+    const navigate=useNavigate();
+
     const getCallback = (data) => {
         console.log("received data for getSubmissions: ");
         console.log(data);
@@ -52,25 +62,28 @@ function AllSubmissions() {
     }
     useEffect(() => {
         setIsLoading(true);
+        setSearchTextProblemId(urlParamProblemId===null?'':urlParamProblemId);
+        setSearchTextProblemName(urlParamProblemName===null?'':urlParamProblemName);
+        setSearchTextUserName(urlParamUserName===null?'':urlParamUserName);
         getSubmissions({
             // 新搜索的话，页数一定是1
             page: pageNum,
             pageSize: pageSize,
 
             // 这三个都是搜索框里的东西
-            user_name: searchText3,
-            problem_name: searchText2,
-            problem_id: searchText1,
+            user_name: urlParamUserName,
+            problem_name: urlParamProblemName,
+            problem_id: urlParamProblemId,
 
             // 这两个是排序的东西
             sortBy: sortingColumn,
             sortDirection: sortingOrder,
 
         }, getCallback);
-    }, [pageNum,pageSize])
+    }, [pageNum,pageSize,urlParamProblemId,urlParamProblemName,urlParamUserName])
     useEffect(() => {
         // submissions 更新时，将 isLoading 设置为 false
-        if(totalElements>0) setIsLoading(false);
+        if(totalElements>0||urlParamUserName!==null||urlParamProblemName!==null||urlParamProblemId!==null)setIsLoading(false);
     }, [submissions])
 
     const options = [
@@ -125,23 +138,39 @@ function AllSubmissions() {
     };
 
     const onSearch = value => {
-        setIsLoading(true);
-        getSubmissions({
-            // 新搜索的话，页数一定是1
-            page: pageNum,
-            pageSize: pageSize,
-
-            // 这三个都是搜索框里的东西
-            user_name: searchText3,
-            problem_name: searchText2,
-            problem_id: searchText1,
-
-            // 这两个是排序的东西
-            sortBy: sortingColumn,
-            sortDirection: sortingOrder,
-
-
-        }, getCallback);
+        if(searchTextProblemId!==''&&searchTextProblemName!==''&&searchTextUserName!=='')
+            navigate(`/submissions?id=${searchTextProblemId}&&title=${searchTextProblemName}&&user=${searchTextUserName}`);
+        else if(searchTextProblemId!==''&&searchTextProblemName!=='')
+            navigate(`/submissions?id=${searchTextProblemId}&&title=${searchTextProblemName}`);
+        else if(searchTextProblemId!==''&&searchTextUserName!=='')
+            navigate(`/submissions?id=${searchTextProblemId}&&user=${searchTextUserName}`);
+        else if(searchTextProblemName!==''&&searchTextUserName!=='')
+            navigate(`/submissions?title=${searchTextProblemName}&&user=${searchTextUserName}`);
+        else if(searchTextProblemId!=='')
+            navigate(`/submissions?id=${searchTextProblemId}`);
+        else if(searchTextProblemName!=='')
+            navigate(`/submissions?title=${searchTextProblemName}`);
+        else if(searchTextUserName!=='')
+            navigate(`/submissions?user=${searchTextUserName}`);
+        else
+            navigate(`/submissions`);
+        // setIsLoading(true);
+        // getSubmissions({
+        //     // 新搜索的话，页数一定是1
+        //     page: pageNum,
+        //     pageSize: pageSize,
+        //
+        //     // 这三个都是搜索框里的东西
+        //     user_name: searchTextUserName,
+        //     problem_name: searchTextProblemName,
+        //     problem_id: searchTextProblemId,
+        //
+        //     // 这两个是排序的东西
+        //     sortBy: sortingColumn,
+        //     sortDirection: sortingOrder,
+        //
+        //
+        // }, getCallback);
     };
 
     // TODO: const handlePageChange
@@ -199,18 +228,18 @@ function AllSubmissions() {
                     <Space.Compact size="large">
                         <Input
                             placeholder="输入题目id"
-                            value={searchText1}
-                            onChange={(e) => setSearchText1(e.target.value)}
+                            value={searchTextProblemId}
+                            onChange={(e) => setSearchTextProblemId(e.target.value)}
                         />
                         <Input
                             placeholder="输入题目名称"
-                            value={searchText2}
-                            onChange={(e) => setSearchText2(e.target.value)}
+                            value={searchTextProblemName}
+                            onChange={(e) => setSearchTextProblemName(e.target.value)}
                         />
                         <Input
                             placeholder="输入用户名"
-                            value={searchText3}
-                            onChange={(e) => setSearchText3(e.target.value)}
+                            value={searchTextUserName}
+                            onChange={(e) => setSearchTextUserName(e.target.value)}
                         />
                         <Button
                             onClick={onSearch}
