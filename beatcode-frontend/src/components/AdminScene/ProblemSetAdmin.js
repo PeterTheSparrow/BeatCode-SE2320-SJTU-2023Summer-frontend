@@ -11,21 +11,16 @@ import Loading from "../Loading";
  * url: /problem/:id
  * */
 const ProblemTable = () => {
-    const [searchText, setSearchText] = useState('');
-    const [searchedColumn, setSearchedColumn] = useState('title');
-
     const [problemList, setProblemList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
 
-    // TODO 待实现
-    const [searchText1, setSearchText1] = useState('');
     const [searchText2, setSearchText2] = useState('');
     const [searchText3, setSearchText3] = useState('');
 
     const onSearch = (value) => {
         const callback = (data) => {
-            console.log("::",data.page);
+            console.log("::",data);
             setProblemList(data.page.data);
             setIsLoading(false);
         }
@@ -96,6 +91,7 @@ const ProblemTable = () => {
     // 获取题目列表
     useEffect(() => {
         const callback = (data) => {
+            console.log("::",data);
             setProblemList(data.data.page);
             setIsLoading(false);
         }

@@ -1,6 +1,13 @@
 import React, {useEffect, useState} from "react";
 import {Input, Button, Col, Row, Card, Form, Tooltip, Divider, message} from 'antd';
-import {getUserInfo, logout, updateUsername} from "../../services/userService";
+import {
+    getUserInfo,
+    logout, sendCodeService,
+    updateEmail,
+    updatePassword,
+    updatePhoneNumber,
+    updateUsername
+} from "../../services/userService";
 import {postRequest} from "../../utils/ajax";
 import {apiUrlWindows} from "../../utils/config-overrides";
 import { useOutletContext } from "react-router-dom";
@@ -43,6 +50,10 @@ function PersonalInfo() {
     const [isEditingPassword, setIsEditingPassword] = useState(false);
     const [isEditingEmail, setIsEditingEmail] = useState(false);
     const [isEditingPhoneNumber, setIsEditingPhoneNumber] = useState(false);
+
+    // 用于控制验证码的按钮
+    const [count, setCount] = React.useState(10);
+    const [isDisabled, setIsDisabled] = React.useState(false);
 
     // 使用 state 来存储正在编辑的用户信息
     const [editedData, setEditedData] = useState({});
@@ -96,24 +107,134 @@ function PersonalInfo() {
                     // 因为修改失败，所以不更新
                 }
             }
-            console.log("send info:", {userId: outletData.userId, userName: editedData.username})
-            updateUsername({userId: outletData.userId, userName: editedData.username}, callback)
+            // console.log("send info:", {userId: outletData.userId, userName: editedData.username})
+            updateUsername({userId: outletData.userId, name: editedData.username}, callback)
         }
-        if (field === 'password') setIsEditingPassword(false);
-        if (field === 'email') setIsEditingEmail(false);
-        if (field === 'phoneNumber') setIsEditingPhoneNumber(false);
+        if (field === 'password') {
+            setIsEditingPassword(false);
+
+            // 发送请求到后端
+            const callback = (data) => {
+                // 打印后端传回的message
+                if (data.status === 0) {
+                    message.success(data.msg);
+                    // 更新用户信息
+                    setUserData({ ...userData, ...editedData });
+                }
+                else {
+                    message.error(data.msg);
+                    // 因为修改失败，所以不更新
+                }
+            }
+
+            updatePassword({userId: outletData.userId, password: editedData.password}, callback)
+        }
+        if (field === 'email') {
+            setIsEditingEmail(false);
+
+            // 发送请求到后端
+            /* @param data 传入的数据
+            *            data中包含的数据：
+            *             userId: 用户id
+            *             email: 新邮箱
+            *             code: 验证码
+            */
+            const callback = (data) => {
+                // 打印后端传回的message
+                if (data.status === 0) {
+                    message.success(data.msg);
+                    // 更新用户信息
+                    setUserData({ ...userData, ...editedData });
+                }
+                else {
+                    message.error(data.msg);
+                    // 因为修改失败，所以不更新
+                }
+            }
+
+            let data = {
+                "userId": outletData.userId,
+                "email": editedData.email,
+                "code": editedData.emailCode,
+            }
+
+            updateEmail(data, callback)
+        }
+        if (field === 'phoneNumber') {
+            setIsEditingPhoneNumber(false);
+
+            // 发送请求到后端
+            const callback = (data) => {
+                // 打印后端传回的message
+                if (data.status === 0) {
+                    message.success(data.msg);
+                    // 更新用户信息
+                    setUserData({ ...userData, ...editedData });
+                }
+                else {
+                    message.error(data.msg);
+                    // 因为修改失败，所以不更新
+                }
+            }
+
+            updatePhoneNumber({userId: outletData.userId, phone: editedData.phoneNumber}, callback)
+        }
     };
 
     const sendVerificationCode = () => {
+        // 检查邮箱是否为空
+        if (editedData.email === "") {
+            message.error("邮箱不能为空！");
+            return;
+        }
 
+        // 如果邮箱和之前一样，就不发送验证码
+        if (editedData.email === userData.email) {
+            message.error("邮箱和之前一样！");
+            return;
+        }
+
+        // 如果不为空，发送验证码
+        let data = {
+            "email": editedData.email,
+        }
+
+        // call-back function
+        const callback0 = (data) => {
+            if (data.status === 0) {
+                message.success("验证码已发送，请注意查收");
+
+                // 验证码成功发送后，将按钮设置为不可用状态，持续60s
+                // 设置时间为10s
+                setCount(10);
+                setIsDisabled(true);
+                let timer = setInterval(() => {
+                    setCount((preCount) => preCount - 1);
+                }, 1000);
+
+                setTimeout(() => {
+                    clearInterval(timer);
+                    setIsDisabled(false);
+                    setCount(10);
+                }, 10000);
+
+
+            }
+            else if (data.status === 4) {
+                message.error("邮箱已被注册！");
+            }
+            else {
+                message.error("验证码发送失败！请稍后重试");
+            }
+        }
+
+        sendCodeService(data, callback0)
     }
 
     // useEffect从后端获取初始化用户数据
     useEffect(() => {
         // 根据用户id从后端获得用户数据
         const callback = (data) => {
-            console.log("data:::---", data);
-
             // 更新用户信息
             setUserData({
                 username: data.userName,
@@ -185,6 +306,47 @@ function PersonalInfo() {
 
                 <Divider />
 
+                {/*密码，label加粗*/}
+                <Form.Item label={<span style={{ fontWeight: 'bold' }}>密码</span>}>
+                    {/*如果正在编辑密码，则显示输入框*/}
+                    {isEditingPassword ? (
+                        <>
+                            <Row gutter={16}>
+                                <Col span={16}>
+                                    <Input
+                                        value={editedData.password}
+                                        onChange={(e) => setEditedData({ ...editedData, password: e.target.value })}
+                                    />
+                                </Col>
+                                <Col span={4}>
+                                    <Button type="primary"
+                                            onClick={() => handleSubmit('password')}
+                                            style={{
+                                                width: '90%',
+                                            }}>
+                                        提交
+                                    </Button>
+                                </Col>
+                                <Col span={4}>
+                                    <Button
+                                        onClick={() => handleCancelEdit('password')}
+                                        style={{
+                                            width: '90%',
+                                        }}>
+                                        取消
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </>
+                    ) : (
+                        <Tooltip title="编辑">
+                            <span onClick={() => handleEditClick('password')}>{userData.password}</span>
+                        </Tooltip>
+                    )}
+                </Form.Item>
+
+
+
 
                 <Divider />
 
@@ -226,7 +388,12 @@ function PersonalInfo() {
                                     />
                                 </Col>
                                 <Col span={12}>
-                                    <Button>发送验证码</Button>
+                                    <Button
+                                        disabled={isDisabled}
+                                        onClick={sendVerificationCode}
+                                    >
+                                        {isDisabled ? `${count} s` : '发送验证码'}
+                                    </Button>
                                 </Col>
                             </Row>
                         </>
@@ -238,6 +405,44 @@ function PersonalInfo() {
                 </Form.Item>
 
                 <Divider />
+
+                <Form.Item label={<span style={{ fontWeight: 'bold' }}>电话</span>}>
+                    {isEditingPhoneNumber ? (
+                        <>
+                            <Row gutter={16}>
+                                <Col span={16}>
+                                    <Input
+                                        value={editedData.phoneNumber}
+                                        onChange={(e) => setEditedData({ ...editedData, phoneNumber: e.target.value })}
+                                    />
+                                </Col>
+                                <Col span={4}>
+                                    <Button type="primary"
+                                            onClick={() => handleSubmit('phoneNumber')}
+                                            style={{
+                                                width: '90%',
+                                            }}>
+                                        提交
+                                    </Button>
+                                </Col>
+                                <Col span={4}>
+                                    <Button
+                                        onClick={() => handleCancelEdit('phoneNumber')}
+                                        style={{
+                                            width: '90%',
+                                        }}>
+                                        取消
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </>
+                    ) : (
+                        <Tooltip title="编辑">
+                            <span onClick={() => handleEditClick('phoneNumber')}>{userData.phoneNumber}</span>
+                        </Tooltip>
+                    )}
+                </Form.Item>
+
 
 
             </Form>

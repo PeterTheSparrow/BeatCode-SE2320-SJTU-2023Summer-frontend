@@ -87,9 +87,6 @@ function OJMainView(props) {
                             <Menu.Item key="/submissions" style={location.pathname === '/submissions' ? { fontWeight: 'bold' } : null}>
                                 <Link to="/submissions">评测状态</Link>
                             </Menu.Item>
-                            {/*<Menu.Item key="/personal-info" style={location.pathname === '/personal-info' ? { fontWeight: 'bold' } : null}>*/}
-                            {/*    <Link to="/personal-info">个人信息</Link>*/}
-                            {/*</Menu.Item>*/}
                             <Menu.Item key="/PersonalRecord" style={location.pathname === '/PersonalRecord' ? { fontWeight: 'bold' } : null}>
                                 <Link to="/PersonalRecord">个人记录</Link>
                             </Menu.Item>
@@ -97,21 +94,6 @@ function OJMainView(props) {
 
                     </Col>
                     <Col span={8}>
-                        {/*/!*超链接，点击一下跳跃到用户信息界面*!/*/}
-                        {/*<Link to="/personal-info">*/}
-                        {/*    /!*大小：很大*!/*/}
-                        {/*    <UserOutlined*/}
-                        {/*        style={{*/}
-                        {/*            fontSize: '32px',*/}
-                        {/*            color: '#1890ff',*/}
-                        {/*            // float: 'right',*/}
-                        {/*            marginTop: '20px',*/}
-                        {/*            marginBottom: '10px',*/}
-                        {/*            marginRight: '20px',*/}
-                        {/*            marginLeft: '180px',*/}
-                        {/*        }}*/}
-                        {/*    />*/}
-                        {/*</Link>*/}
                         <Popover
                             content = {content}
                         >

@@ -124,3 +124,21 @@ export const updateUsername = (data, callback) => {
 
     postRequest(url, data, callback);
 }
+
+export const updatePassword = (data, callback) => {
+    const url = `${apiUrlWindows}/updatePassWord`;
+
+    postRequest(url, data, callback);
+}
+
+export const updatePhoneNumber = (data, callback) => {
+    const url = `${apiUrlWindows}/updatePhone`;
+
+    postRequest(url, data, callback);
+}
+
+export const updateEmail = (data, callback) => {
+    const url = `${apiUrlWindows}/updateEmail`;
+
+    postRequest(url, data, callback);
+}
