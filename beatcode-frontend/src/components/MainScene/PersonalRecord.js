@@ -44,9 +44,16 @@ function HotMap() {
             rectRender={(props, data) => {
                 // 如果日期不在范围内，则不显示
                 // TODO 这的日期判别是buggy不严谨的，需要改进
-                if (data.date < '2016/01/01' || data.date > '2016/12/31') {
+                // if (data.date < '2016/01/01' || data.date > '2016/12/31') {
+                //     return null;
+                // }
+
+                // 切出日期，如果年份不是2016，则不显示
+                const year = data.date.split('/')[0];
+                if (year !== '2016') {
                     return null;
                 }
+
                 return (
                     <Tooltip title={`日期: ${data.date},提交: ${data.count || 0}`}>
                         {/*<span>Tooltip will show on mouse enter.</span>*/}
@@ -86,15 +93,12 @@ function PersonalRecord() {
                     marginRight : '6%',
                     }}
             >
-                <div
-                    style = {{
-                        height : '20px',
-                    }}
-                />
+                <div style = {{height : '30px',}}/>
                 {/*TODO 把这里写死的数据改为计算得到的真实值*/}
                 <Statistic title="今年您的提交次数：" value={114514} />
                 <HotMap/>
                 <SubmissionTable/>
+                <div style = {{height : '30px',}}/>
             </div>
         </div>
     );

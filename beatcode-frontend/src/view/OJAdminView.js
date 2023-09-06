@@ -89,8 +89,8 @@ function OJAdminView(props) {
                             <Menu.Item key="/admin/add-problem" style={location.pathname === '/admin/add-problem' ? { fontWeight: 'bold' } : null}>
                                 <Link to="/admin/add-problem">添加题目</Link>
                             </Menu.Item>
-                            <Menu.Item key="/admin/personal-info" style={location.pathname === '/admin/personal-info' ? { fontWeight: 'bold' } : null}>
-                                <Link to="/admin/personal-info">个人信息</Link>
+                            <Menu.Item key="/admin/PersonalRecord" style={location.pathname === '/admin/personal-info' ? { fontWeight: 'bold' } : null}>
+                                <Link to="/admin/PersonalRecord">个人信息</Link>
                             </Menu.Item>
                         </Menu>
 
