@@ -142,3 +142,20 @@ export const updateEmail = (data, callback) => {
 
     postRequest(url, data, callback);
 }
+export const getUserActivities=(data,callback)=>{
+    let token= localStorage.getItem('seDeToken');
+    if (token === null) {
+        token = '';
+    }
+    axios.post(`${apiUrl}/getUserActivity`,data , {
+        headers: {
+            'Content-Type': 'application/json',
+            'golden-class-token': token
+        }})
+        .then(res=>{
+            callback(res.data);
+        })
+        .catch(err=>{
+            console.log(err);
+        })
+}

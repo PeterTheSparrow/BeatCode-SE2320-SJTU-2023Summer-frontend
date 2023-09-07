@@ -1,10 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Input, Space, Statistic, Table, Tag, Tooltip} from 'antd';
+import {Button, Col, DatePicker, Input, Row, Space, Statistic, Table, Tag, Tooltip} from 'antd';
 import HeatMap from '@uiw/react-heat-map';
 import {getPassedProblemList, getProblemSet} from "../../services/problemSetService";
 import Loading from "../Loading";
 import {useOutletContext} from "react-router-dom";
 import {PAGE_SIZE} from "../../utils/config-overrides";
+import {getUserActivities} from "../../services/userService";
+import moment from 'moment';
+import dayjs from "dayjs";
 
 const PassProblemTable = (props) => {
     const {userId} = props;
@@ -130,49 +133,95 @@ const PassProblemTable = (props) => {
 * ]
 *
 * */
-function HotMap() {
-    const value = [
-        { date: '2016/01/11', count:2 },
-        ...[...Array(17)].map((_, idx) => ({ date: `2016/01/${idx + 10}`, count: idx, })),
-        ...[...Array(17)].map((_, idx) => ({ date: `2016/12/${idx + 10}`, count: idx, })),
-        { date: '2016/04/12', count:2 },
-        { date: '2016/05/01', count:5 },
-        { date: '2016/05/02', count:5 },
-        { date: '2016/05/03', count:1 },
-        { date: '2016/05/04', count:11 },
-        { date: '2016/05/08', count:32 },
-        { date: '2016/12/09', count:2 },
-    ];
+const HotMap=(props)=>{
+    const {userId} = props;
+    const [value,setValue]=useState([]);
+    const [presentYear,setPresentYear]=useState("2023");
+    const [selectedYear,setSelectedYear]=useState("2023");
+    const [totalCount,setTotalCount]=useState(0);
+    useEffect(() => {
+        let dateTime = new Date(+new Date() + 8 * 3600 * 1000).toISOString();
+        setPresentYear(dateTime.split("T")[0].split("-")[0]);
+        setSelectedYear(dateTime.split("T")[0].split("-")[0]);
+    },[]);
+    useEffect(()=>{
+        const data = {
+            "userId": userId.toString(),
+            "year": selectedYear,
+        }
+        const callback = (data) => {
+            console.log("get from get User Activity:",data.data);
+            let counter= 0;
+            setValue(data.data);
+            data.data.map(entry=>{
+                counter+=entry.count;
+            })
+            setTotalCount(counter);
+        }
+        getUserActivities(data,callback);
+    }, [selectedYear]);
 
+    const onChange = (date, dateString) => {
+        setSelectedYear(dateString);
+    };
+    const DisabledDate= (current)=>{
+        let dateTime = new Date(+new Date() +8*3600*1000).toISOString();
+        let timeArray =dateTime.split("T")[0].split("-");
+        let newDate = timeArray[0]+"-"+timeArray[1]+"-"+timeArray[2] ;//当前年月日
+        let earliestDate="2020-01-01";
+        if(current>moment(newDate))return true;
+        if(current<moment(earliestDate))return true;
+        return false;
+    }
     return (
-        <HeatMap
-            value={value}
-            width={600}
-            startDate={new Date('2016/01/01')}
-            endDate={new Date('2016/12/31')}
-            rectSize={8}
-            rectRender={(props, data) => {
-                // 如果日期不在范围内，则不显示
-                // TODO 这的日期判别是buggy不严谨的，需要改进
-                // if (data.date < '2016/01/01' || data.date > '2016/12/31') {
-                //     return null;
-                // }
+        <div>
+            <Row>
+                <Col span={8}>
+                    <Statistic title="提交总次数：" value={totalCount} />
+                </Col>
 
-                // 切出日期，如果年份不是2016，则不显示
-                const year = data.date.split('/')[0];
-                if (year !== '2016') {
-                    return null;
-                }
+                <Col span={8}>
+                    <DatePicker
+                        onChange={onChange}
+                        picker="year"
+                        disabledDate={DisabledDate}
+                        defaultValue={dayjs(presentYear)}
+                    />
+                </Col>
+                <Col span={8}></Col>
+            </Row>
 
-                return (
-                    <Tooltip title={`日期: ${data.date},提交: ${data.count || 0}`}>
-                        {/*<span>Tooltip will show on mouse enter.</span>*/}
-                        <rect {...props} />
-                    </Tooltip>
-                );
+            <HeatMap
+                value={value}
+                width={600}
+                startDate={new Date('2023/01/01')}
+                endDate={new Date('2023/12/31')}
+                rectSize={8}
+                rectRender={(props, data) => {
+                    // 如果日期不在范围内，则不显示
+                    // TODO 这的日期判别是buggy不严谨的，需要改进
+                    // if (data.date < '2016/01/01' || data.date > '2016/12/31') {
+                    //     return null;
+                    // }
 
-            }}
-        />
+                    // 切出日期，如果年份不是2016，则不显示
+                    const year = data.date.split('/')[0];
+                    if (year !== '2023') {
+                        return null;
+                    }
+
+                    return (
+                        <Tooltip title={`日期: ${data.date},提交: ${data.count || 0}`}>
+                            {/*<span>Tooltip will show on mouse enter.</span>*/}
+                            <rect {...props} />
+                        </Tooltip>
+                    );
+
+                }}
+            />
+
+        </div>
+
     );
 }
 
@@ -201,8 +250,7 @@ function PersonalRecord() {
             >
                 <div style = {{height : '30px',}}/>
                 {/*TODO 把这里写死的数据改为计算得到的真实值*/}
-                <Statistic title="今年您的提交次数：" value={114514} />
-                <HotMap/>
+                <HotMap userId={outletData.userId}/>
                 {/*加粗、字体变大显示标题，灰色*/}
                 <div
                     style={{
