@@ -4,6 +4,8 @@ import {Button, Input, Space, Table, Tag} from 'antd';
 import {getProblemSet} from "../../services/problemSetService";
 import Loading from "../Loading";
 
+import {PAGE_SIZE} from "../../utils/config-overrides";
+
 
 /**
  * @Description: 题目列表
@@ -12,7 +14,7 @@ import Loading from "../Loading";
  * */
 const ProblemTable = () => {
     // 定义：PAGE_SIZE常量
-    const PAGE_SIZE = 2;
+    // const PAGE_SIZE = 2;
     const [totalPage, setTotalPage] = useState(0);
     const [problemList, setProblemList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);

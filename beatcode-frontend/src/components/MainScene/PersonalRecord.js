@@ -4,12 +4,17 @@ import HeatMap from '@uiw/react-heat-map';
 import {getPassedProblemList, getProblemSet} from "../../services/problemSetService";
 import Loading from "../Loading";
 import {useOutletContext} from "react-router-dom";
+import {PAGE_SIZE} from "../../utils/config-overrides";
 
 const PassProblemTable = (props) => {
     const {userId} = props;
     const [problemList, setProblemList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
+
+    // 有关分页的信息
+    // const PAGE_SIZE = 2;
+    const [totalPage, setTotalPage] = useState(0);
 
     // 表格的列信息
     const columns = [
@@ -45,14 +50,14 @@ const PassProblemTable = (props) => {
     useEffect(() => {
         const callback = (data) => {
             console.log("@@@",data.data);
-
+            setTotalPage(data.data.total)
             setProblemList(data.data.problems)
             setIsLoading(false);
         }
 
         const data = {
             "pageIndex": currentPage,
-            "pageSize": 20,
+            "pageSize": PAGE_SIZE,
             // "userId": userId,
             // userId转换为字符串
             "userId": userId.toString(),
@@ -92,7 +97,12 @@ const PassProblemTable = (props) => {
                 }}
                 dataSource={problemList}
                 pagination={{
-                    pageSize: 20,
+                    pageSize: PAGE_SIZE,
+                    totalPage: totalPage,
+                    current: currentPage,
+                    showQuickJumper: true,
+                    defaultCurrent: 1,
+                    total: totalPage * PAGE_SIZE,
                     onChange: (page) => {
                         console.log(page);
                         setCurrentPage(page);
