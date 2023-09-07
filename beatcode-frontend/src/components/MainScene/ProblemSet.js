@@ -9,6 +9,9 @@ import Loading from "../Loading";
  * url: /problem/:id
  * */
 const ProblemTable = () => {
+    // 定义：PAGE_SIZE常量
+    const PAGE_SIZE = 2;
+    const [totalPage, setTotalPage] = useState(0);
     const [problemList, setProblemList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
@@ -21,11 +24,12 @@ const ProblemTable = () => {
         const callback = (data) => {
             setProblemList(data.data.page);
             setIsLoading(false);
+            setTotalPage(data.data.total)
         }
 
         const data = {
-            "pageIndex": currentPage,
-            "pageSize": 20,
+            "pageIndex": 1,
+            "pageSize": PAGE_SIZE,
             "titleContains": searchText2,
             "hardLevel": searchText3,
         }
@@ -79,15 +83,19 @@ const ProblemTable = () => {
             dataIndex: 'condition',
             key: 'condition',
             width: '10%',
+
             render: (text, record) => (
                 <>
                     {
-                        text!=="100"
-                            ?
-                            <text style={{color: `#ff0000`}}>{text}</text>
-                            :
-                            <text style={{color: `#00ff00`}}>{text}</text>
+                        text === "100" ? (
+                            <text style={{ color: `#00ff00` }}>{text}</text>
+                        ) : text === "" ? (
+                            <text style={{ color: `#000000` }}>/</text>
+                        ) : (
+                            <text style={{ color: `#ff0000` }}>{text}</text>
+                        )
                     }
+
                 </>
             ),
 
@@ -100,19 +108,20 @@ const ProblemTable = () => {
         const callback = (data) => {
             // console.log(data);
             setProblemList(data.data.page);
+            setTotalPage(data.data.total)
             setIsLoading(false);
         }
 
         const data = {
             "pageIndex": currentPage,
-            "pageSize": 20,
+            "pageSize": PAGE_SIZE,
             "titleContains": "",
             "hardLevel": "",
         }
 
         getProblemSet(data, callback);
     // }, [currentPage,searchText2,searchText3]);
-    }, []);
+    }, [currentPage]);
 
     if (isLoading) {
         return <Loading/>;
@@ -168,13 +177,18 @@ const ProblemTable = () => {
             }}
             dataSource={problemList}
             pagination={{
-                pageSize: 20,
+                pageSize: PAGE_SIZE,
+                totalPage: totalPage,
+                current: currentPage,
+                showQuickJumper: true,
+                defaultCurrent: 1,
+                total: totalPage * PAGE_SIZE,
                 onChange: (page) => {
                     console.log(page);
                     setCurrentPage(page);
-                },
+                }
             }}
-        />;
+        />
     </div>);
 };
 

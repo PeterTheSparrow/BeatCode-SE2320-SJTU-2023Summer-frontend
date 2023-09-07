@@ -214,7 +214,7 @@ function AddSingleProblem() {
      * @return message
      * */
     const data = {
-      "problemId": -1,
+      "problemId": problemId,
       "title": title,
       "detail": detail,
       "difficulty": difficulty,
@@ -268,12 +268,13 @@ function AddSingleProblem() {
             }}
             autoComplete="off"
         >
-          {/*problemId是不可修改的，因此这个框是禁止编辑的*/}
           <Form.Item
               label="problemId"
               name="problemId"
+              onReset={() => setProblemId("")}
+              onChange={(e) => setProblemId(e.target.value)}
           >
-            <Input disabled={true}/>
+            <Input />
           </Form.Item>
           <Form.Item
               label="title"
