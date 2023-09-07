@@ -266,42 +266,49 @@ function PersonalInfo() {
                 </div>
 
                 {/*用户名的label加粗*/}
+                {/*<Form.Item label={<span style={{ fontWeight: 'bold' }}>用户名</span>}>*/}
+                {/*    /!*如果正在编辑用户名，则显示输入框*!/*/}
+                {/*    {isEditingUsername ? (*/}
+                {/*        <>*/}
+                {/*            <Row gutter={16}>*/}
+                {/*                <Col span={16}>*/}
+                {/*                    <Input*/}
+                {/*                        value={editedData.username}*/}
+                {/*                        onChange={(e) => setEditedData({ ...editedData, username: e.target.value })}*/}
+                {/*                    />*/}
+                {/*                </Col>*/}
+                {/*                <Col span={4}>*/}
+                {/*                    <Button type="primary"*/}
+                {/*                            onClick={() => handleSubmit('username')}*/}
+                {/*                            style={{*/}
+                {/*                                width: '90%',*/}
+                {/*                            }}>*/}
+                {/*                        提交*/}
+                {/*                    </Button>*/}
+                {/*                </Col>*/}
+                {/*                <Col span={4}>*/}
+                {/*                    <Button*/}
+                {/*                        onClick={() => handleCancelEdit('username')}*/}
+                {/*                        style={{*/}
+                {/*                            width: '90%',*/}
+                {/*                        }}>*/}
+                {/*                        取消*/}
+                {/*                    </Button>*/}
+                {/*                </Col>*/}
+                {/*            </Row>*/}
+                {/*        </>*/}
+                {/*    ) : (*/}
+                {/*        <Tooltip title="编辑">*/}
+                {/*            <span onClick={() => handleEditClick('username')}>{userData.username}</span>*/}
+                {/*        </Tooltip>*/}
+                {/*    )}*/}
+                {/*</Form.Item>*/}
+
+                {/*更新：对于用户名来说，我们现在禁止修改用户名；鼠标移动到用户名上面显示“用户名不能修改哦”*/}
                 <Form.Item label={<span style={{ fontWeight: 'bold' }}>用户名</span>}>
-                    {/*如果正在编辑用户名，则显示输入框*/}
-                    {isEditingUsername ? (
-                        <>
-                            <Row gutter={16}>
-                                <Col span={16}>
-                                    <Input
-                                        value={editedData.username}
-                                        onChange={(e) => setEditedData({ ...editedData, username: e.target.value })}
-                                    />
-                                </Col>
-                                <Col span={4}>
-                                    <Button type="primary"
-                                            onClick={() => handleSubmit('username')}
-                                            style={{
-                                                width: '90%',
-                                            }}>
-                                        提交
-                                    </Button>
-                                </Col>
-                                <Col span={4}>
-                                    <Button
-                                        onClick={() => handleCancelEdit('username')}
-                                        style={{
-                                            width: '90%',
-                                        }}>
-                                        取消
-                                    </Button>
-                                </Col>
-                            </Row>
-                        </>
-                    ) : (
-                        <Tooltip title="编辑">
-                            <span onClick={() => handleEditClick('username')}>{userData.username}</span>
-                        </Tooltip>
-                    )}
+                    <Tooltip title="用户名不能修改哦">
+                        <span>{userData.username}</span>
+                    </Tooltip>
                 </Form.Item>
 
                 <Divider />

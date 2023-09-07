@@ -4,6 +4,8 @@ import {Button, Input, Space, Table, Tag} from 'antd';
 import {getProblemSet} from "../../services/problemSetService";
 import Loading from "../Loading";
 
+import {PAGE_SIZE} from "../../utils/config-overrides";
+
 
 /**
  * @Description: 题目列表
@@ -11,6 +13,9 @@ import Loading from "../Loading";
  * url: /problem/:id
  * */
 const ProblemTable = () => {
+    // 定义：PAGE_SIZE常量
+    // const PAGE_SIZE = 2;
+    const [totalPage, setTotalPage] = useState(0);
     const [problemList, setProblemList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
@@ -20,17 +25,25 @@ const ProblemTable = () => {
 
     const onSearch = (value) => {
         const callback = (data) => {
-            console.log("::",data);
-            setProblemList(data.page.data);
+            console.log("王肇国：：",data);
+            console.log("::臧斌宇！",data.data.page);
+            setProblemList(data.data.page);
             setIsLoading(false);
+            setTotalPage(data.data.total)
+
+
         }
 
         const data = {
-            "pageIndex": currentPage,
-            "pageSize": 20,
+            // "pageIndex": currentPage,
+            "pageIndex": 1,
+            "pageSize": PAGE_SIZE,
             "titleContains": searchText2,
             "hardLevel": searchText3,
         }
+
+        console.log("searchtext2",searchText2)
+        console.log("searchtext3",searchText3)
 
         getProblemSet(data, callback);
     }
@@ -77,6 +90,28 @@ const ProblemTable = () => {
             ),
         },
         {
+            title: 'Condition',
+            dataIndex: 'condition',
+            key: 'condition',
+            width: '10%',
+
+            render: (text, record) => (
+                <>
+                    {
+                        text === "100" ? (
+                            <text style={{ color: `#00ff00` }}>{text}</text>
+                        ) : text === "" ? (
+                            <text style={{ color: `#000000` }}>/</text>
+                        ) : (
+                            <text style={{ color: `#ff0000` }}>{text}</text>
+                        )
+                    }
+
+                </>
+            ),
+
+        },
+        {
                 title: 'Action',
                 key: 'action',
                 width: '10%',
@@ -85,33 +120,34 @@ const ProblemTable = () => {
                         <a href={`/admin/edit-problem/${record.id}`}>Edit</a>
                     </Space>
                 ),
-            },
+        },
     ];
 
     // 获取题目列表
     useEffect(() => {
         const callback = (data) => {
-            console.log("::",data);
+            console.log("::陈昊鹏",data);
             setProblemList(data.data.page);
+            setTotalPage(data.data.total)
+            console.log("pagenum",data.data.total)
             setIsLoading(false);
         }
 
         const data = {
             "pageIndex": currentPage,
-            "pageSize": 20,
+            "pageSize": PAGE_SIZE,
             "titleContains": searchText2,
             "hardLevel": searchText3,
         }
 
 
         getProblemSet(data, callback);
-    }, []);
+    }, [currentPage]);
 
     if (isLoading) {
         return <Loading/>;
     }
 
-    // 表格最多展示20题
     return (
         <div>
             <div style={{height: 20,}}/>
@@ -160,14 +196,20 @@ const ProblemTable = () => {
                     width: '95%',
                 }}
                 dataSource={problemList}
-                pagination={{pageSize: 20}}
                 pagination={{
+                    pageSize: PAGE_SIZE,
+                    totalPage: totalPage,
+                    current: currentPage,
+                    showQuickJumper: true,
+                    defaultCurrent: 1,
+                    total: totalPage * PAGE_SIZE,
                     onChange: (page) => {
                         console.log(page);
                         setCurrentPage(page);
-                    },
+                    }
+
                 }}
-            />;
+            />
         </div>);
 };
 

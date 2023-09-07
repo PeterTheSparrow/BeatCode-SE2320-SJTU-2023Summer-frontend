@@ -1,8 +1,118 @@
-import React from 'react';
-import {Statistic, Tooltip} from 'antd';
+import React, {useEffect, useState} from 'react';
+import {Button, Input, Space, Statistic, Table, Tag, Tooltip} from 'antd';
 import HeatMap from '@uiw/react-heat-map';
+import {getPassedProblemList, getProblemSet} from "../../services/problemSetService";
+import Loading from "../Loading";
+import {useOutletContext} from "react-router-dom";
+import {PAGE_SIZE} from "../../utils/config-overrides";
 
-/*
+const PassProblemTable = (props) => {
+    const {userId} = props;
+    const [problemList, setProblemList] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    // 有关分页的信息
+    // const PAGE_SIZE = 2;
+    const [totalPage, setTotalPage] = useState(0);
+
+    // 表格的列信息
+    const columns = [
+        {
+            title: 'problem Id',
+            dataIndex: 'problemId',
+            key: 'problemId',
+            width: '20%',
+            render: (text, record) => (
+                // <a href={`/problem/${record.id}`}>{text}</a>
+                <div>{text}</div>
+            ),
+        },
+        {
+            title: 'title',
+            dataIndex: 'problemTitle',
+            key: 'problemTitle',
+            width: '25%',
+            render: (text, record) => (
+                // <a href={`/problem/${record.id}`}>{text}</a>
+                <div>{text}</div>
+            ),
+        },
+        {
+            title: 'difficulty',
+            dataIndex: 'problemDifficulty',
+            key: 'problemDifficulty',
+            width: '15%',
+        }
+    ];
+
+    // 获取题目列表
+    useEffect(() => {
+        const callback = (data) => {
+            console.log("@@@",data.data);
+            setTotalPage(data.data.total)
+            setProblemList(data.data.problems)
+            setIsLoading(false);
+        }
+
+        const data = {
+            "pageIndex": currentPage,
+            "pageSize": PAGE_SIZE,
+            // "userId": userId,
+            // userId转换为字符串
+            "userId": userId.toString(),
+        }
+
+        getPassedProblemList(data, callback);
+    }, [currentPage]);
+
+    if (isLoading) {
+        return <Loading/>;
+    }
+
+    // 表格最多展示20题
+    return (
+        <div>
+            <div style={{height: 20,}}/>
+            {/*搜索框居中*/}
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginBottom: 30,
+                    width: "100%",
+                }}
+            >
+                <div style={{
+                    width: 20,
+                }}></div>
+            </div>
+            <Table
+                columns={columns}
+                style={{
+                    marginLeft: '2.5%',
+                    marginRight: '2.5%',
+                    width: '95%',
+                }}
+                dataSource={problemList}
+                pagination={{
+                    pageSize: PAGE_SIZE,
+                    totalPage: totalPage,
+                    current: currentPage,
+                    showQuickJumper: true,
+                    defaultCurrent: 1,
+                    total: totalPage * PAGE_SIZE,
+                    onChange: (page) => {
+                        console.log(page);
+                        setCurrentPage(page);
+                    },
+                }}
+            />
+        </div>);
+};
+
+/**
 * 说明：
 * hotmap的实现参考了https://uiwjs.github.io/react-heat-map/
 * 但是其中tooltip的实现是buggy的，因此我使用antd中的tooltip来实现
@@ -60,17 +170,12 @@ function HotMap() {
                         <rect {...props} />
                     </Tooltip>
                 );
+
             }}
         />
     );
 }
 
-function SubmissionTable() {
-    return (
-        // 这里的表格可以直接沿用首页的表格
-        <div>submission table</div>
-    )
-}
 
 /*
 * 个人记录页面。
@@ -79,6 +184,7 @@ function SubmissionTable() {
 * 2. 个人提交的题目列表
 * */
 function PersonalRecord() {
+    const outletData = useOutletContext();
 
     return (
         <div
@@ -97,7 +203,24 @@ function PersonalRecord() {
                 {/*TODO 把这里写死的数据改为计算得到的真实值*/}
                 <Statistic title="今年您的提交次数：" value={114514} />
                 <HotMap/>
-                <SubmissionTable/>
+                {/*加粗、字体变大显示标题，灰色*/}
+                <div
+                    style={{
+                        // fontWeight: 'bold',
+                        fontSize: '16px',
+                        color: '#8c8989',
+                        }}
+                >已通过的题目：</div>
+
+            </div>
+            <div
+                style = {{
+                    width : '60%',
+                    marginLeft : '20%',
+                    marginRight : '20%',
+                }}
+            >
+                <PassProblemTable userId={outletData.userId}/>
                 <div style = {{height : '30px',}}/>
             </div>
         </div>
