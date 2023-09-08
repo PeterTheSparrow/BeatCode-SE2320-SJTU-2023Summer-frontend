@@ -33,22 +33,40 @@ class RouteGuard extends React.Component {
         // 检查是否是管理员
         postRequest(apiUrlWindows + '/CheckAdmin', {}, (data) => {
             // console.log("judge admin:::", data);
+            // this.setState({
+            //     isAdmin: data.msg === 'yes',
+            //     userId: data.data.user_id,
+            //     isLoadingAdmin: false,
+            // });
+            if (data.msg === 'yes') {
+                this.setState({
+                    isAdmin: true,
+                })
+            }
             this.setState({
-                isAdmin: data.msg === 'yes',
-                userId: data.data.user_id,
                 isLoadingAdmin: false,
-            });
+                userId: data.data.user_id,
+            })
         });
 
         // 检查是否是用户（是管理员就不是用户）
         if (!this.state.isAdmin) {
             postRequest(apiUrlWindows + '/CheckUser', {}, (data) => {
                 // console.log("judge user:::",data);
+                // this.setState({
+                //     isUser: data.msg === 'yes',
+                //     userId: data.data.user_id,
+                //     isLoadingUser: false,
+                // });
+                if (data.msg === 'yes') {
+                    this.setState({
+                        isUser: true,
+                    })
+                }
                 this.setState({
-                    isUser: data.msg === 'yes',
-                    userId: data.data.user_id,
                     isLoadingUser: false,
-                });
+                    userId: data.data.user_id,
+                })
             });
         } else {
             this.setState({ isLoading: false });
@@ -71,13 +89,11 @@ class RouteGuard extends React.Component {
         }
 
         if (isAdmin || isUser) {
-
-            // 如果是管理员的url
             if (url.startsWith('/admin'))
             {
                 if (isAdmin)
                 {
-                    return <Element userId={this.state.userId} {...rest} />;
+                    return <Element userId={this.state.userId} isAdmin={this.state.isAdmin} {...rest} />;
                 }
                 else
                 {
@@ -91,7 +107,7 @@ class RouteGuard extends React.Component {
                 }
                 else
                 {
-                    return <Element userId={this.state.userId} {...rest} />;
+                    return <Element userId={this.state.userId} isAdmin={this.state.isAdmin} {...rest} />;
                 }
                 // if (isUser)
                 // {
