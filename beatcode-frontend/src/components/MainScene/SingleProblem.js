@@ -21,6 +21,9 @@ import Loading from "../Loading";
 
 /**
  * @Description: 单个题目的组件，包含题目描述、代码编辑器、提交按钮等
+ *
+ * 关于题目信息展示ReactMarkdown不支持渲染数学公式的问题，解决方案：
+ * https://blog.csdn.net/weixin_44589651/article/details/121044772?ydreferer=aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS8%3D
  * */
 //由于后端的语言名称和monaco-editor的语言名称不一致，因此需要一个映射
 const defaultLanguage="C++20";
