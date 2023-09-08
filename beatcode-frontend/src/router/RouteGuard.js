@@ -72,18 +72,35 @@ class RouteGuard extends React.Component {
 
         if (isAdmin || isUser) {
 
-            if (url.startsWith('/admin')) {
-                if (isAdmin) {
+            // 如果是管理员的url
+            if (url.startsWith('/admin'))
+            {
+                if (isAdmin)
+                {
                     return <Element userId={this.state.userId} {...rest} />;
-                } else {
+                }
+                else
+                {
                     return <Navigate to='/' />;
                 }
-            } else {
-                if (isUser) {
-                    return <Element userId={this.state.userId} {...rest} />;
-                } else {
+            }
+            else{
+                if (isAdmin)
+                {
                     return <Navigate to='/admin' />;
                 }
+                else
+                {
+                    return <Element userId={this.state.userId} {...rest} />;
+                }
+                // if (isUser)
+                // {
+                //     return <Element userId={this.state.userId} {...rest} />;
+                // }
+                // else if (isAdmin)
+                // {
+                //     return <Navigate to='/admin' />;
+                // }
             }
         }
     }

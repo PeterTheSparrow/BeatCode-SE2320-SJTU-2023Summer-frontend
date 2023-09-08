@@ -372,12 +372,12 @@ function AddSingleProblem() {
                 onChange={(value) => setDifficulty(value)}
                 onClear={() => setDifficulty("")}
             >
-              {/*难度分为：入门、简单、中等、困难、省选/NOI-*/}
+              {/*难度分为：入门、简单、中等、困难、竞赛*/}
               <Select.Option value="入门">入门</Select.Option>
               <Select.Option value="简单">简单</Select.Option>
               <Select.Option value="中等">中等</Select.Option>
               <Select.Option value="困难">困难</Select.Option>
-              <Select.Option value="省选/NOI-">省选/NOI-</Select.Option>
+              <Select.Option value="竞赛">竞赛</Select.Option>
             </Select>
           </Form.Item>
 

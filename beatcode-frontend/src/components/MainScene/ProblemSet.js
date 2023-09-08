@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Input, Space, Table, Tag} from 'antd';
+import {Button, Input, Space, Table, Tag, Tooltip} from 'antd';
 import {getProblemSet} from "../../services/problemSetService";
 import Loading from "../Loading";
 
@@ -19,6 +19,7 @@ const ProblemTable = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
 
+    const [searchText1, setSearchText1] = useState('');
     const [searchText2, setSearchText2] = useState('');
     const [searchText3, setSearchText3] = useState('');
 
@@ -35,6 +36,7 @@ const ProblemTable = () => {
             "pageSize": PAGE_SIZE,
             "titleContains": searchText2,
             "hardLevel": searchText3,
+            "problemId": searchText1,
         }
 
         getProblemSet(data, callback);
@@ -60,8 +62,14 @@ const ProblemTable = () => {
                 <a href={`/problem/${record.id}`}>{text}</a>
             ),
         },
+        // tooltip：入门<简单<中等<困难<竞赛
         {
-            title: 'Difficulty',
+            // title: 'Difficulty',
+            title: (
+                <Tooltip title="入门<简单<中等<困难<竞赛">
+                    Difficulty
+                </Tooltip>
+            ),
             dataIndex: 'difficulty',
             key: 'difficulty',
             width: '15%',
@@ -81,8 +89,14 @@ const ProblemTable = () => {
                 </>
             ),
         },
+        // 当用户的鼠标移动到condition上的时候，显示tooltip，告诉用户这是你的历史最高分
         {
-            title: 'Condition',
+            // title: 'Condition',
+            title: (
+                <Tooltip title="这是你的历史最高分">
+                    Condition
+                </Tooltip>
+            ),
             dataIndex: 'condition',
             key: 'condition',
             width: '10%',
@@ -118,8 +132,9 @@ const ProblemTable = () => {
         const data = {
             "pageIndex": currentPage,
             "pageSize": PAGE_SIZE,
-            "titleContains": "",
-            "hardLevel": "",
+            "titleContains": searchText2,
+            "hardLevel": searchText3,
+            "problemId": searchText1,
         }
 
         getProblemSet(data, callback);
@@ -146,11 +161,19 @@ const ProblemTable = () => {
         >
             <Space.Compact size="large">
                 <Input
+                    placeholder="输入题号"
+                    value={searchText1}
+                    onChange={(e) => setSearchText1(e.target.value)}
+                    style={{
+                        width: '33%',
+                    }}
+                />
+                <Input
                     placeholder="输入题目名称"
                     value={searchText2}
                     onChange={(e) => setSearchText2(e.target.value)}
                     style={{
-                        width: '60%',
+                        width: '33%',
                     }}
                 />
                 <Input
@@ -158,7 +181,7 @@ const ProblemTable = () => {
                     value={searchText3}
                     onChange={(e) => setSearchText3(e.target.value)}
                     style={{
-                        width: 300,
+                        width: '33%',
                     }}
                 />
                 <Button
