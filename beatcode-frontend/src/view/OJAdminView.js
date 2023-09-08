@@ -17,6 +17,7 @@ const { Header, Content, Footer } = Layout;
  * */
 function OJAdminView(props) {
     const { userId } = props;
+    const { isAdmin } = props;
     const logout_service = () => {
         logout();
     }
@@ -128,7 +129,7 @@ function OJAdminView(props) {
                     }}
                 >
                     {/*定义二级路由的出口*/}
-                    < Outlet context={{ userId: userId }} />
+                    < Outlet context={{ userId: userId , isAdmin: isAdmin}} />
                 </div>
                 {/*<FloatingButtonChat />*/}
             </Content>

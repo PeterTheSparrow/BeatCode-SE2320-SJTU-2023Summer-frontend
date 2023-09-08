@@ -55,7 +55,6 @@ const BasicRoute = () => {
                 </Route>
 
 
-                {/*<Route path="/admin" element={<OJAdminView />}>*/}
                 <Route
                     path={"/admin"}
                     element={<RouteGuard element={OJAdminView } currURL={"/admin"}  />
@@ -73,6 +72,7 @@ const BasicRoute = () => {
                     <Route path={"/admin/problem-info/:id"} element={<ProblemSubmissions />} />
                     <Route path={"/admin/submission/:id"} element={<SingleSubmission />} />
                     <Route path={"/admin/PersonalRecord"} element={<PersonalRecord />} />
+                    <Route path={"/admin/problem-info/:id"} element={<ProblemSubmissions />} />
                 </Route>
 
 
@@ -91,33 +91,3 @@ const BasicRoute = () => {
 };
 
 export default BasicRoute;
-
-// 陈昊鹏的路由配置
-// const BasicRoute = () => {
-//     useEffect(() => {
-//         const unsubscribe = history.listen((location, action) => {
-//             // clear alert on location change
-//             console.log(location, action);
-//         });
-//
-//         return () => {
-//             unsubscribe();
-//         };
-//     }, []);
-//
-//     return (
-//         <Router history={history}>
-//             <Switch>
-//                 {/*<PrivateRoute exact path="/" component={OJMainView} />*/}
-//                 <Route exact path="/" component={OJMainView} />
-//                 {/*这里暂时先不涉及到权限检查，先用最基础的路由*/}
-//                 {/*<PrivateRoute exact path="/" component={HomeView} />*/}
-//                 {/*<LoginRoute exact path="/login" component={LoginView} />*/}
-//                 {/*<PrivateRoute exact path="/bookDetails" component={BookView} />*/}
-//                 <Redirect from="/*" to="/" />
-//             </Switch>
-//         </Router>
-//     );
-// };
-//
-// export default BasicRoute;

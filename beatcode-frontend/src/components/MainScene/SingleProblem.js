@@ -12,7 +12,7 @@ import 'monaco-editor/esm/vs/basic-languages/python/python.contribution';
 import 'monaco-editor/esm/vs/basic-languages/java/java.contribution';
 import 'monaco-editor/esm/vs/basic-languages/cpp/cpp.contribution';
 
-import {NavLink, useNavigate} from "react-router-dom";
+import {NavLink, useNavigate, useOutletContext} from "react-router-dom";
 import {submit} from "../../services/submissionService";
 import {getProblemDetail} from "../../services/problemSetService";
 import Loading from "../Loading";
@@ -28,6 +28,14 @@ import Loading from "../Loading";
 //由于后端的语言名称和monaco-editor的语言名称不一致，因此需要一个映射
 const defaultLanguage="C++20";
 const CodeEditor = () => {
+    /*
+    * 需要通过钩子获取的信息：
+    * 用户是否是管理员；这决定了跳转url的地址
+    * */
+    // const [isAdmin, setIsAdmin] = useState(false);
+    const outletData = useOutletContext();
+    const [jumpingUrl, setJumpingUrl] = useState('');
+
     const [language, setLanguage] = useState(defaultLanguage);
     const [languageForMonaco, setLanguageForMonaco] = useState('cpp');
     // 代码编辑器的内容
@@ -84,6 +92,24 @@ const CodeEditor = () => {
             setTags(tempTags);
 
             setLoading(false);
+
+            // 根据outletData判断是否是管理员，设置跳转url
+            console.log("outletData.isAdmin: ",{outletData})
+            let id1;
+            if(window.location.pathname.split('/')[1]==='admin'){
+                id1 = window.location.pathname.split('/')[3];
+            }
+            else{
+                id1 = window.location.pathname.split('/')[2];
+            }
+            if (outletData.isAdmin){
+                setJumpingUrl(`/admin/problem-info/${id1}`);
+            }
+            else{
+                setJumpingUrl(`/problem-info/${id1}`);
+            }
+
+            console.log("jumpingUrl: ",jumpingUrl)
 
 
         }
@@ -291,7 +317,7 @@ const CodeEditor = () => {
                             提交评测
                         </Button>
                         <NavLink
-                            to={`/problem-info/${id}`}
+                            to={jumpingUrl}
                             value="large"
                             style={{
                                 marginLeft: 20,
