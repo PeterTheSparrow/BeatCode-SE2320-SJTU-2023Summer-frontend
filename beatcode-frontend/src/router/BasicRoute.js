@@ -16,6 +16,8 @@ import EditSingleProblem from "../components/AdminScene/EditSingleProblem";
 import RouteGuard from "./RouteGuard";
 import AddSingleProblem from "../components/AdminScene/AddSingleProblem";
 import PersonalRecord from "../components/MainScene/PersonalRecord";
+import ErrorPage from "../components/MainScene/ErrorPage";
+import ProblemSubmissions from "../components/MainScene/ProblemSubmissions";
 
 /**
  * @Description: 路由配置
@@ -47,6 +49,7 @@ const BasicRoute = () => {
                     <Route path={"/submissions/:searchRegex?"} element={<AllSubmissions />} />
                     <Route path={"/personal-info"} element={<PersonalInfo />} />
                     <Route path={"/problem/:id"} element={<SingleProblem />} />
+                    <Route path={"/problem-info/:id"} element={<ProblemSubmissions />} />
                     <Route path={"/submission/:id"} element={<SingleSubmission />} />
                     <Route path={"/PersonalRecord"} element={<PersonalRecord />} />
                 </Route>
@@ -74,6 +77,7 @@ const BasicRoute = () => {
 
                 <Route path= {"/login"} element={<LoginView />} />
                 <Route path={"/register"} element={<RegisterView />} />
+                <Route path={"/error"} element={<ErrorPage />} />
 
 
                 {/*将所有未匹配到其他路由的路径都重定向到根路径，
