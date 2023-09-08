@@ -10,6 +10,8 @@ import {getProblemDetail, updateProblem} from "../../services/problemSetService"
 import Loading from "../Loading";
 import ReactMarkdown from "react-markdown";
 
+// import MarkdownEditor from '@uiw/react-markdown-editor';
+
 // Initialize a markdown parser
 const mdParser = new MarkdownIt(/* Markdown-it options */);
 
@@ -108,9 +110,7 @@ function EditSingleProblem() {
 
 
     const handleEditorChange = ({ html, text }) => {
-        const newValue = text.replace(/\d/g, "");
-        // console.log(newValue);
-        setDetail(newValue);
+        setDetail(text);
     };
 
     ////////////////////////////////// tag的编辑 /////////////////////////////////////////////////////
@@ -212,7 +212,6 @@ function EditSingleProblem() {
         () => (typeof colorHex === 'string' ? colorHex : colorHex.toHexString()),
         [colorHex],
     );
-
 
     // handleDeleteTag是点击标签右上角的x后的回调函数，用于删除标签
     const handleDeleteTag = (tagId) => {
@@ -445,6 +444,22 @@ function EditSingleProblem() {
                 onChange={handleEditorChange}
                 renderHTML={(text) => mdParser.render(text)}
             />
+            {/*<div*/}
+            {/*    style={{*/}
+            {/*        height: "500px",*/}
+            {/*        marginLeft: '17%',*/}
+            {/*        width: '75%',*/}
+            {/*    }}*/}
+            {/*>*/}
+            {/*    <MarkdownEditor*/}
+            {/*        value={detail}*/}
+            {/*        height={480}*/}
+            {/*        onChange={(editor, data, value) => {*/}
+            {/*            */}
+            {/*        }}*/}
+            {/*    />*/}
+            {/*</div>*/}
+
 
             <div
                 style={{
