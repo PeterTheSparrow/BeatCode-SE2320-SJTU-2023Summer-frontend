@@ -194,19 +194,12 @@ const HotMap=(props)=>{
             <HeatMap
                 value={value}
                 width={600}
-                startDate={new Date('2023/01/01')}
-                endDate={new Date('2023/12/31')}
+                startDate={new Date(selectedYear+"/01/01")}
+                endDate={new Date(selectedYear+"/12/31")}
                 rectSize={8}
                 rectRender={(props, data) => {
-                    // 如果日期不在范围内，则不显示
-                    // TODO 这的日期判别是buggy不严谨的，需要改进
-                    // if (data.date < '2016/01/01' || data.date > '2016/12/31') {
-                    //     return null;
-                    // }
-
-                    // 切出日期，如果年份不是2016，则不显示
                     const year = data.date.split('/')[0];
-                    if (year !== '2023') {
+                    if (year !== selectedYear) {
                         return null;
                     }
 
