@@ -116,7 +116,37 @@ let postRequest = (url, json, callback) => {
             console.log(error);
         });
 };
+let postRequestWithNavigate = (url, json, callback, navigate) => {
 
+    // 从localStorage中获取token，如果没有则设置为null
+    let token = localStorage.getItem('seDeToken');
+    if (token === null) {
+        token = '';
+    }
+
+    let opts = {
+        method: "POST",
+        body: JSON.stringify(json),
+        headers: {
+            'Content-Type': 'application/json',
+            'golden-class-token' : token
+        },
+        // credentials: "include"
+    };
+
+    fetch(url,opts)
+        .then((response) => {
+            console.log("haha",response);
+            return response.json()
+        })
+        .then((data) => {
+            callback(data);
+        })
+        .catch((error) => {
+            navigate("/error");
+            console.log(error);
+        });
+};
 /*
 *
 * `credentials: "include"`是一个在发起网络请求时设置的参数，用于指定是否在请求中包含凭据（例如Cookie、HTTP身份验证等）。
@@ -130,4 +160,4 @@ let postRequest = (url, json, callback) => {
 总结起来，`credentials: "include"`的作用是在发起跨域请求时，告诉浏览器要包含凭据，以便进行身份验证和会话管理。
 * */
 
-export {postRequest,postRequest_v2};
+export {postRequest,postRequest_v2,postRequestWithNavigate};

@@ -414,12 +414,13 @@ function EditSingleProblem() {
                         onChange={(value) => setDifficulty(value)}
                         onClear={() => setDifficulty("")}
                     >
-                        {/*难度分为：入门、简单、中等、困难、竞赛*/}
+                        {/*难度分为：入门<普及<提高<省选<NOI<CTSC*/}
                         <Select.Option value="入门">入门</Select.Option>
-                        <Select.Option value="简单">简单</Select.Option>
-                        <Select.Option value="中等">中等</Select.Option>
-                        <Select.Option value="困难">困难</Select.Option>
-                        <Select.Option value="竞赛">竞赛</Select.Option>
+                        <Select.Option value="普及">普及</Select.Option>
+                        <Select.Option value="提高">提高</Select.Option>
+                        <Select.Option value="省选">省选</Select.Option>
+                        <Select.Option value="NOI">NOI</Select.Option>
+                        <Select.Option value="CTSC">CTSC</Select.Option>
                     </Select>
                 </Form.Item>
 

@@ -39,7 +39,6 @@ const CodeEditor = () => {
 
     const navigate = useNavigate();
 
-
     const editorOptions = {
         // selectOnLineNumbers: true，意思是点击行号就可以选中一整行
         selectOnLineNumbers: true,
@@ -98,7 +97,7 @@ const CodeEditor = () => {
             id = window.location.pathname.split('/')[2];
         }
 
-        getProblemDetail(id,callback);
+        getProblemDetail(id,callback,navigate);
 
     }, []);
 

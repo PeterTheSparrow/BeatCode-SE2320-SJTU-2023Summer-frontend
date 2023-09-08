@@ -53,19 +53,21 @@ const ProblemTable = () => {
     // 表格的列信息
     const columns = [
         {
-            title: 'ID',
+            title: '编号',
             dataIndex: 'id',
             key: 'id',
-            width: '20%',
+            width: '5%',
             render: (text, record) => (
-                <a href={`/admin/problem/${record.id}`}>{text}</a>
+                <a href={`/problem/${record.id}`} style={{
+                    fontWeight:"bold"
+                }}>{text}</a>
             ),
         },
         {
-            title: 'Name',
+            title: '题目名',
             dataIndex: 'title',
             key: 'title',
-            width: '25%',
+            width: '30%',
             render: (text, record) => (
                 <a href={`/admin/problem/${record.id}`}>{text}</a>
             ),
@@ -73,19 +75,33 @@ const ProblemTable = () => {
         {
             // title: 'Difficulty',
             title: (
-                <Tooltip title="入门<简单<中等<困难<竞赛">
-                    Difficulty
+                <Tooltip title="入门<普及<提高<省选<NOI<CTSC">
+                    难度
                 </Tooltip>
             ),
             dataIndex: 'difficulty',
             key: 'difficulty',
-            width: '15%',
+            width: '10%',
+            render:(text,record)=>(
+                <Tag color={text==="入门"?`#01cbac`:
+                    text==="普及"?`#bbb102`:
+                        text==="提高"?`#ff6a00`:
+                            text==="省选"?`#8d002a`:
+                                text==="NOI"?`#d000b4`:
+                                    text==="CTSC"?`#0b0196`:
+                                        `#00ff00`}
+                     key={text}
+                     style={{ fontSize: '13px', padding: '3px 6px' ,fontWeight:"bold"}}
+                >
+                    {text}
+                </Tag>
+            )
         },
         {
-            title: 'Tags',
+            title: '标签',
             dataIndex: 'tags',
             key: 'tags',
-            width: '40%',
+            width: '50%',
             render: (tags, record) => (
                 <>
                     {tags.map((tag) => (
@@ -100,22 +116,20 @@ const ProblemTable = () => {
             // title: 'Condition',
             title: (
                 <Tooltip title="这是你的历史最高分">
-                    Condition
+                    状态
                 </Tooltip>
             ),
             dataIndex: 'condition',
             key: 'condition',
-            width: '10%',
+            width: '5%',
 
             render: (text, record) => (
                 <>
                     {
                         text === "100" ? (
-                            <text style={{ color: `#00ff00` }}>{text}</text>
-                        ) : text === "" ? (
-                            <text style={{ color: `#000000` }}>/</text>
+                            <text style={{ color: `#00ff00` , fontWeight:"bold"}}>{text}</text>
                         ) : (
-                            <text style={{ color: `#ff0000` }}>{text}</text>
+                            <text style={{ color: `#ff0000` , fontWeight:"bold"}}>{text}</text>
                         )
                     }
 
@@ -124,12 +138,12 @@ const ProblemTable = () => {
 
         },
         {
-                title: 'Action',
+                title: '功能',
                 key: 'action',
                 width: '10%',
                 render: (text, record) => (
                     <Space size="middle">
-                        <a href={`/admin/edit-problem/${record.id}`}>Edit</a>
+                        <a href={`/admin/edit-problem/${record.id}`}>编辑</a>
                     </Space>
                 ),
         },

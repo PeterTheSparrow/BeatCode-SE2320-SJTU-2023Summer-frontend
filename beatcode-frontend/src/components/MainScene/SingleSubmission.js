@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Collapse, Popover, Spin, Table, Typography} from "antd";
 import MonacoEditor from "react-monaco-editor";
-import {NavLink, useParams} from "react-router-dom";
+import {NavLink, useNavigate, useParams} from "react-router-dom";
 import {getFullSubmission} from "../../services/submissionService";
 
 
@@ -26,6 +26,7 @@ function SingleSubmission() {
     const [details,setDetails]=useState([]);
     const [monacoLanguage,setMonacoLanguage]=useState('') ;
     const [isLoading,setIsLoading]=useState(true);
+    const navigate=useNavigate();
     const getCallback=(data)=>{
         console.log(data);
         setSubmission({
@@ -46,13 +47,13 @@ function SingleSubmission() {
             error:data.error,
         });
         setDetails(data.details);
-        if(data.submission_language.toString()==="C++") {setMonacoLanguage("cpp");}
-        if(data.submission_language.toString()==="Java") {setMonacoLanguage("java");}
+        if(data.submission_language.toString()==="C++20") {setMonacoLanguage("cpp");}
+        if(data.submission_language.toString()==="Java17") {setMonacoLanguage("java");}
     }
     useEffect(()=>{
         getFullSubmission({
             id:id,
-        },getCallback)
+        },getCallback,navigate)
     },[id]);
     useEffect(()=>{
         setIsLoading(false);

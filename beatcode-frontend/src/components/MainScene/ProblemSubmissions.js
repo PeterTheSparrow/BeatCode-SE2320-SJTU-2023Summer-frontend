@@ -65,7 +65,7 @@ function ProblemSubmissions() {
             sortBy: sortingColumn,
             sortDirection: sortingOrder,
 
-        }, getCallback);
+        }, getCallback,navigate);
     }, [pageNum,pageSize])
     useEffect(() => {
         setIsLoading(false);

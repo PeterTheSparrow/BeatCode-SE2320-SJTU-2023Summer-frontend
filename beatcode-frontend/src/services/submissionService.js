@@ -36,7 +36,7 @@ export const getSubmissions=(data,callback)=>{
             console.log(err);
         })
 }
-export const getProblemSubmissions=(data,callback)=>{
+export const getProblemSubmissions=(data,callback,navigate)=>{
     let token= localStorage.getItem('seDeToken');
     if (token === null) {
         token = '';
@@ -50,10 +50,11 @@ export const getProblemSubmissions=(data,callback)=>{
             callback(res.data);
         })
         .catch(err=>{
+            navigate("/error");
             console.log(err);
         })
 }
-export const getFullSubmission=(data,callback)=>{
+export const getFullSubmission=(data,callback,navigate)=>{
     let token= localStorage.getItem('seDeToken');
     if (token === null) {
         token = '';
@@ -67,6 +68,7 @@ export const getFullSubmission=(data,callback)=>{
             callback(res.data);
         })
         .catch(err=>{
+            navigate("/error");
             console.log(err);
         })
 }
