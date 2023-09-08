@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Navigate} from "react-router-dom";
 import {postRequest} from "../utils/ajax";
 import {apiUrlWindows} from "../utils/config-overrides";
+import {setupSocket} from "../services/socketService";
 
 /**
  * @Description: 路由守卫
@@ -67,10 +68,17 @@ class RouteGuard extends React.Component {
         if (!isAdmin && !isUser) {
             // console.log('isAdmin: ' + isAdmin);
             // console.log('isUser: ' + isUser);
+
+            // 确保连接关闭
+            setupSocket(null);
+
             return <Navigate to='/login' />;
         }
 
         if (isAdmin || isUser) {
+
+            // 确保socket开启
+            setupSocket(localStorage.getItem('seDeToken'));
 
             // 如果是管理员的url
             if (url.startsWith('/admin'))
