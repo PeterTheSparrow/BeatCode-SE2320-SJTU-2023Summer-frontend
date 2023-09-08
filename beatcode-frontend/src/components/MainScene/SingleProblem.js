@@ -1,14 +1,17 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect,  useState} from 'react';
 import MonacoEditor from 'react-monaco-editor';
 import {Button, Col, Descriptions, Row, Select, Space, Tag} from 'antd';
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
 
 
 /*下面这些import用于支持语法高亮*/
 import 'monaco-editor/esm/vs/basic-languages/python/python.contribution';
 import 'monaco-editor/esm/vs/basic-languages/java/java.contribution';
 import 'monaco-editor/esm/vs/basic-languages/cpp/cpp.contribution';
+
 import {NavLink, useNavigate} from "react-router-dom";
 import {submit} from "../../services/submissionService";
 import {getProblemDetail} from "../../services/problemSetService";
@@ -16,13 +19,17 @@ import Loading from "../Loading";
 
 
 
-
 /**
  * @Description: 单个题目的组件，包含题目描述、代码编辑器、提交按钮等
+ *
+ * 关于题目信息展示ReactMarkdown不支持渲染数学公式的问题，解决方案：
+ * https://blog.csdn.net/weixin_44589651/article/details/121044772?ydreferer=aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS8%3D
  * */
+//由于后端的语言名称和monaco-editor的语言名称不一致，因此需要一个映射
 const defaultLanguage="C++20";
 const CodeEditor = () => {
     const [language, setLanguage] = useState(defaultLanguage);
+    const [languageForMonaco, setLanguageForMonaco] = useState('cpp');
     // 代码编辑器的内容
     const [code, setCode] = useState('');
     const [loading, setLoading] = useState(true);
@@ -54,8 +61,7 @@ const CodeEditor = () => {
 
     const [tags, setTags] = useState([
     ]);
-    const [suggestions, setSuggestions] = useState([
-    ]);
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -109,37 +115,6 @@ const CodeEditor = () => {
     const handleEditorChange = (value, event) => {
         // 处理编辑器内容变化的逻辑
         setCode(value);
-
-
-        // // 使用ajax请求
-        // let opts = {
-        //     method: "POST",
-        //     body: JSON.stringify({
-        //         prompt: value,
-        //         max_tokens: 64,
-        //     }),
-        //
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //         'Authorization': 'Bearer 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',
-        //     }
-        // };
-        //
-        // fetch('https://api.openai.com/v1/engines/davinci/completions',opts)
-        //     .then((response) => {
-        //         console.log(response);
-        //         return response.json()
-        //     }
-        //     )
-        //     .then((data) => {
-        //         console.log(data);
-        //         setSuggestions(data.choices);
-        //     }
-        //     )
-        //     .catch((error) => {
-        //         console.log(error);
-        //     }
-        //     );
     };
 
     const handleLanguageChange = (event) => {
@@ -147,6 +122,23 @@ const CodeEditor = () => {
         // setLanguage(event.target.value);
         console.log(event);
         setLanguage(event);
+
+        // 由于后端的语言名称和monaco-editor的语言名称不一致，因此需要一个映射
+        if (event === 'C++20') {
+            setLanguageForMonaco('cpp');
+        }
+        else if (event === 'C') {
+            setLanguageForMonaco('c');
+        }
+        else if (event === 'Java17') {
+            setLanguageForMonaco('java');
+        }
+        else if (event === 'Python3') {
+            setLanguageForMonaco('python');
+        }
+        else if (event === 'Pascal') {
+            setLanguageForMonaco('pascal');
+        }
     };
 
     const handleSubmit = () => {
@@ -172,6 +164,7 @@ const CodeEditor = () => {
         // fontSize: '1.2rem',
         fontSize: '1.0rem',
     };
+
 
     if (loading) {
         return <Loading />;
@@ -243,9 +236,10 @@ const CodeEditor = () => {
                         }}
                     >
                         <ReactMarkdown
-                            // children={markdownText}
                             children={detail}
                             remarkPlugins={[remarkGfm]}
+                            remarkPlugins={[remarkMath]}
+                            rehypePlugins={[rehypeKatex]}
                         />
                     </div>
                 </Col>
@@ -266,6 +260,11 @@ const CodeEditor = () => {
                                     { value: 'Java17', label: 'Java17' },
                                     { value: 'Python3', label: 'Python3' },
                                     { value: 'Pascal', label: 'Pascal' },
+                                    // { value: 'cpp', label: 'C++20' },
+                                    // { value: 'c', label: 'C' },
+                                    // { value: 'java', label: 'Java17' },
+                                    // { value: 'python', label: 'Python3' },
+                                    // { value: 'pascal', label: 'Pascal' },
                                 ]}
                             />
                             <Select
@@ -311,7 +310,8 @@ const CodeEditor = () => {
                     </div>
                     <MonacoEditor
                         height="600"
-                        language={language}
+                        // language={language}
+                        language={languageForMonaco}
                         // theme="vs-dark"
                         // theme={'vs-light'}
                         theme={theme}
@@ -342,7 +342,6 @@ function SingleProblem() {
             >
                 <CodeEditor />
             </div>
-            {/*<CodeEditor />*/}
         </div>
     );
 }

@@ -200,7 +200,13 @@ const HotMap=(props)=>{
                 rectRender={(props, data) => {
                     const year = data.date.split('/')[0];
                     if (year !== selectedYear) {
-                        return null;
+                        // return null;
+                        return (
+                            <Tooltip title={`日期: ${data.date}`}>
+                                {/*<span>Tooltip will show on mouse enter.</span>*/}
+
+                            </Tooltip>
+                        );
                     }
 
                     return (
