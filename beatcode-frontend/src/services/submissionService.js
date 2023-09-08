@@ -30,7 +30,23 @@ export const getSubmissions=(data,callback)=>{
             'golden-class-token': token
         }})
         .then(res=>{
-            console.log(data);
+            callback(res.data);
+        })
+        .catch(err=>{
+            console.log(err);
+        })
+}
+export const getProblemSubmissions=(data,callback)=>{
+    let token= localStorage.getItem('seDeToken');
+    if (token === null) {
+        token = '';
+    }
+    axios.post(`${apiUrl}/GetProblemSubmissions`,data , {
+        headers: {
+            'Content-Type': 'application/json',
+            'golden-class-token': token
+        }})
+        .then(res=>{
             callback(res.data);
         })
         .catch(err=>{

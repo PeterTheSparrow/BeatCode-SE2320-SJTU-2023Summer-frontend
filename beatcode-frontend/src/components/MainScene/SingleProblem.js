@@ -289,7 +289,7 @@ const CodeEditor = () => {
                             提交评测
                         </Button>
                         <NavLink
-                            to={`/submissions?id=${id}`}
+                            to={`/problem-info/${id}`}
                             value="large"
                             style={{
                                 marginLeft: 20,
