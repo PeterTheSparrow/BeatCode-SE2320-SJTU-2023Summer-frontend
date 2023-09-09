@@ -30,7 +30,7 @@ const RegisterForm = () => {
             data.phone === "" ||
             data.role === ""
         ) {
-            window.alert("请填写完整信息！");
+            message.error("请填写完整信息！");
             return;
         }
 
@@ -38,7 +38,14 @@ const RegisterForm = () => {
         let emailReg = new RegExp("[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+");
 
         if (!emailReg.test(data.email)) {
-            window.alert("邮箱格式不正确！");
+            message.error("邮箱格式不正确！");
+            return;
+        }
+
+        // 正则表达式检查手机号码格式是否正确
+        let phoneReg = new RegExp("^[1][3,4,5,7,8][0-9]{9}$");
+        if (!phoneReg.test(data.phone)) {
+            message.error("手机号码格式不正确！");
             return;
         }
 
@@ -70,6 +77,17 @@ const RegisterForm = () => {
         // 检查邮箱是否为空
         if (email === "") {
             message.error("邮箱不能为空！");
+            return;
+        }
+
+        // 用正则表达式检查邮箱
+        // 邮箱格式形如：
+        // 1. 123456789@qq.com
+        // 2. 12345ddd6789@sjtu.edu.cn
+        let emailReg = new RegExp("[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+");
+
+        if (!emailReg.test(email)) {
+            message.error("邮箱格式不正确！");
             return;
         }
 

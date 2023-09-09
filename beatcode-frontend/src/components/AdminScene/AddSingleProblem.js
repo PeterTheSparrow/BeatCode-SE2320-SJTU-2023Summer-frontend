@@ -47,10 +47,18 @@ function AddSingleProblem() {
   const { Dragger } = Upload;
 
   // props是上传文件的配置
+  /*
+  * 后端端口规定的参数：
+  * @RequestParam("compressed") MultipartFile file,
+                                  @RequestParam("problemId") int pid
+  * */
   const props = {
     name: 'file',   // 后端接收的参数名
     multiple: false, // 是否支持多选文件
-    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76', // 上传的地址 TODO 修改为后端接口
+    // 服务器地址：121.37.137.236:8763
+    action: 'http://121.37.137.236:8763/UpdateTestcase',
+    // 参数：uid
+
 
     // 上传文件之前的钩子，参数为上传的文件，若返回 false 或者 Promise 则停止上传。
     onChange(info) {
