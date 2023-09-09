@@ -44,40 +44,40 @@ function AddSingleProblem() {
 
   /////////////////////////////// 上传题目样例文件 /////////////////////////////////////////////////////
 
-  const { Dragger } = Upload;
-
-  // props是上传文件的配置
-  /*
-  * 后端端口规定的参数：
-  * @RequestParam("compressed") MultipartFile file,
-                                  @RequestParam("problemId") int pid
-  * */
-  const props = {
-    name: 'file',   // 后端接收的参数名
-    multiple: false, // 是否支持多选文件
-    // 服务器地址：121.37.137.236:8763
-    action: 'http://121.37.137.236:8763/UpdateTestcase',
-    // 参数：uid
-
-
-    // 上传文件之前的钩子，参数为上传的文件，若返回 false 或者 Promise 则停止上传。
-    onChange(info) {
-      const { status } = info.file;
-      if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
-      }
-      if (status === 'done') {
-        message.success(`${info.file.name} file uploaded successfully.`);
-      } else if (status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
-
-    // 上传文件之前的钩子，参数为上传的文件，若返回 false 或者 Promise 则停止上传。
-    onDrop(e) {
-      console.log('Dropped files', e.dataTransfer.files);
-    },
-  };
+  // const { Dragger } = Upload;
+  //
+  // // props是上传文件的配置
+  // /*
+  // * 后端端口规定的参数：
+  // * @RequestParam("compressed") MultipartFile file,
+  //                                 @RequestParam("problemId") int pid
+  // * */
+  // const props = {
+  //   name: 'file',   // 后端接收的参数名
+  //   multiple: false, // 是否支持多选文件
+  //   // 服务器地址：121.37.137.236:8763
+  //   action: 'http://121.37.137.236:8763/UpdateTestcase',
+  //   // 参数：uid
+  //
+  //
+  //   // 上传文件之前的钩子，参数为上传的文件，若返回 false 或者 Promise 则停止上传。
+  //   onChange(info) {
+  //     const { status } = info.file;
+  //     if (status !== 'uploading') {
+  //       console.log(info.file, info.fileList);
+  //     }
+  //     if (status === 'done') {
+  //       message.success(`${info.file.name} file uploaded successfully.`);
+  //     } else if (status === 'error') {
+  //       message.error(`${info.file.name} file upload failed.`);
+  //     }
+  //   },
+  //
+  //   // 上传文件之前的钩子，参数为上传的文件，若返回 false 或者 Promise 则停止上传。
+  //   onDrop(e) {
+  //     console.log('Dropped files', e.dataTransfer.files);
+  //   },
+  // };
 
   ////////////////////////////// 题目信息的初始化 /////////////////////////////////////////////////////
 
@@ -436,20 +436,20 @@ function AddSingleProblem() {
             }}
         ></div>
 
-        <Dragger
-            style={{
-              width: '66%',
-              marginLeft: '17%',
-            }}
-            {...props}>
-          <p className="ant-upload-drag-icon">
-            <InboxOutlined />
-          </p>
-          <p className="ant-upload-text">单击或拖动文件到此区域上传</p>
-          <p className="ant-upload-hint">
-            在此处上传测试样例的压缩文件；您上传的文件将会直接覆盖后端原本的文件
-          </p>
-        </Dragger>
+        {/*<Dragger*/}
+        {/*    style={{*/}
+        {/*      width: '66%',*/}
+        {/*      marginLeft: '17%',*/}
+        {/*    }}*/}
+        {/*    {...props}>*/}
+        {/*  <p className="ant-upload-drag-icon">*/}
+        {/*    <InboxOutlined />*/}
+        {/*  </p>*/}
+        {/*  <p className="ant-upload-text">单击或拖动文件到此区域上传</p>*/}
+        {/*  <p className="ant-upload-hint">*/}
+        {/*    在此处上传测试样例的压缩文件；您上传的文件将会直接覆盖后端原本的文件*/}
+        {/*  </p>*/}
+        {/*</Dragger>*/}
 
         <div
             style={{

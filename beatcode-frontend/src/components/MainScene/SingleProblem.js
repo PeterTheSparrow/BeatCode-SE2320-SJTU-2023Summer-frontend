@@ -6,6 +6,8 @@ import remarkGfm from "remark-gfm";
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 
+import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for you
+
 
 /*下面这些import用于支持语法高亮*/
 import 'monaco-editor/esm/vs/basic-languages/python/python.contribution';

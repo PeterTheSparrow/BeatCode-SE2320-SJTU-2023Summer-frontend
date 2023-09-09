@@ -9,6 +9,7 @@ import {InboxOutlined} from "@ant-design/icons";
 import {getProblemDetail, updateProblem} from "../../services/problemSetService";
 import Loading from "../Loading";
 import ReactMarkdown from "react-markdown";
+import Icon from "antd/es/icon";
 
 // import MarkdownEditor from '@uiw/react-markdown-editor';
 
@@ -50,32 +51,7 @@ function EditSingleProblem() {
 
     /////////////////////////////// 上传题目样例文件 /////////////////////////////////////////////////////
 
-    const { Dragger } = Upload;
-
-    // props是上传文件的配置
-    const props = {
-        name: 'file',   // 后端接收的参数名
-        multiple: false, // 是否支持多选文件
-        action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76', // 上传的地址 TODO 修改为后端接口
-
-        // 上传文件之前的钩子，参数为上传的文件，若返回 false 或者 Promise 则停止上传。
-        onChange(info) {
-            const { status } = info.file;
-            if (status !== 'uploading') {
-                console.log(info.file, info.fileList);
-            }
-            if (status === 'done') {
-                message.success(`${info.file.name} file uploaded successfully.`);
-            } else if (status === 'error') {
-                message.error(`${info.file.name} file upload failed.`);
-            }
-        },
-
-        // 上传文件之前的钩子，参数为上传的文件，若返回 false 或者 Promise 则停止上传。
-        onDrop(e) {
-            console.log('Dropped files', e.dataTransfer.files);
-        },
-    };
+    const [uploadingVisible, setUploadingVisible] = useState(false);
 
     ////////////////////////////// 题目信息的初始化 /////////////////////////////////////////////////////
 
@@ -479,26 +455,23 @@ function EditSingleProblem() {
                 提交修改
             </Button>
 
+            <Button
+                htmlType="submit"
+                size={"large"}
+                onClick={() => setUploadingVisible(true)}
+                style={{
+                    marginLeft: '5%',
+                }}
+            >
+                上传测试样例
+            </Button>
+
             <div
                 style={{
                     height: 30,
                 }}
             ></div>
 
-            <Dragger
-                style={{
-                    width: '66%',
-                    marginLeft: '17%',
-                }}
-                {...props}>
-                <p className="ant-upload-drag-icon">
-                    <InboxOutlined />
-                </p>
-                <p className="ant-upload-text">单击或拖动文件到此区域上传</p>
-                <p className="ant-upload-hint">
-                    在此处上传测试样例的压缩文件；您上传的文件将会直接覆盖后端原本的文件
-                </p>
-            </Dragger>
 
             <div
                 style={{
