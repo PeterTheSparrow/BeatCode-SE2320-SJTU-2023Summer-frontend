@@ -4,14 +4,13 @@ import MarkdownIt from 'markdown-it';
 import Editor from "react-markdown-editor-lite";
 import 'react-markdown-editor-lite/lib/index.css';
 import {Button, Col, ColorPicker, Form, Input, message, Modal, Select, Space, Tag, Upload} from "antd";
-import Dragger from "antd/es/upload/Dragger";
-import {InboxOutlined} from "@ant-design/icons";
+import {InboxOutlined, UploadOutlined} from "@ant-design/icons";
 import {getProblemDetail, updateProblem} from "../../services/problemSetService";
 import Loading from "../Loading";
 import ReactMarkdown from "react-markdown";
-import Icon from "antd/es/icon";
+import {postRequest} from "../../utils/ajax";
+import {apiUrl} from "../../utils/config-overrides";
 
-// import MarkdownEditor from '@uiw/react-markdown-editor';
 
 // Initialize a markdown parser
 const mdParser = new MarkdownIt(/* Markdown-it options */);
@@ -52,6 +51,55 @@ function EditSingleProblem() {
     /////////////////////////////// 上传题目样例文件 /////////////////////////////////////////////////////
 
     const [uploadingVisible, setUploadingVisible] = useState(false);
+
+    const normFile = (e) => {
+        console.log('Upload event:', e);
+        if (Array.isArray(e)) {
+            return e;
+        }
+        return e && e.fileList;
+    };
+    const beforeUpload = ({fileList}) => {
+        return  false;
+    }
+
+    const onFinish = (values) => {
+        console.log('Received values of form: ', values);
+        /*
+        * 发送ajax请求给后端，将题目样例文件上传。要求发送的请求Content-Type 是 multipart/form-data
+        * 后端接口为：
+        * public Message updateTestcase(@RequestParam("compressed") MultipartFile file,
+                                  @RequestParam("problemId") int pid)
+        * */
+
+        // 往formData中添加数据
+        const formData = new FormData();
+        formData.append("file", values.upload[0].originFileObj);
+        formData.append("pid", problemId);
+
+
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', apiUrl + '/UpdateTestcase');
+
+        // // 设置请求头
+        // xhr.setRequestHeader('Authorization', 'Bearer YourAccessToken');
+
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                // 请求成功
+                console.log('上传成功');
+                console.log(xhr.responseText);
+            } else {
+                // 请求失败
+                console.error('上传失败');
+            }
+        };
+
+        // 发送请求
+        xhr.send(formData);
+
+    }
 
     ////////////////////////////// 题目信息的初始化 /////////////////////////////////////////////////////
 
@@ -456,26 +504,34 @@ function EditSingleProblem() {
                 提交修改
             </Button>
 
-            {/*<Form*/}
-            {/*    name="upload_test_case"*/}
-            {/*    onFinish = {}*/}
-            {/*>*/}
-            {/*    <Form.Item*/}
-            {/*        label="test_case"*/}
-            {/*        name="test_case"*/}
-            {/*        */}
-            {/*</Form>*/}
-
-            <Button
-                htmlType="submit"
-                size={"large"}
-                onClick={() => setUploadingVisible(true)}
-                style={{
-                    marginLeft: '5%',
+            <Form
+                name="validate_other"
+                onFinish={onFinish}
+                initialValues={{
+                    'input-number': 3,
+                    'checkbox-group': ['A', 'B'],
+                    rate: 3.5,
                 }}
             >
-                上传测试样例
-            </Button>
+                <Form.Item
+                    name="upload"
+                    label="Upload"
+                    valuePropName="fileList"
+                    getValueFromEvent={normFile}
+                >
+                    <Upload name="logo"
+                            beforeUpload={beforeUpload}
+                    >
+                        <Button icon={<UploadOutlined />}>Click to upload</Button>
+                    </Upload>
+                </Form.Item>
+                {/*提交表单的按钮*/}
+                <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
+                    <Button type="primary" htmlType="submit">
+                        Submit
+                    </Button>
+                </Form.Item>
+            </Form>
 
             <div
                 style={{
