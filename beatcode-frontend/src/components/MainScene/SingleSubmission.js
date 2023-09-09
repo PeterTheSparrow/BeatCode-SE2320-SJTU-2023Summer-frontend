@@ -95,7 +95,7 @@ function SingleSubmission() {
             <div style={{height: 10,}}/>
 
             <Title level={2} style={{textAlign: 'center',}}>
-                评测时间{submission.submission_time}
+                评测时间{submission.submission_time},语言{submission.submission_language}
             </Title>
 
             <Title level={3} style={{marginLeft: 20,}}>
