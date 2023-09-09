@@ -87,9 +87,7 @@ function AddSingleProblem() {
 
 
   const handleEditorChange = ({ html, text }) => {
-    const newValue = text.replace(/\d/g, "");
-    // console.log(newValue);
-    setDetail(newValue);
+    setDetail(text);
   };
 
   ////////////////////////////////// tag的编辑 /////////////////////////////////////////////////////
@@ -201,6 +199,13 @@ function AddSingleProblem() {
     if (title === "" || detail === "" || difficulty === "" || tags.length === 0 || difficulty === undefined) {
       message.error("请填写完整的题目信息！");
       return;
+    }
+
+    // 用正则表达式检查problemId是否为正整数
+    const reg = /^\d+$/;
+    if (!reg.test(problemId)) {
+        message.error("题目ID必须为正整数！");
+        return;
     }
 
     // 将数据打包为json

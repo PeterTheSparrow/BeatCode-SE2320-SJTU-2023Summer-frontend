@@ -420,6 +420,7 @@ function EditSingleProblem() {
                 onChange={handleEditorChange}
                 renderHTML={(text) => mdParser.render(text)}
             />
+
             {/*<div*/}
             {/*    style={{*/}
             {/*        height: "500px",*/}
@@ -454,6 +455,16 @@ function EditSingleProblem() {
             >
                 提交修改
             </Button>
+
+            {/*<Form*/}
+            {/*    name="upload_test_case"*/}
+            {/*    onFinish = {}*/}
+            {/*>*/}
+            {/*    <Form.Item*/}
+            {/*        label="test_case"*/}
+            {/*        name="test_case"*/}
+            {/*        */}
+            {/*</Form>*/}
 
             <Button
                 htmlType="submit"
