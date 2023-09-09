@@ -50,16 +50,18 @@ function EditSingleProblem() {
 
     /////////////////////////////// 上传题目样例文件 /////////////////////////////////////////////////////
 
-    const [uploadingVisible, setUploadingVisible] = useState(false);
-
+    // normFile是上传文件的回调函数
     const normFile = (e) => {
-        console.log('Upload event:', e);
-        if (Array.isArray(e)) {
-            return e;
-        }
-        return e && e.fileList;
+        // 只保留最后一个文件
+        // console.log('Upload event:', e);
+        // if (Array.isArray(e)) {
+        //     return e;
+        // }
+        // return e && e.fileList;
+        return e && [e.fileList[e.fileList.length - 1]];
     };
     const beforeUpload = ({fileList}) => {
+
         return  false;
     }
 
@@ -81,9 +83,6 @@ function EditSingleProblem() {
 
         const xhr = new XMLHttpRequest();
         xhr.open('POST', apiUrl + '/UpdateTestcase');
-
-        // // 设置请求头
-        // xhr.setRequestHeader('Authorization', 'Bearer YourAccessToken');
 
         xhr.onload = function () {
             if (xhr.status === 200) {
@@ -504,6 +503,13 @@ function EditSingleProblem() {
                 提交修改
             </Button>
 
+            <div
+                style={{
+                    height: 30,
+                    }}
+            >
+            </div>
+
             <Form
                 name="validate_other"
                 onFinish={onFinish}
@@ -512,6 +518,10 @@ function EditSingleProblem() {
                     'checkbox-group': ['A', 'B'],
                     rate: 3.5,
                 }}
+                style={{
+                    marginLeft: '17%',
+                    marginRight: '17%',
+                    }}
             >
                 <Form.Item
                     name="upload"
@@ -526,9 +536,13 @@ function EditSingleProblem() {
                     </Upload>
                 </Form.Item>
                 {/*提交表单的按钮*/}
-                <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
-                    <Button type="primary" htmlType="submit">
-                        Submit
+                <Form.Item>
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        size={"large"}
+                    >
+                        提交测试样例
                     </Button>
                 </Form.Item>
             </Form>
