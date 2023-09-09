@@ -49,6 +49,12 @@ const RegisterForm = () => {
             return;
         }
 
+        // 检查两次密码是否一致
+        if (data.password !== data.confirm) {
+            message.error("两次密码不一致！");
+            return;
+        }
+
         // 前端antd已经封装好了检验两次密码不一致的功能，只需要向后端发送请求即可
         // TODO: 向后端发送请求
         /*
