@@ -84,7 +84,7 @@ function AllSubmissions() {
             sortDirection: sortingOrder,
 
         }, getCallback);
-    }, [pageNum,pageSize,urlParamProblemId,urlParamProblemName,urlParamUserName,sortingColumn,sortingOrder]);
+    }, [pageNum,pageSize,urlParamProblemId,urlParamProblemName,urlParamUserName]);
     useEffect(() => {
         // submissions 更新时，将 isLoading 设置为 false
         if(totalElements>0||urlParamUserName!==null||urlParamProblemName!==null||urlParamProblemId!==null)setIsLoading(false);
@@ -144,12 +144,6 @@ function AllSubmissions() {
             ],
         }
     ];
-    const onChange = (value) => {
-        console.log(value);
-        if(!value)return;
-        setSortingColumn(value[0]);
-        setSortingOrder(value[1]);
-    };
 
     const onSearch = value => {
         if(searchTextProblemId!==''&&searchTextProblemName!==''&&searchTextUserName!=='')
@@ -256,7 +250,6 @@ function AllSubmissions() {
                     <div style={{
                         width: 20,
                     }}></div>
-                    <Cascader options={options} onChange={onChange} placeholder="排序" />
                 </div>
                 {/*pageSize是50*/}
                 <Table dataSource={submissions}
