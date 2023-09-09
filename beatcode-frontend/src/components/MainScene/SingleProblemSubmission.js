@@ -1,10 +1,6 @@
 import React, {useEffect,  useState} from 'react';
 import MonacoEditor from 'react-monaco-editor';
-import {Button, Col, Descriptions, Row, Select, Space, Tag} from 'antd';
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import remarkMath from 'remark-math'
-import rehypeKatex from 'rehype-katex'
+import {Button, Descriptions, Select, Space, Tag} from 'antd';
 
 
 /*下面这些import用于支持语法高亮*/
@@ -35,7 +31,7 @@ const CodeEditor = () => {
     // const [isAdmin, setIsAdmin] = useState(false);
     const outletData = useOutletContext();
     const [jumpingUrl, setJumpingUrl] = useState('');
-
+    const [problemInfoUrl, setProblemInfoUrl] = useState('');
     const [submitUrl, setSubmitUrl] = useState('');
 
     const [language, setLanguage] = useState(defaultLanguage);
@@ -63,7 +59,7 @@ const CodeEditor = () => {
     const [id, setId] = useState(1);
     const [title, setTitle] = useState('数字求和');
     // markdown格式的题目描述
-    const [detail, setDetail] = useState("1");
+
     const [timeLimit, setTimeLimit] = useState(1000);
     const [memoryLimit, setMemoryLimit] = useState(128);
     const [difficulty, setDifficulty] = useState('easy');
@@ -81,7 +77,6 @@ const CodeEditor = () => {
 
             setId(data.id);
             setTitle(data.title);
-            setDetail(data.detail);
             setTimeLimit(data.time_limit);
             setMemoryLimit(data.memory_limit);
             setDifficulty(data.difficulty);
@@ -104,14 +99,15 @@ const CodeEditor = () => {
             else{
                 id1 = window.location.pathname.split('/')[2];
             }
-
             if (outletData.isAdmin){
                 setJumpingUrl(`/admin/problem-info/${id1}`);
-                setSubmitUrl(`/admin/problemSubmitView/${id1}`);
+                setProblemInfoUrl(`/admin/problem/${id1}`)
+                setSubmitUrl(`/admin/submissions`)
             }
             else{
                 setJumpingUrl(`/problem-info/${id1}`);
-                setSubmitUrl(`/problemSubmitView/${id1}`);
+                setProblemInfoUrl(`/problem/${id1}`)
+                setSubmitUrl(`/submissions`)
             }
 
             console.log("jumpingUrl: ",jumpingUrl)
@@ -185,7 +181,8 @@ const CodeEditor = () => {
             "problem_id":id,
         },callback)
         setTimeout(() => {
-           navigate(`/submissions`);
+            // navigate(`/submissions`);
+            navigate(submitUrl);
         }, 500);
     }
 
@@ -208,7 +205,7 @@ const CodeEditor = () => {
                     marginTop: 10,
                     marginBottom: 30,
                     fontSize: 40,
-                    }}
+                }}
             >
                 {id}. {title}
             </h1>
@@ -238,7 +235,10 @@ const CodeEditor = () => {
                     marginRight: 20,
                     marginBottom: 20,
                     marginTop: 20,
-                    }}
+                    // display: 'flex',
+                    // justifyContent: 'center',
+                    // alignItems: 'center',
+                }}
             >
                 <Descriptions
                     // title="Responsive Descriptions"
@@ -250,39 +250,93 @@ const CodeEditor = () => {
                     <Descriptions.Item label={<span style={labelStyle}>内存限制</span>}>{memoryLimit}MB</Descriptions.Item>
                 </Descriptions>
             </div>
-            {/* 居中展示切换到提交界面的按钮 */}
-            <div
-                style={{
-                    // 居中
-                    display: 'flex',
-                    justifyContent: 'center',
-                    }}
-            >
+            <div>
+                <Space wrap>
+                    <Select
+                        defaultValue={defaultLanguage}
+                        style={{
+                            width: 120,
+                            marginBottom: 20,
+                            marginLeft: 20,
+                        }}
+                        onChange={handleLanguageChange}
+                        options={[
+                            { value: 'C++20', label: 'C++20' },
+                            { value: 'C', label: 'C' },
+                            { value: 'Java17', label: 'Java17' },
+                            { value: 'Python3', label: 'Python3' },
+                            { value: 'Pascal', label: 'Pascal' },
+                            // { value: 'cpp', label: 'C++20' },
+                            // { value: 'c', label: 'C' },
+                            // { value: 'java', label: 'Java17' },
+                            // { value: 'python', label: 'Python3' },
+                            // { value: 'pascal', label: 'Pascal' },
+                        ]}
+                    />
+                    <Select
+                        defaultValue="vs-light"
+                        style={{
+                            width: 120,
+                            marginBottom: 20,
+                            marginLeft: 20,
+                        }}
+                        onChange={handleThemeChange}
+                        options={[
+                            { value: 'vs-dark', label: 'Dark' },
+                            { value: 'vs-light', label: 'Light' },
+                        ]}
+                    />
+                </Space>
                 <Button
-                    size="large"
+                    value="large"
+                    style={{
+                        marginLeft: 20,
+                    }}
+                    onClick={handleSubmit}
+                    loading={loading}
                 >
-                    <NavLink to={submitUrl}>
-                        提交界面
+                    提交评测
+                </Button>
+                <NavLink
+                    to={jumpingUrl}
+                    value="large"
+                    style={{
+                        marginLeft: 20,
+                        color: "#139876",
+                    }}
+                    loading={loading}
+                >
+                    提交详情
+                </NavLink>
+                <Button
+                    // set the button tobe prime
+                    style={{
+                        marginLeft: 20,
+                        justifyContent: 'right',
+                    }}
+                >
+                    <NavLink to={problemInfoUrl}>
+                        回到题目详情
                     </NavLink>
                 </Button>
-            </div>
-            <div
-                style={{
-                    marginLeft: 20,
-                    marginRight: 20,
-                    marginBottom: 20,
-                    marginTop: 20,
-                    overflow: 'auto',
-                }}
-            >
-                <ReactMarkdown
-                    children={detail}
-                    remarkPlugins={[remarkGfm]}
-                    remarkPlugins={[remarkMath]}
-                    rehypePlugins={[rehypeKatex]}
-                />
-            </div>
+                <div
+                    style={{
+                        display: 'flex',
+                        // justifyContent: 'right',
+                        marginLeft: 20,
+                    }}
+                >
 
+                </div>
+            </div>
+            <MonacoEditor
+                height="600"
+                language={languageForMonaco}
+                theme={theme}
+                value={code}
+                options={editorOptions}
+                onChange={handleEditorChange}
+            />
         </div>
     );
 };
@@ -294,7 +348,7 @@ const CodeEditor = () => {
  * 1. 题目描述：包括题面、样例输入输出
  * 2. 提交区域：包括代码编辑器、提交按钮、语言选择
  * */
-function SingleProblem() {
+function SingleProblemSubmission() {
     return (
         <div>
             {/*空的标签，纯粹占位为了好看*/}
@@ -308,4 +362,4 @@ function SingleProblem() {
     );
 }
 
-export default SingleProblem;
+export default SingleProblemSubmission;

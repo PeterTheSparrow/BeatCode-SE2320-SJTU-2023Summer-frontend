@@ -18,6 +18,7 @@ import AddSingleProblem from "../components/AdminScene/AddSingleProblem";
 import PersonalRecord from "../components/MainScene/PersonalRecord";
 import ErrorPage from "../components/MainScene/ErrorPage";
 import ProblemSubmissions from "../components/MainScene/ProblemSubmissions";
+import SingleProblemSubmission from "../components/MainScene/SingleProblemSubmission";
 
 /**
  * @Description: 路由配置
@@ -52,6 +53,7 @@ const BasicRoute = () => {
                     <Route path={"/problem-info/:id"} element={<ProblemSubmissions />} />
                     <Route path={"/submission/:id"} element={<SingleSubmission />} />
                     <Route path={"/PersonalRecord"} element={<PersonalRecord />} />
+                    <Route path={"/problemSubmitView/:id"} element={<SingleProblemSubmission />} />
                 </Route>
 
 
@@ -66,9 +68,10 @@ const BasicRoute = () => {
 
                     {/*/!*下面这些组件全部是普通用户和管理员共用的*!/*/}
                     <Route path={"/admin/ranking-board"} element={<RankingBoard />} />
-                    <Route path={"/admin/submissions"} element={<AllSubmissions />} />
+                    <Route path={"/admin/submissions/:searchRegex?"} element={<AllSubmissions />} />
                     <Route path={"/admin/personal-info"} element={<PersonalInfo />} />
                     <Route path={"/admin/problem/:id"} element={<SingleProblem />} />
+                    <Route path={"/admin/problemSubmitView/:id"} element={<SingleProblemSubmission />} />
                     <Route path={"/admin/problem-info/:id"} element={<ProblemSubmissions />} />
                     <Route path={"/admin/submission/:id"} element={<SingleSubmission />} />
                     <Route path={"/admin/PersonalRecord"} element={<PersonalRecord />} />

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Button, Cascader,Spin, Table} from "antd";
-import {NavLink, useNavigate} from "react-router-dom";
+import {NavLink, useNavigate, useOutletContext} from "react-router-dom";
 import {getSubmissions} from "../../services/submissionService";
 
 import {Input,  Space} from 'antd';
@@ -12,6 +12,10 @@ import {Input,  Space} from 'antd';
  * 2. 提交列表：每一次提交：题目id	题目名称	用户名	通过状态	得分	运行时间	运行内存	提交时间
  * */
 function AllSubmissions() {
+    const outletData = useOutletContext();
+
+    const [urlParam0, setUrlParam0] = useState('');
+
     const query = new URLSearchParams(window.location.search);
     const urlParamProblemId=query.get('id');
     const urlParamProblemName=query.get('title');
@@ -86,6 +90,16 @@ function AllSubmissions() {
         if(totalElements>0||urlParamUserName!==null||urlParamProblemName!==null||urlParamProblemId!==null)setIsLoading(false);
     }, [submissions])
 
+    useEffect(() => {
+        // set urlParam
+        if (outletData.isAdmin){
+            setUrlParam0(`/admin`);
+        }
+        else{
+            setUrlParam0(``);
+        }
+    } , [] )
+
     const options = [
         {
             value: 'submission_time',
@@ -139,38 +153,30 @@ function AllSubmissions() {
 
     const onSearch = value => {
         if(searchTextProblemId!==''&&searchTextProblemName!==''&&searchTextUserName!=='')
-            navigate(`/submissions?id=${searchTextProblemId}&&title=${searchTextProblemName}&&user=${searchTextUserName}`);
+            // navigate(`/submissions?id=${searchTextProblemId}&&title=${searchTextProblemName}&&user=${searchTextUserName}`);
+            navigate(urlParam0+`/submissions?id=${searchTextProblemId}&&title=${searchTextProblemName}&&user=${searchTextUserName}`);
         else if(searchTextProblemId!==''&&searchTextProblemName!=='')
-            navigate(`/submissions?id=${searchTextProblemId}&&title=${searchTextProblemName}`);
+            // navigate(`/submissions?id=${searchTextProblemId}&&title=${searchTextProblemName}`);
+            navigate(urlParam0+`/submissions?id=${searchTextProblemId}&&title=${searchTextProblemName}`);
         else if(searchTextProblemId!==''&&searchTextUserName!=='')
-            navigate(`/submissions?id=${searchTextProblemId}&&user=${searchTextUserName}`);
+            // navigate(`/submissions?id=${searchTextProblemId}&&user=${searchTextUserName}`);
+            navigate(urlParam0+`/submissions?id=${searchTextProblemId}&&user=${searchTextUserName}`);
         else if(searchTextProblemName!==''&&searchTextUserName!=='')
-            navigate(`/submissions?title=${searchTextProblemName}&&user=${searchTextUserName}`);
+            // navigate(`/submissions?title=${searchTextProblemName}&&user=${searchTextUserName}`);
+            navigate(urlParam0+`/submissions?title=${searchTextProblemName}&&user=${searchTextUserName}`);
         else if(searchTextProblemId!=='')
-            navigate(`/submissions?id=${searchTextProblemId}`);
+            // navigate(`/submissions?id=${searchTextProblemId}`);
+            navigate(urlParam0+`/submissions?id=${searchTextProblemId}`);
         else if(searchTextProblemName!=='')
-            navigate(`/submissions?title=${searchTextProblemName}`);
+            // navigate(`/submissions?title=${searchTextProblemName}`);
+            navigate(urlParam0+`/submissions?title=${searchTextProblemName}`);
         else if(searchTextUserName!=='')
-            navigate(`/submissions?user=${searchTextUserName}`);
+            // navigate(`/submissions?user=${searchTextUserName}`);
+            navigate(urlParam0+`/submissions?user=${searchTextUserName}`);
         else
-            navigate(`/submissions`);
-        // setIsLoading(true);
-        // getSubmissions({
-        //     // 新搜索的话，页数一定是1
-        //     page: pageNum,
-        //     pageSize: pageSize,
-        //
-        //     // 这三个都是搜索框里的东西
-        //     user_name: searchTextUserName,
-        //     problem_name: searchTextProblemName,
-        //     problem_id: searchTextProblemId,
-        //
-        //     // 这两个是排序的东西
-        //     sortBy: sortingColumn,
-        //     sortDirection: sortingOrder,
-        //
-        //
-        // }, getCallback);
+            // navigate(`/submissions`);
+            navigate(urlParam0+`/submissions`);
+
     };
 
     // TODO: const handlePageChange
@@ -279,7 +285,8 @@ function AllSubmissions() {
                                dataIndex: 'problem_id',
                                // 渲染一个链接，单击后跳到题目详情
                                render: (text, record) => (
-                                   <NavLink to={`/problem/${record.problem_id}`}>
+                                   // <NavLink to={`/problem/${record.problem_id}`}>
+                                   <NavLink to={urlParam0 + `/problem/${record.problem_id}`}>
                                        {text}
                                    </NavLink>)
                            },
@@ -288,7 +295,8 @@ function AllSubmissions() {
                                dataIndex: 'problem_name',
                                // 渲染一个链接，单击后根据题号跳到题目详情
                                render: (text, record) => (
-                                   <NavLink to={`/problem/${record.problem_id}`}>
+                                   // <NavLink to={`/problem/${record.problem_id}`}>
+                                   <NavLink to={urlParam0 + `/problem/${record.problem_id}`}>
                                        {text}
                                    </NavLink>)
                            },
@@ -298,7 +306,7 @@ function AllSubmissions() {
                                title: '通过状态',
                                dataIndex: 'state',
                                render: (text, record) => (
-                                   <NavLink to={`/submission/${record._id}`}>
+                                   <NavLink to={urlParam0 + `/submission/${record._id}`}>
                                        <span style={{
                                            color: text === "Accepted" ? "#2ecc71" :
                                                text === "Wrong Answer" ? "#c0392b" :
@@ -333,7 +341,7 @@ function AllSubmissions() {
                            {
                                title: '提交时间', dataIndex: 'submission_time',
                                render: (text,record) => (
-                                   <NavLink to={`/submission/${record._id}`}>
+                                   <NavLink to={urlParam0 + `/submission/${record._id}`}>
                                        {text}
                                    </NavLink>
                                )
