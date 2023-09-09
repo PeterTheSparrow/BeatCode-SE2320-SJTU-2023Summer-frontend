@@ -84,7 +84,7 @@ function AllSubmissions() {
             sortDirection: sortingOrder,
 
         }, getCallback);
-    }, [pageNum,pageSize,urlParamProblemId,urlParamProblemName,urlParamUserName])
+    }, [pageNum,pageSize,urlParamProblemId,urlParamProblemName,urlParamUserName,sortingColumn,sortingOrder]);
     useEffect(() => {
         // submissions 更新时，将 isLoading 设置为 false
         if(totalElements>0||urlParamUserName!==null||urlParamProblemName!==null||urlParamProblemId!==null)setIsLoading(false);
