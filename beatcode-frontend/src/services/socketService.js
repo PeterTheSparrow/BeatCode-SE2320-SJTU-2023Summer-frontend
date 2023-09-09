@@ -1,4 +1,5 @@
-const socketAddr = 'ws://localhost:8763/info';
+import {socketAddr} from "../utils/config-overrides";
+
 let socket;
 // 就用token标识吧
 let socketUser;
