@@ -1,6 +1,14 @@
 # BeatCode-SE2320-SJTU-2023Summer-frontend
 BeatCode oj的前端代码。本项目为上海交通大学软件学院2023年暑期课程《互联网产品设计与开发》课程项目。
 
+链接：
+
+| 仓库名称 | 仓库地址 |
+| :---: | :---: |
+| 项目仓库 | https://github.com/PeterTheSparrow/BeatCode-SE2320-SJTU-2023Summer |
+| 前端 | https://github.com/PeterTheSparrow/BeatCode-SE2320-SJTU-2023Summer-frontend |
+| 后端 | https://github.com/PeterTheSparrow/BeatCode-SE2320-SJTU-2023Summer-backend  |
+
 ## 目录
 
 - [BeatCode-frontend (React) 前端代码](#beatcode-frontend-react-前端代码)
